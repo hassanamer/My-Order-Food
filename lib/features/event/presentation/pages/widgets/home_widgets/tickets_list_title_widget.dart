@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:get/get.dart';
 import 'package:flutter_staggered_animations/flutter_staggered_animations.dart';
-import '../../../../domain/entities/event_entities.dart';
+import 'package:get/get.dart';
+
+import '../../../../domain/entities/order_entities.dart';
 import '../event_details_page/event_detail_page.dart';
 
 class TicketsListTitleWidget extends StatelessWidget {
@@ -9,12 +10,10 @@ class TicketsListTitleWidget extends StatelessWidget {
     Key? key,
     required this.eventEntity,
     required this.title,
-    required this.subTitle,
   }) : super(key: key);
 
-  final EventEntity eventEntity;
+  final CreateOrderEntity eventEntity;
   final String title;
-  final String subTitle;
 
   @override
   Widget build(BuildContext context) {
@@ -59,13 +58,6 @@ class TicketsListTitleWidget extends StatelessWidget {
                       fontSize: 18,
                       fontWeight: FontWeight.bold,
                       color: Colors.white,
-                    ),
-                  ),
-                  subtitle: Text(
-                    subTitle,
-                    style: const TextStyle(
-                      fontSize: 16,
-                      color: Colors.white70,
                     ),
                   ),
                   contentPadding: const EdgeInsets.symmetric(horizontal: 20),

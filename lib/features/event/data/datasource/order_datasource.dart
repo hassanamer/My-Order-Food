@@ -1,31 +1,35 @@
 import 'package:order/core/database/database.dart';
-import 'package:order/features/event/data/models/event_model.dart';
-import 'package:order/features/event/domain/entities/event_entities.dart';
+import 'package:order/features/event/data/models/order_model.dart';
+import 'package:order/features/event/domain/entities/order_entities.dart';
 
-abstract class EventDatasource {
-  Future<List<EventEntity>> getAllEvent();
+abstract class OrderDataSource {
+  Future<List<CreateOrderEntity>> getAllEvent();
+
   Future<List<CommentModel>> getAllComment();
+
   Future<BaseResponse> deleteEvent(int id);
-  Future<BaseResponse> updateEvent(EventModel eventModel, String id);
-  Future<BaseResponse> addEvent(EventModel eventModel);
+
+  Future<BaseResponse> updateOrder(OrderModel eventModel, String id);
+
+  Future<BaseResponse> addEvent(OrderModel eventModel);
+
   Future<BaseResponse> addComment(CommentModel commentModel);
 }
 
-class EventDatasourceImpl implements EventDatasource {
+class OrderDataSourceImpl implements OrderDataSource {
   late DatabaseProvider db;
 
-  EventDatasourceImpl(this.db);
+  OrderDataSourceImpl(this.db);
 
   @override
-  Future<BaseResponse> addEvent(EventModel eventModel) async {
+  Future<BaseResponse> addEvent(OrderModel eventModel) async {
     int value = await db.database.insert('Event', eventModel.toMap());
     try {
       if (value != 0) {
-        return BaseResponse(
-            status: true, message: 'Event created successfully');
+        return BaseResponse(status: true, message: 'Orde created successfully');
       } else {
         return BaseResponse(
-            status: false, message: 'Faild to create a new event');
+            status: false, message: 'Faild to create a new order');
       }
     } catch (e) {
       return BaseResponse(status: false, message: e.toString());
@@ -35,11 +39,11 @@ class EventDatasourceImpl implements EventDatasource {
   @override
   Future<BaseResponse> deleteEvent(int id) async {
     final records =
-        await db.database.rawDelete('DELETE FROM Event WHERE id = \'$id\'');
+        await db.database.rawDelete('DELETE FROM Order WHERE id = \'$id\'');
     try {
       if (records >= 1) {
         return BaseResponse(
-            status: true, message: 'Event deleted successfully.');
+            status: true, message: 'Order deleted successfully.');
       } else {
         return BaseResponse(
             status: false, message: 'Faild to delete the event');
@@ -50,12 +54,12 @@ class EventDatasourceImpl implements EventDatasource {
   }
 
   @override
-  Future<List<EventEntity>> getAllEvent() async {
+  Future<List<CreateOrderEntity>> getAllEvent() async {
     List<Map<String, dynamic>> records =
         await db.database.rawQuery('select * FROM Event');
-    List<EventModel> events = [];
+    List<OrderModel> events = [];
     for (var element in records) {
-      events.add(EventModel.fromMap(element));
+      events.add(OrderModel.fromMap(element));
     }
 
     return events;
@@ -73,7 +77,7 @@ class EventDatasourceImpl implements EventDatasource {
   }
 
   @override
-  Future<BaseResponse> updateEvent(EventModel eventModel, String id) async {
+  Future<BaseResponse> updateOrder(OrderModel eventModel, String id) async {
     final records = await db.database.update('Event', eventModel.toMap(),
         where: '$id = ?', whereArgs: [eventModel.id]);
     try {

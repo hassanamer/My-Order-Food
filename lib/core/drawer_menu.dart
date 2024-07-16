@@ -2,8 +2,8 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:order/features/event/presentation/cubit/ticket_cubit.dart';
-import 'package:order/features/event/presentation/pages/ticket_page.dart';
+import 'package:order/features/event/presentation/cubit/order_cubit.dart';
+import 'package:order/features/event/presentation/pages/order_food_home_page.dart';
 import 'package:order/features/login/presentation/pages/login_page.dart';
 import 'package:order/features/register/data/models/register_account_model.dart';
 import 'package:order/features/restaurant/presentation/cubit/restaurant_cubit.dart';
@@ -102,9 +102,9 @@ class _NavigationDrawerrState extends State<NavigationDrawerr> {
             title: const Text('Home'),
             leading: const Icon(Icons.home),
             onTap: () {
-              context.read<TicketCubit>().getAllTickets();
-              Navigator.of(context).push(
-                  MaterialPageRoute(builder: (context) => const TicketPage()));
+              context.read<OrderCubit>().getAllOrders();
+              Navigator.of(context).push(MaterialPageRoute(
+                  builder: (context) => const OrderFoodHomePage()));
             },
           ),
           ListTile(

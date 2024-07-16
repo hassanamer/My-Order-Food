@@ -1,5 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:order/features/event/domain/entities/event_entities.dart';
+import 'package:order/features/event/domain/entities/order_entities.dart';
 import 'package:order/features/event/domain/entities/remote_chat_entities.dart';
 
 class CommentModel extends CommentEntity {
@@ -39,44 +39,44 @@ class CommentModel extends CommentEntity {
       );
 }
 
-class EventModel extends EventEntity {
-  EventModel({
+class OrderModel extends CreateOrderEntity {
+  OrderModel({
+    required String userId,
     String? id,
     String? title,
     Map<String, dynamic>? items,
-    String? item,
     int? itemCount,
   }) : super(
+          userId: userId,
           id: id,
           title: title,
-          item: item,
           items: items,
         );
 
   Map<String, dynamic> toMap() {
     return {
+      'userId': userId,
       'id': id,
       'title': title,
-      'item': item,
       "items": items,
     };
   }
 
-  factory EventModel.fromMap(Map<String, dynamic> map) {
-    return EventModel(
+  factory OrderModel.fromMap(Map<String, dynamic> map) {
+    return OrderModel(
+        userId: map['userId'],
         id: map['id'],
         title: map['title'],
-        item: map['item'],
         itemCount: map['itemCount'],
         items: map['items']);
   }
 
-  factory EventModel.fromSnapShot(
+  factory OrderModel.fromSnapShot(
       DocumentSnapshot<Map<String, dynamic>> documentSnapshot) {
-    return EventModel(
+    return OrderModel(
+        userId: documentSnapshot.data()!['userId'],
         id: documentSnapshot.data()!['id'],
         title: documentSnapshot.data()!['title'],
-        item: documentSnapshot.data()!['item'],
         itemCount: documentSnapshot.data()!['itemCount'],
         items: documentSnapshot.data()!['items']);
   }
@@ -88,10 +88,10 @@ class EventModel extends EventEntity {
   //   );
   // }
 
-  factory EventModel.fromEntity(EventEntity eventEntity) => EventModel(
+  factory OrderModel.fromEntity(CreateOrderEntity eventEntity) => OrderModel(
+        userId: eventEntity.userId,
         id: eventEntity.id,
         title: eventEntity.title,
-        item: eventEntity.item,
         items: eventEntity.items,
       );
 }

@@ -1,12 +1,12 @@
 import 'package:order/features/event/domain/entities/order_entities.dart';
 import 'package:order/features/event/domain/reporisatory/ticket_reporisatory.dart';
 
-class GetAllOrderUsecase {
+class AddOrderUsecase {
   final OrderRepository orderRepository;
 
-  GetAllOrderUsecase(this.orderRepository);
+  AddOrderUsecase(this.orderRepository);
 
-  Future<List<CreateOrderEntity>> call() async {
-    return await orderRepository.remoteGetAllOrders();
+  Future<BaseResponse> call(CreateOrderEntity orderEntity) async {
+    return await orderRepository.remoteAddOrders(orderEntity);
   }
 }

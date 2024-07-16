@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:get/get.dart';
 import 'package:flutter_staggered_animations/flutter_staggered_animations.dart';
-import '../../../../domain/entities/event_entities.dart';
+import 'package:get/get.dart';
+
+import '../../../../domain/entities/order_entities.dart';
 import '../event_details_page/event_detail_page.dart';
 
 class EventDetailPagePlaceholder extends StatelessWidget {
@@ -9,11 +10,11 @@ class EventDetailPagePlaceholder extends StatelessWidget {
     Key? key,
     required this.eventEntity,
     required this.itemTitle,
-     required this.itemCount,
+    required this.itemCount,
   }) : super(key: key);
 
-  final EventEntity eventEntity;
-   final String itemTitle;
+  final CreateOrderEntity eventEntity;
+  final String itemTitle;
   final String itemCount;
 
   @override
@@ -49,7 +50,7 @@ class EventDetailPagePlaceholder extends StatelessWidget {
                   Get.to(() => EventDetailsPage(eventEntity: eventEntity));
                 },
                 child: ListTile(
-                  trailing:  Text(
+                  trailing: Text(
                     itemCount,
                     style: const TextStyle(
                       fontSize: 18,
@@ -65,7 +66,6 @@ class EventDetailPagePlaceholder extends StatelessWidget {
                       color: Colors.white,
                     ),
                   ),
-
                   contentPadding: const EdgeInsets.symmetric(horizontal: 20),
                 ),
               ),

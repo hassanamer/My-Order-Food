@@ -1,9 +1,10 @@
 import 'package:flutter/material.dart';
-import 'package:order/features/event/domain/entities/event_entities.dart';
-import 'package:order/features/event/presentation/pages/widgets/event_add_update_pages/event_add_update_page.dart';
+import 'package:order/features/event/domain/entities/order_entities.dart';
+import 'package:order/features/event/presentation/pages/widgets/event_add_update_pages/create_order_page.dart';
 
 class UpdateBtnWidget extends StatelessWidget {
-  final EventEntity eventEntity;
+  final CreateOrderEntity eventEntity;
+
   const UpdateBtnWidget({
     Key? key,
     required this.eventEntity,
@@ -16,7 +17,7 @@ class UpdateBtnWidget extends StatelessWidget {
         Navigator.push(
             context,
             MaterialPageRoute(
-              builder: (_) => EventAddUpdatePage(
+              builder: (_) => CreateOrderPage(
                 isUpdateEvent: true,
                 eventEntity: eventEntity,
               ),

@@ -4,13 +4,13 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 // Import the intl package for date formatting
 import 'package:order/core/widgets/app_bar_widget.dart';
 import 'package:order/features/cart/presentation/pages/view_order_page.dart';
-import 'package:order/features/event/domain/entities/event_entities.dart';
+import 'package:order/features/event/domain/entities/order_entities.dart';
 import 'package:order/features/event/presentation/pages/widgets/event_details_page/evebt_details_page_placeholder.dart';
 
-import '../../../cubit/ticket_cubit.dart';
+import '../../../cubit/order_cubit.dart';
 
 class EventDetailsPage extends StatefulWidget {
-  final EventEntity eventEntity;
+  final CreateOrderEntity eventEntity;
 
   const EventDetailsPage({
     Key? key,
@@ -198,9 +198,10 @@ class _EventDetailsPageState extends State<EventDetailsPage> {
   Future<void> _addItem() async {
     String newItem = itemController.text.trim();
     if (newItem.isNotEmpty && itemCount > 0) {
-      final docRef = _firestore.collection('events').doc(widget.eventEntity.id);
+      final orderDocRef =
+          _firestore.collection('orders').doc(widget.eventEntity.id);
 
-      await docRef.get().then((docSnapshot) {
+      await orderDocRef.get().then((docSnapshot) {
         if (docSnapshot.exists) {
           Map<String, dynamic> data = docSnapshot.data()!;
           if (data.containsKey(newItem)) {
@@ -209,9 +210,9 @@ class _EventDetailsPageState extends State<EventDetailsPage> {
           } else {
             data[newItem] = itemCount;
           }
-          docRef.update(data);
+          orderDocRef.update(data);
         } else {
-          docRef.set({newItem: itemCount});
+          orderDocRef.set({newItem: itemCount});
         }
       });
 
@@ -231,7 +232,7 @@ class _EventDetailsPageState extends State<EventDetailsPage> {
         itemCount = 0;
       });
 
-      final eventEntity = EventEntity(
+      final eventEntity = CreateOrderEntity(
         id: widget.eventEntity.id,
         items: Map.fromIterable(
           itemsList,
@@ -239,15 +240,16 @@ class _EventDetailsPageState extends State<EventDetailsPage> {
           value: (item) => item.quantity,
         ),
         title: widget.eventEntity.title,
+        userId: widget.eventEntity.userId,
       );
-      BlocProvider.of<TicketCubit>(context).addTicket(eventEntity);
+      BlocProvider.of<OrderCubit>(context).addOrder(eventEntity);
     }
   }
 
   Future<void> _updateFirestore() async {
     final docRef = _firestore.collection('orders').doc();
     await docRef.set({
-      'event_id': widget.eventEntity.id,
+      'order_id': widget.eventEntity.id,
       'items': itemsList
           .map((item) => {'name': item.itemName, 'quantity': item.quantity})
           .toList(),

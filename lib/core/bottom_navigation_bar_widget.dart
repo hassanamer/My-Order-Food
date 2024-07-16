@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:order/features/cart/presentation/pages/cart_page.dart';
+import 'package:order/features/event/presentation/pages/order_food_home_page.dart';
 import 'package:order/features/event/presentation/pages/settings_page.dart';
-import 'package:order/features/event/presentation/pages/ticket_page.dart';
 
 class PersistentBottomBarScaffold extends StatefulWidget {
   /// Pass the required items for the tabs and BottomNavigationBar
@@ -113,7 +113,7 @@ class HomePage extends StatelessWidget {
     return PersistentBottomBarScaffold(
       items: [
         PersistentTabItem(
-          tab: const TicketPage(),
+          tab: const OrderFoodHomePage(),
           icon: Icons.home_outlined,
           title: 'Home',
           navigatorkey: _tab1navigatorKey,

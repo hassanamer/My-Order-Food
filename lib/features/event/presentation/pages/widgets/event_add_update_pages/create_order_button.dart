@@ -1,20 +1,20 @@
 import 'package:flutter/material.dart';
 
-class FormSubmitBtn extends StatefulWidget {
+class CreateOrderButton extends StatefulWidget {
   final void Function() onPressed;
   final bool isUpdateEvent;
 
-  const FormSubmitBtn({
+  const CreateOrderButton({
     Key? key,
     required this.onPressed,
     required this.isUpdateEvent,
   }) : super(key: key);
 
   @override
-  _FormSubmitBtnState createState() => _FormSubmitBtnState();
+  _CreateOrderButtonState createState() => _CreateOrderButtonState();
 }
 
-class _FormSubmitBtnState extends State<FormSubmitBtn> {
+class _CreateOrderButtonState extends State<CreateOrderButton> {
   bool _isPressed = false;
 
   @override
@@ -53,13 +53,13 @@ class _FormSubmitBtnState extends State<FormSubmitBtn> {
           boxShadow: _isPressed
               ? []
               : [
-            BoxShadow(
-              color: Colors.blue.withOpacity(0.3),
-              spreadRadius: 2,
-              blurRadius: 5,
-              offset: Offset(0, 3),
-            ),
-          ],
+                  BoxShadow(
+                    color: Colors.blue.withOpacity(0.3),
+                    spreadRadius: 2,
+                    blurRadius: 5,
+                    offset: Offset(0, 3),
+                  ),
+                ],
         ),
         child: Center(
           child: Row(
@@ -67,10 +67,10 @@ class _FormSubmitBtnState extends State<FormSubmitBtn> {
             children: [
               widget.isUpdateEvent
                   ? Icon(Icons.edit, color: Colors.white)
-                  : Icon(Icons.add, color: Colors.white),
+                  : Icon(Icons.border_color_outlined, color: Colors.white),
               SizedBox(width: 8),
               Text(
-                widget.isUpdateEvent ? "Update" : "Add",
+                widget.isUpdateEvent ? "Update" : "Start Order",
                 style: TextStyle(
                   color: Colors.white,
                   fontSize: 18,

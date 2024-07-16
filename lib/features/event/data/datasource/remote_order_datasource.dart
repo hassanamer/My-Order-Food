@@ -1,9 +1,9 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:order/core/services/awesome_notification_service.dart';
-import 'package:order/features/event/data/models/event_model.dart';
-import 'package:order/features/event/data/models/titcket_model.dart';
-import 'package:order/features/event/domain/entities/event_entities.dart';
+import 'package:order/features/event/data/models/chat_model.dart';
+import 'package:order/features/event/data/models/order_model.dart';
+import 'package:order/features/event/domain/entities/order_entities.dart';
 import 'package:order/features/login/domain/entities/account_entites.dart';
 
 class FirebaseDatasourceProvider {
@@ -20,16 +20,17 @@ class FirebaseDatasourceProvider {
   FirebaseDatasourceProvider._internal();
 }
 
-abstract class TicketDatasourceInterface extends FirebaseDatasourceProvider {
-  TicketDatasourceInterface() : super._internal();
+abstract class RemoteOrderDatasourceInterface
+    extends FirebaseDatasourceProvider {
+  RemoteOrderDatasourceInterface() : super._internal();
 
-  Future<List<EventEntity>> remoteGetAllTickets();
+  Future<List<CreateOrderEntity>> remoteGetAllTickets();
 
-  Future<BaseResponse> remoteAddTicket(EventModel eventModel);
+  Future<BaseResponse> remoteAddOrder(OrderModel eventModel);
 
-  Future<BaseResponse> remoteUpdateTicket(EventModel eventModel);
+  Future<BaseResponse> remoteUpdateOrder(OrderModel eventModel);
 
-  Future<BaseResponse> remoteDeleteTicket();
+  Future<BaseResponse> remoteDeleteOrders();
 
   Future<BaseResponse> uploadMessage(
       String idUser, String message, Account account);
@@ -37,30 +38,30 @@ abstract class TicketDatasourceInterface extends FirebaseDatasourceProvider {
   Future<List<ChattModel>> getAllMessages();
 }
 
-class RemoteTicketDatasource extends TicketDatasourceInterface {
+class RemoteTicketDatasource extends RemoteOrderDatasourceInterface {
   RemoteTicketDatasource() : super();
 
   @override
-  Future<BaseResponse> remoteAddTicket(EventModel eventModel) async {
+  Future<BaseResponse> remoteAddOrder(OrderModel eventModel) async {
     try {
-      await firebaseFirestore.collection("Ticket").doc(eventModel.id).set({
-        "title": eventModel.title,
+      await firebaseFirestore.collection("Order").doc(eventModel.id).set({
         "items": eventModel.items,
         "id": eventModel.id,
+        "title": eventModel.title,
       });
       await AwesomeNotificationService.showNotification(
-          title: eventModel.title ?? '', body: eventModel.item ?? '');
+          title: eventModel.title ?? '', body: '');
 
-      return BaseResponse(status: true, message: "Ticket Added Successfully");
+      return BaseResponse(status: true, message: "Order Added Successfully");
     } catch (e) {
       return BaseResponse(status: false, message: e.toString());
     }
   }
 
   @override
-  Future<BaseResponse> remoteDeleteTicket() async {
+  Future<BaseResponse> remoteDeleteOrders() async {
     try {
-      firebaseFirestore.collection('Ticket').get().then((snapshot) {
+      firebaseFirestore.collection('Orders').get().then((snapshot) {
         for (DocumentSnapshot ds in snapshot.docs) {
           ds.reference.delete();
         }
@@ -96,22 +97,22 @@ class RemoteTicketDatasource extends TicketDatasourceInterface {
   }
 
   @override
-  Future<List<EventEntity>> remoteGetAllTickets() async {
-    final retrive = firebaseFirestore.collection("Ticket");
+  Future<List<CreateOrderEntity>> remoteGetAllTickets() async {
+    final retrive = firebaseFirestore.collection("Order");
     final querySnapshot = await retrive.get();
     querySnapshot.docs.map((doc) => doc.data()).toList();
-    List<EventModel> events = [];
+    List<OrderModel> events = [];
     for (QueryDocumentSnapshot<Map<String, dynamic>> doc
         in querySnapshot.docs) {
-      events.add(EventModel.fromSnapShot(doc));
+      events.add(OrderModel.fromSnapShot(doc));
     }
     return events;
   }
 
   @override
-  Future<BaseResponse> remoteUpdateTicket(EventModel eventModel) async {
+  Future<BaseResponse> remoteUpdateOrder(OrderModel eventModel) async {
     try {
-      await firebaseFirestore.collection("Ticket").doc(eventModel.id).update({
+      await firebaseFirestore.collection("Order").doc(eventModel.id).update({
         "title": eventModel.title,
         "item": eventModel.items,
       });

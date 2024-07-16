@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 
-import '../event_add_update_pages/event_add_update_page.dart';
+import '../event_add_update_pages/create_order_page.dart';
 
 class FloatingButtonHomeWidget extends StatelessWidget {
   const FloatingButtonHomeWidget({
@@ -14,7 +14,7 @@ class FloatingButtonHomeWidget extends StatelessWidget {
         Navigator.push(
             context,
             MaterialPageRoute(
-                builder: (_) => const EventAddUpdatePage(
+                builder: (_) => const CreateOrderPage(
                       isUpdateEvent: false,
                     )));
       },

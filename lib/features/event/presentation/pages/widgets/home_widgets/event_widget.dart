@@ -1,10 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:order/features/event/domain/entities/event_entities.dart';
+import 'package:order/features/event/domain/entities/order_entities.dart';
 import 'package:order/features/event/presentation/pages/widgets/event_details_page/event_detail_page.dart';
 
 class EventWidget extends StatelessWidget {
-  final List<EventEntity> eventEntity;
+  final List<CreateOrderEntity> eventEntity;
+
   const EventWidget({
     Key? key,
     required this.eventEntity,
@@ -21,10 +22,10 @@ class EventWidget extends StatelessWidget {
             eventEntity[index].title!,
             style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
           ),
-         // subtitle: Text(
-         //   eventEntity[index].ii!,
-           // style: const TextStyle(fontSize: 16),
-         // ),
+          // subtitle: Text(
+          //   eventEntity[index].ii!,
+          // style: const TextStyle(fontSize: 16),
+          // ),
           contentPadding: const EdgeInsets.symmetric(horizontal: 10),
           onTap: () {
             Get.to(EventDetailsPage(

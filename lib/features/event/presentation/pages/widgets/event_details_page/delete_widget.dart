@@ -1,9 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:order/features/event/presentation/cubit/ticket_cubit.dart';
+import 'package:order/features/event/presentation/cubit/order_cubit.dart';
 
 class DeleteWidget extends StatelessWidget {
   final int eventId;
+
   const DeleteWidget({
     Key? key,
     required this.eventId,
@@ -20,7 +21,7 @@ class DeleteWidget extends StatelessWidget {
         ),
         TextButton(
           onPressed: () {
-            BlocProvider.of<TicketCubit>(context).deleteTicket();
+            BlocProvider.of<OrderCubit>(context).deleteOrder();
           },
           child: const Text('yes'),
         ),

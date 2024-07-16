@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:order/features/event/presentation/pages/ticket_page.dart';
+import 'package:order/features/event/presentation/pages/order_food_home_page.dart';
 import 'package:order/features/restaurant/presentation/cubit/restaurant_cubit.dart';
 
 import '../../../data/model/menu_model.dart';
@@ -141,7 +141,7 @@ class _MenuWidgetState extends State<MenuWidget> {
                         child: OutlinedButton(
                           onPressed: () =>
                               Navigator.of(context).push(MaterialPageRoute(
-                            builder: (context) => const TicketPage(),
+                            builder: (context) => const OrderFoodHomePage(),
                           )),
                           style: OutlinedButton.styleFrom(
                               shape: RoundedRectangleBorder(

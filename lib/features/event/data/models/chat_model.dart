@@ -1,5 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:order/features/event/domain/entities/event_entities.dart';
+import 'package:order/features/event/domain/entities/order_entities.dart';
 
 class MessageModel extends MessageEntity {
   MessageModel({

@@ -1,9 +1,10 @@
 import 'package:order/core/database/database.dart';
-import 'package:order/features/event/domain/entities/event_entities.dart';
+import 'package:order/features/event/domain/entities/order_entities.dart';
 import 'package:order/features/register/data/models/register_account_model.dart';
 
 abstract class RegisterDatasource {
   Future<BaseResponse> insertUser(RegisterAccountModel registerAccount);
+
   Future<bool> confirmeSelectUser(RegisterAccountModel registerAccount);
 }
 
@@ -11,6 +12,7 @@ class RegisterDatasourceImpl implements RegisterDatasource {
   late DatabaseProvider db;
 
   RegisterDatasourceImpl(this.db);
+
   @override
   Future<bool> confirmeSelectUser(RegisterAccountModel registerAccount) async {
     List<Map<String, dynamic>> records = await db.database.rawQuery(

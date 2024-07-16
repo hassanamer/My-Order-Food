@@ -1,4 +1,4 @@
-import 'package:order/features/event/domain/entities/event_entities.dart';
+import 'package:order/features/event/domain/entities/order_entities.dart';
 import 'package:order/features/event/domain/reporisatory/event_reprisatory.dart';
 
 class UpdateEventUsecase {
@@ -6,7 +6,7 @@ class UpdateEventUsecase {
 
   UpdateEventUsecase(this.eventRepsitory);
 
-  Future<BaseResponse> call(EventEntity eventEntity) async {
-    return await eventRepsitory.updateEvent(eventEntity);
+  Future<BaseResponse> call(CreateOrderEntity eventEntity) async {
+    return await eventRepsitory.updateOrder(eventEntity);
   }
 }

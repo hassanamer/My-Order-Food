@@ -4,7 +4,7 @@ import 'package:flutter_svg/svg.dart';
 import 'package:order/core/theme_app.dart';
 
 import '../../../../../../gen/assets.gen.dart';
-import '../../../cubit/ticket_cubit.dart';
+import '../../../cubit/order_cubit.dart';
 import 'get_restaurant_row_widget.dart';
 
 class TicketEmptyListWidget extends StatefulWidget {
@@ -17,7 +17,7 @@ class TicketEmptyListWidget extends StatefulWidget {
 class _TicketEmptyListWidgetState extends State<TicketEmptyListWidget> {
   Future<void> _refresh() async {
     setState(() {
-      context.read<TicketCubit>().getAllTickets();
+      context.read<OrderCubit>().getAllOrders();
     });
     return await Future.delayed(
       const Duration(seconds: 0),

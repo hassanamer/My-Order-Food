@@ -3,7 +3,7 @@ import 'dart:io';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:image_picker/image_picker.dart';
-import 'package:order/features/event/domain/entities/event_entities.dart';
+import 'package:order/features/event/domain/entities/order_entities.dart';
 import 'package:order/features/restaurant/data/model/restaurant_model.dart';
 
 import '../../../../core/services/awesome_notification_service.dart';
@@ -29,10 +29,15 @@ abstract class RestaurantDatasourceInterface
   RestaurantDatasourceInterface() : super._internal();
 
   Future<BaseResponse> addRestaurant(RestaurantModel restaurantModel);
+
   Future<BaseResponse> uploadImage();
+
   Future<BaseResponse> getUploadedImage();
+
   Future<BaseResponse> addMenuItems(MenuModel menuModel);
+
   Future<List<RestaurantModel>> getAllRestaurant();
+
   Future<List<MenuModel>> getAllMenu();
 }
 

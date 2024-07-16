@@ -1,15 +1,27 @@
-class EventEntity {
+class CreateOrderEntity {
   final String? id;
+  final String userId;
   final String? title;
-  final String? item;
   late final Map<String, dynamic>?
       items; // Map to store items and their quantities
 
-  EventEntity({
+  CreateOrderEntity({
     this.id,
+    required this.userId,
     this.title,
-    this.item,
     this.items,
+  });
+}
+
+class OrderItem {
+  String userId;
+  String itemName;
+  int quantity;
+
+  OrderItem({
+    required this.userId,
+    required this.itemName,
+    this.quantity = 0,
   });
 }
 

@@ -1,4 +1,4 @@
-import 'package:order/features/event/domain/entities/event_entities.dart';
+import 'package:order/features/event/domain/entities/order_entities.dart';
 import 'package:order/features/event/domain/reporisatory/event_reprisatory.dart';
 
 class GetAllEventsUsecase {
@@ -6,7 +6,7 @@ class GetAllEventsUsecase {
 
   GetAllEventsUsecase(this.eventRepsitory);
 
-  Future<List<EventEntity>> call() async {
+  Future<List<CreateOrderEntity>> call() async {
     return await eventRepsitory.getAllEvents();
   }
 }

@@ -1,4 +1,4 @@
-import 'package:order/features/event/domain/entities/event_entities.dart';
+import 'package:order/features/event/domain/entities/order_entities.dart';
 
 abstract class EventState {}
 
@@ -7,7 +7,7 @@ class EventSuccessState extends EventState {
 }
 
 class EventLoadedState extends EventState {
-  final List<EventEntity> eventEntity;
+  final List<CreateOrderEntity> eventEntity;
 
   EventLoadedState({required this.eventEntity});
 }
@@ -26,6 +26,7 @@ class MessageAddDeleteUpdateEventState extends EventState {
   final String message;
 
   MessageAddDeleteUpdateEventState({required this.message});
+
   List<Object> get props => [message];
 }
 

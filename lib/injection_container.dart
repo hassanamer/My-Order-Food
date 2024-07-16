@@ -7,9 +7,9 @@ import 'package:order/features/cart/domain/usecase/add_items_to_cart_usecase.dar
 import 'package:order/features/cart/domain/usecase/clear_cart_items_usecase.dart';
 import 'package:order/features/cart/domain/usecase/get_all_cart_items_usecase.dart';
 import 'package:order/features/cart/presentation/cubit/cart_cubit.dart';
-import 'package:order/features/event/data/datasource/remote_ticket_datasource.dart';
-import 'package:order/features/event/data/reporisatory/remote_ticket_reporisatory_impl.dart';
-import 'package:order/features/event/domain/remote_usecases/add_ticket.dart';
+import 'package:order/features/event/data/datasource/remote_order_datasource.dart';
+import 'package:order/features/event/data/reporisatory/remote_order_repository_impl.dart';
+import 'package:order/features/event/domain/remote_usecases/add_order_usecase.dart';
 import 'package:order/features/event/domain/remote_usecases/delete_ticket.dart';
 import 'package:order/features/event/domain/remote_usecases/get_messages_usecase.dart';
 import 'package:order/features/event/domain/remote_usecases/message_usecase.dart';
@@ -17,7 +17,7 @@ import 'package:order/features/event/domain/remote_usecases/remote_get_all_ticke
 import 'package:order/features/event/domain/remote_usecases/update_ticket.dart';
 import 'package:order/features/event/domain/reporisatory/ticket_reporisatory.dart';
 import 'package:order/features/event/presentation/cubit/cubit_message/chat_cubit.dart';
-import 'package:order/features/event/presentation/cubit/ticket_cubit.dart';
+import 'package:order/features/event/presentation/cubit/order_cubit.dart';
 import 'package:order/features/login/data/datasources/remote_login_user.dart';
 import 'package:order/features/login/domain/usecases/remote_login_usecase.dart';
 import 'package:order/features/login/domain/usecases/remote_logout_usecase.dart';
@@ -53,65 +53,89 @@ void init() {
   sl.registerLazySingleton(() => FirebaseDatabseProvider());
 
   // Registering local database data source
-  sl.registerLazySingleton<LocalDatabaseDataSource>(() => DatabaseDataSourceImpl(sl()));
+  sl.registerLazySingleton<LocalDatabaseDataSource>(
+      () => DatabaseDataSourceImpl(sl()));
 
   // Registering remote login data source
-  sl.registerLazySingleton<RemoteLoginDatasource>(() => RemoteLoginDatasourceImpl(sl()));
+  sl.registerLazySingleton<RemoteLoginDatasource>(
+      () => RemoteLoginDatasourceImpl(sl()));
 
   // Registering account repository
-  sl.registerLazySingleton<AccountRepository>(() => AccountRepositoryImlp(sl()));
+  sl.registerLazySingleton<AccountRepository>(
+      () => AccountRepositoryImlp(sl()));
 
   // Registering login use cases
   sl.registerLazySingleton<RemoteLoginUsecase>(() => RemoteLoginUsecase(sl()));
-  sl.registerLazySingleton<RemoteLogoutUsecase>(() => RemoteLogoutUsecase(sl()));
+  sl.registerLazySingleton<RemoteLogoutUsecase>(
+      () => RemoteLogoutUsecase(sl()));
 
   // Registering login cubit
   sl.registerFactory<LoginCubit>(() => LoginCubit());
 
   // Registering remote register data source
-  sl.registerLazySingleton<RemoteRegisterDatasource>(() => RemoteRegisterDatasourceImlp(sl()));
+  sl.registerLazySingleton<RemoteRegisterDatasource>(
+      () => RemoteRegisterDatasourceImlp(sl()));
 
   // Registering register account repository
-  sl.registerLazySingleton<RegisterAccountRepository>(() => RegisterReporisatoryImpl(sl<RemoteRegisterDatasource>()));
+  sl.registerLazySingleton<RegisterAccountRepository>(
+      () => RegisterReporisatoryImpl(sl<RemoteRegisterDatasource>()));
 
   // Registering register use cases
-  sl.registerLazySingleton<RemoteRegisterUsecase>(() => RemoteRegisterUsecase(sl<RegisterAccountRepository>()));
-  sl.registerLazySingleton<GetUserInfoUsecase>(() => GetUserInfoUsecase(sl<RegisterAccountRepository>()));
+  sl.registerLazySingleton<RemoteRegisterUsecase>(
+      () => RemoteRegisterUsecase(sl<RegisterAccountRepository>()));
+  sl.registerLazySingleton<GetUserInfoUsecase>(
+      () => GetUserInfoUsecase(sl<RegisterAccountRepository>()));
 
   // Registering register cubit
   sl.registerFactory<RegisterCubit>(() => RegisterCubit());
 
   // Registering ticket data source
-  sl.registerLazySingleton<TicketDatasourceInterface>(() => RemoteTicketDatasource());
+  sl.registerLazySingleton<RemoteOrderDatasourceInterface>(
+      () => RemoteTicketDatasource());
 
   // Registering ticket repository
-  sl.registerLazySingleton<TicketReporisatory>(() => TicketReporisatoryImlp(sl<TicketDatasourceInterface>()));
+  sl.registerLazySingleton<OrderRepository>(
+      () => OrderReporisatoryImlp(sl<RemoteOrderDatasourceInterface>()));
 
   // Registering ticket use cases
-  sl.registerLazySingleton<AddTicketUsecase>(() => AddTicketUsecase(sl<TicketReporisatory>()));
-  sl.registerLazySingleton<UpdateTicketUsecase>(() => UpdateTicketUsecase(sl<TicketReporisatory>()));
-  sl.registerLazySingleton<DeleteTicketUsecase>(() => DeleteTicketUsecase(sl<TicketReporisatory>()));
-  sl.registerLazySingleton<GetAllTicketUsecase>(() => GetAllTicketUsecase(sl<TicketReporisatory>()));
-  sl.registerLazySingleton<UploadMessageUsecase>(() => UploadMessageUsecase(sl<TicketReporisatory>()));
-  sl.registerLazySingleton<GetMessagesUsecase>(() => GetMessagesUsecase(sl<TicketReporisatory>()));
+  sl.registerLazySingleton<AddOrderUsecase>(
+      () => AddOrderUsecase(sl<OrderRepository>()));
+  sl.registerLazySingleton<UpdateOrderUsecase>(
+      () => UpdateOrderUsecase(sl<OrderRepository>()));
+  sl.registerLazySingleton<DeleteOrderUsecase>(
+      () => DeleteOrderUsecase(sl<OrderRepository>()));
+  sl.registerLazySingleton<GetAllOrderUsecase>(
+      () => GetAllOrderUsecase(sl<OrderRepository>()));
+  sl.registerLazySingleton<UploadMessageUsecase>(
+      () => UploadMessageUsecase(sl<OrderRepository>()));
+  sl.registerLazySingleton<GetMessagesUsecase>(
+      () => GetMessagesUsecase(sl<OrderRepository>()));
 
   // Registering ticket cubits
-  sl.registerFactory(() => TicketCubit());
+  sl.registerFactory(() => OrderCubit());
   sl.registerFactory(() => ChatCubit());
 
   // Registering restaurant data source
-  sl.registerLazySingleton<RestaurantDatasourceInterface>(() => RestaurantDatasourceImpl());
+  sl.registerLazySingleton<RestaurantDatasourceInterface>(
+      () => RestaurantDatasourceImpl());
 
   // Registering restaurant repository
-  sl.registerLazySingleton<RestaurantReporisatory>(() => RestaurantReporisatoryImpl(sl()));
+  sl.registerLazySingleton<RestaurantReporisatory>(
+      () => RestaurantReporisatoryImpl(sl()));
 
   // Registering restaurant use cases
-  sl.registerLazySingleton<AddRestaurantUsecase>(() => AddRestaurantUsecase(sl<RestaurantReporisatory>()));
-  sl.registerLazySingleton<UploadImageUsecase>(() => UploadImageUsecase(sl<RestaurantReporisatory>()));
-  sl.registerLazySingleton<GetUploadedImageUsecase>(() => GetUploadedImageUsecase(sl<RestaurantReporisatory>()));
-  sl.registerLazySingleton<AddMenuItemsUsecase>(() => AddMenuItemsUsecase(sl<RestaurantReporisatory>()));
-  sl.registerLazySingleton<GetAllRestaurantUsecase>(() => GetAllRestaurantUsecase(sl<RestaurantReporisatory>()));
-  sl.registerLazySingleton<GetAllMenuUsecase>(() => GetAllMenuUsecase(sl<RestaurantReporisatory>()));
+  sl.registerLazySingleton<AddRestaurantUsecase>(
+      () => AddRestaurantUsecase(sl<RestaurantReporisatory>()));
+  sl.registerLazySingleton<UploadImageUsecase>(
+      () => UploadImageUsecase(sl<RestaurantReporisatory>()));
+  sl.registerLazySingleton<GetUploadedImageUsecase>(
+      () => GetUploadedImageUsecase(sl<RestaurantReporisatory>()));
+  sl.registerLazySingleton<AddMenuItemsUsecase>(
+      () => AddMenuItemsUsecase(sl<RestaurantReporisatory>()));
+  sl.registerLazySingleton<GetAllRestaurantUsecase>(
+      () => GetAllRestaurantUsecase(sl<RestaurantReporisatory>()));
+  sl.registerLazySingleton<GetAllMenuUsecase>(
+      () => GetAllMenuUsecase(sl<RestaurantReporisatory>()));
 
   // Registering restaurant cubits
   sl.registerFactory(() => RestaurantCubit());
@@ -121,13 +145,18 @@ void init() {
   sl.registerLazySingleton<CartDatasourceInterface>(() => CartDatasourceImpl());
 
   // Registering cart repository
-  sl.registerLazySingleton<CartReporisatoryInterface>(() => CartReporisatoryImpl(sl()));
+  sl.registerLazySingleton<CartReporisatoryInterface>(
+      () => CartReporisatoryImpl(sl()));
 
   // Registering cart use cases
-  sl.registerLazySingleton<AddProductToCartUsecase>(() => AddProductToCartUsecase(sl<CartReporisatoryInterface>()));
-  sl.registerLazySingleton<GetAllCartItemsUsecase>(() => GetAllCartItemsUsecase(sl<CartReporisatoryInterface>()));
-  sl.registerLazySingleton<ViewOrderUsecase>(() => ViewOrderUsecase(sl<CartReporisatoryInterface>()));
-  sl.registerLazySingleton<ClearCartItemsUsecase>(() => ClearCartItemsUsecase(sl<CartReporisatoryInterface>()));
+  sl.registerLazySingleton<AddProductToCartUsecase>(
+      () => AddProductToCartUsecase(sl<CartReporisatoryInterface>()));
+  sl.registerLazySingleton<GetAllCartItemsUsecase>(
+      () => GetAllCartItemsUsecase(sl<CartReporisatoryInterface>()));
+  sl.registerLazySingleton<ViewOrderUsecase>(
+      () => ViewOrderUsecase(sl<CartReporisatoryInterface>()));
+  sl.registerLazySingleton<ClearCartItemsUsecase>(
+      () => ClearCartItemsUsecase(sl<CartReporisatoryInterface>()));
 
   // Registering cart cubit
   sl.registerFactory(() => CartCubit());

@@ -3,8 +3,8 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:order/core/widgets/loading_widget.dart';
 import 'package:order/features/event/presentation/cubit/event_cubit.dart';
 import 'package:order/features/event/presentation/cubit/event_state.dart';
+import 'package:order/features/event/presentation/pages/widgets/event_add_update_pages/create_order_page.dart';
 import 'package:order/features/event/presentation/pages/widgets/home_widgets/event_widget.dart';
-import 'package:order/features/event/presentation/pages/widgets/event_add_update_pages/event_add_update_page.dart';
 
 class EventPage extends StatefulWidget {
   const EventPage({super.key});
@@ -65,7 +65,7 @@ class _EventPageState extends State<EventPage> {
         Navigator.push(
             context,
             MaterialPageRoute(
-                builder: (_) => const EventAddUpdatePage(
+                builder: (_) => const CreateOrderPage(
                       isUpdateEvent: false,
                     )));
       },

@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:order/features/event/domain/entities/event_entities.dart';
-import 'package:order/features/event/presentation/cubit/ticket_cubit.dart';
+import 'package:order/features/event/domain/entities/order_entities.dart';
+import 'package:order/features/event/presentation/cubit/order_cubit.dart';
 import 'package:order/features/event/presentation/pages/widgets/home_widgets/tickets_list_title_widget.dart';
 
 import '../../../../../restaurant/presentation/pages/get_all_restaurants_page/all_restaurants_page.dart';
@@ -9,7 +9,8 @@ import 'custome_row_home_widget.dart';
 import 'get_restaurant_row_widget.dart';
 
 class TicketWidget extends StatefulWidget {
-  final List<EventEntity> eventEntity;
+  final List<CreateOrderEntity> eventEntity;
+
   const TicketWidget({
     Key? key,
     required this.eventEntity,
@@ -22,7 +23,7 @@ class TicketWidget extends StatefulWidget {
 class _TicketWidgetState extends State<TicketWidget> {
   Future<void> _refresh() async {
     setState(() {
-      context.read<TicketCubit>().getAllTickets();
+      context.read<OrderCubit>().getAllOrders();
     });
     return await Future.delayed(
       const Duration(seconds: 0),
@@ -59,7 +60,6 @@ class _TicketWidgetState extends State<TicketWidget> {
                 itemBuilder: (context, index) {
                   return TicketsListTitleWidget(
                     title: widget.eventEntity[index].title ?? '',
-                    subTitle: widget.eventEntity[index].item ?? '',
                     eventEntity: widget.eventEntity[index],
                   );
                 },

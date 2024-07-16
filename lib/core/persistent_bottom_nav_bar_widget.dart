@@ -1,17 +1,17 @@
 import 'package:flutter/material.dart';
-import 'package:order/core/theme_app.dart';
+import 'package:order/features/event/presentation/pages/order_food_home_page.dart';
 import 'package:order/features/event/presentation/pages/settings_page.dart';
-import 'package:order/features/event/presentation/pages/ticket_page.dart';
 import 'package:persistent_bottom_nav_bar/persistent_tab_view.dart';
 
-import '../features/event/presentation/pages/widgets/event_add_update_pages/event_add_update_page.dart';
+import '../features/event/presentation/pages/widgets/event_add_update_pages/create_order_page.dart';
 
 class NavBarWidget extends StatelessWidget {
   const NavBarWidget({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
-    PersistentTabController controller = PersistentTabController(initialIndex: 0);
+    PersistentTabController controller =
+        PersistentTabController(initialIndex: 0);
 
     return PersistentTabView(
       context,
@@ -41,14 +41,15 @@ class NavBarWidget extends StatelessWidget {
         curve: Curves.easeInOut,
         duration: Duration(milliseconds: 300),
       ),
-      navBarStyle: NavBarStyle.style1, // Choose the nav bar style with this property.
+      navBarStyle:
+          NavBarStyle.style1, // Choose the nav bar style with this property.
     );
   }
 
   List<Widget> _buildScreens() {
     return [
-      const TicketPage(),
-      const EventAddUpdatePage(isUpdateEvent: false),
+      const OrderFoodHomePage(),
+      const CreateOrderPage(isUpdateEvent: false),
       const SettingsPage(),
     ];
   }

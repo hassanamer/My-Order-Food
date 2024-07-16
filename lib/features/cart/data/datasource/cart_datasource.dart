@@ -1,7 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:order/features/cart/data/models/cart_items_model.dart';
-import 'package:order/features/event/domain/entities/event_entities.dart';
+import 'package:order/features/event/domain/entities/order_entities.dart';
 
 import '../../../restaurant/data/model/menu_model.dart';
 
@@ -23,9 +23,13 @@ abstract class CartDatasourceInterface extends FirebaseDatasourceProvider {
   CartDatasourceInterface() : super._internal();
 
   Future<BaseResponse> addProductToCart(MenuModel menuModel);
+
   Future<BaseResponse> addCartData(CartItemModel cartItemModel);
+
   Future<List<MenuModel>> getAllCartItems();
+
   Future<List<MenuModel>> viewwOrder();
+
   Future<BaseResponse> clearCartItems();
 }
 

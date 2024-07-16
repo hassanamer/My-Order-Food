@@ -1,37 +1,40 @@
 import 'dart:math';
 
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:get/get.dart';
 import 'package:order/core/theming/colors.dart';
-import 'package:order/features/event/domain/entities/event_entities.dart';
-import 'package:order/features/event/presentation/cubit/ticket_cubit.dart';
-import 'package:order/features/event/presentation/pages/widgets/event_add_update_pages/form_submit_btn.dart';
+import 'package:order/features/event/domain/entities/order_entities.dart';
+import 'package:order/features/event/presentation/cubit/order_cubit.dart';
+import 'package:order/features/event/presentation/pages/widgets/event_add_update_pages/create_order_button.dart';
 import 'package:order/features/event/presentation/pages/widgets/event_add_update_pages/text_form_field_widget.dart';
 
 import '../../../../../../core/persistent_bottom_nav_bar_widget.dart';
 
-class FormWidget extends StatefulWidget {
-  final EventEntity? eventEntity;
+class CreateOrderWidget extends StatefulWidget {
+  final CreateOrderEntity? eventEntity;
   final bool isUpdateEvent;
 
-  const FormWidget({
+  const CreateOrderWidget({
     Key? key,
     required this.eventEntity,
     required this.isUpdateEvent,
   }) : super(key: key);
 
   @override
-  State<FormWidget> createState() => _FormWidgetState();
+  State<CreateOrderWidget> createState() => _CreateOrderWidgetState();
 }
 
-class _FormWidgetState extends State<FormWidget> {
+class _CreateOrderWidgetState extends State<CreateOrderWidget> {
   final _formKey = GlobalKey<FormState>();
   TextEditingController titleController = TextEditingController();
   TextEditingController itemController = TextEditingController();
   int itemCount = 0;
-  List<ItemQuantity> itemsList = []; // List to store items and their quantities
+
+  late String userId = FirebaseAuth.instance.currentUser?.uid ?? '';
+  List<OrderItem> itemList = []; // List to store items and their quantities
   Random random = Random();
 
   @override
@@ -40,7 +43,8 @@ class _FormWidgetState extends State<FormWidget> {
       titleController.text = widget.eventEntity!.title!;
       // Load existing items and quantities into the list
       widget.eventEntity!.items?.forEach((itemName, quantity) {
-        itemsList.add(ItemQuantity(itemName: itemName, quantity: quantity));
+        itemList.add(
+            OrderItem(itemName: itemName, quantity: quantity, userId: userId));
       });
     }
     super.initState();
@@ -61,29 +65,29 @@ class _FormWidgetState extends State<FormWidget> {
           ListView.builder(
             shrinkWrap: true,
             physics: const NeverScrollableScrollPhysics(),
-            itemCount: itemsList.length,
+            itemCount: itemList.length,
             itemBuilder: (context, index) {
               return Row(
                 children: [
                   Expanded(
-                    child: Text(itemsList[index].itemName),
+                    child: Text(itemList[index].itemName),
                   ),
                   IconButton(
                     icon: const Icon(Icons.remove),
                     onPressed: () {
-                      if (itemsList[index].quantity > 0) {
+                      if (itemList[index].quantity > 0) {
                         setState(() {
-                          itemsList[index].quantity--;
+                          itemList[index].quantity--;
                         });
                       }
                     },
                   ),
-                  Text('${itemsList[index].quantity}'),
+                  Text('${itemList[index].quantity}'),
                   IconButton(
                     icon: const Icon(Icons.add),
                     onPressed: () {
                       setState(() {
-                        itemsList[index].quantity++;
+                        itemList[index].quantity++;
                       });
                     },
                   ),
@@ -102,7 +106,7 @@ class _FormWidgetState extends State<FormWidget> {
                     border: OutlineInputBorder(),
                   ),
                   validator: (value) {
-                    if (itemsList.isEmpty && value!.isEmpty) {
+                    if (itemList.isEmpty && value!.isEmpty) {
                       return "Item field can't be empty";
                     }
                     return null;
@@ -114,9 +118,10 @@ class _FormWidgetState extends State<FormWidget> {
                 onPressed: () {
                   if (itemController.text.isNotEmpty) {
                     setState(() {
-                      itemsList.add(ItemQuantity(
+                      itemList.add(OrderItem(
                         itemName: itemController.text,
                         quantity: itemCount,
+                        userId: userId,
                       ));
                       itemController.clear();
                       itemCount = 0;
@@ -132,7 +137,7 @@ class _FormWidgetState extends State<FormWidget> {
             ],
           ),
           const SizedBox(height: 20),
-          FormSubmitBtn(
+          CreateOrderButton(
             isUpdateEvent: widget.isUpdateEvent,
             onPressed: () {
               validateFormThenUpdateOrAddEvent();
@@ -147,39 +152,39 @@ class _FormWidgetState extends State<FormWidget> {
     final isValid = _formKey.currentState!.validate();
 
     // Check if the items list is empty
-    if (itemsList.isEmpty) {
+    if (itemList.isEmpty) {
       Fluttertoast.showToast(
-        msg: "Items list is empty",
+        msg: "Please Enter Your Items",
         backgroundColor: ColorsManager.mainBlue,
       );
       return;
     }
 
     // Check if any item's quantity is zero
-    bool allItemsHaveQuantity = itemsList.every((item) => item.quantity > 0);
+    bool allItemsHaveQuantity = itemList.every((item) => item.quantity > 0);
 
     if (isValid && allItemsHaveQuantity) {
-      Fluttertoast.showToast(
-        msg: "Event ${widget.isUpdateEvent ? 'updated' : 'added'} successfully",
-        backgroundColor: ColorsManager.mainBlue,
-      );
-
-      final eventEntity = EventEntity(
+      final createOrderEntity = CreateOrderEntity(
         id: widget.isUpdateEvent
             ? widget.eventEntity!.id
             : random.nextInt(10).toString(),
         title: titleController.text,
-        items: {for (var item in itemsList) item.itemName: item.quantity},
-        item: itemController.text,
+        items: {for (var item in itemList) item.itemName: item.quantity},
+        userId: userId,
       );
 
       Get.to(() => const NavBarWidget());
 
       if (widget.isUpdateEvent) {
-        BlocProvider.of<TicketCubit>(context).updateTicket(eventEntity);
+        BlocProvider.of<OrderCubit>(context).updateOrder(createOrderEntity);
       } else {
-        BlocProvider.of<TicketCubit>(context).addTicket(eventEntity);
+        BlocProvider.of<OrderCubit>(context).addOrder(createOrderEntity);
       }
+      Fluttertoast.showToast(
+        msg: "Order ${widget.isUpdateEvent ? 'updated' : 'added'} successfully",
+        backgroundColor: ColorsManager.mainBlue,
+      );
+
       Navigator.of(context).push(MaterialPageRoute(
         builder: (context) => const NavBarWidget(),
       ));
@@ -190,14 +195,4 @@ class _FormWidgetState extends State<FormWidget> {
       );
     }
   }
-}
-
-class ItemQuantity {
-  final String itemName;
-  int quantity;
-
-  ItemQuantity({
-    required this.itemName,
-    this.quantity = 0,
-  });
 }

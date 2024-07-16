@@ -1,5 +1,5 @@
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:order/features/event/domain/entities/event_entities.dart';
+import 'package:order/features/event/domain/entities/order_entities.dart';
 import 'package:order/features/event/domain/local_usecases/add_event.dart';
 import 'package:order/features/event/domain/local_usecases/comment_on_event_usecase.dart';
 import 'package:order/features/event/domain/local_usecases/delete_event.dart';
@@ -16,8 +16,8 @@ class EventCubit extends Cubit<EventState> {
   late GetAllCommentsUsecase getAllCommentsUsecase;
   late UpdateEventUsecase updateEventUsecase;
   late CommentOnEventUsecase commentOnEventUsecase;
-  EventCubit(
-      // required this.addEventUsecase,
+
+  EventCubit(// required this.addEventUsecase,
       // required this.commentOnEventUsecase,
       // required this.deleteEventUsecase,
       // required this.getAllEventsUsecase,
@@ -43,7 +43,7 @@ class EventCubit extends Cubit<EventState> {
     }
   }
 
-  Future<void> addEvent(EventEntity eventEntity) async {
+  Future<void> addEvent(CreateOrderEntity eventEntity) async {
     try {
       emit(EventLoadingState());
       addEventUsecase = sl();
@@ -97,7 +97,7 @@ class EventCubit extends Cubit<EventState> {
     }
   }
 
-  Future<void> updateEvent(EventEntity eventEntity) async {
+  Future<void> updateEvent(CreateOrderEntity eventEntity) async {
     try {
       emit(EventLoadingState());
       updateEventUsecase = sl();
