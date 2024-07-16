@@ -1,0 +1,14 @@
+node_modules
+gradle
+.idea/
+node_modules
+.fvm/flutter_sdk
+**/doc/api/
+**/ios/Flutter/.last_build_id
+.dart_tool/
+.flutter-plugins
+.flutter-plugins-dependencies
+.packages
+.pub-cache/
+.pub/
+/build/

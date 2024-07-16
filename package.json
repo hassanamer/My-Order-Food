@@ -1,0 +1,5 @@
+{
+  "dependencies": {
+    "@react-native-firebase/auth": "^16.7.0"
+  }
+}
