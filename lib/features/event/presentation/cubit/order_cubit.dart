@@ -23,6 +23,7 @@ class OrderCubit extends Cubit<OrderState> {
       emit(OrderLoadingState());
       getAllOrderUsecase = sl();
       final allOrders = await getAllOrderUsecase.call();
+      // final allUser = await getUserOrderUsecase.call(userId);
       emit(OrderLoadedState(eventEntity: allOrders));
     } catch (e) {
       emit(OrderErrorState(errorMessage: e.toString()));
@@ -33,11 +34,15 @@ class OrderCubit extends Cubit<OrderState> {
     try {
       emit(OrderLoadingState());
       addOrderUsecase = sl();
-      final allData = await getAllOrderUsecase.call();
+      getUserOrderUsecase = sl();
       final addedOrder = await addOrderUsecase.call(eventEntity);
-      final getUserOrder = await getUserOrderUsecase.call();
       if (addedOrder.status) {
-        emit(OrderSuccessState(getUserOrder));
+        // Update allData with the new order added
+        final allData = await getAllOrderUsecase.call();
+
+        // final allUser = await getUserOrderUsecase.call();
+
+        emit(OrderSuccessState(addedOrder));
         emit(OrderLoadedState(eventEntity: allData));
       } else {
         emit(OrderErrorState(errorMessage: addedOrder.message));
@@ -62,36 +67,21 @@ class OrderCubit extends Cubit<OrderState> {
     }
   }
 
-  Future<void> deleteOrder() async {
-    try {
-      emit(OrderLoadingState());
-      deleteOrderUsecase = sl();
-      final deletedOrder = await deleteOrderUsecase.call();
-      if (deletedOrder.status) {
-        emit(OrderDeletedSuccessState(deletedOrder));
-      } else {
-        emit(OrderErrorState(errorMessage: deletedOrder.message));
-      }
-    } catch (e) {
-      emit(OrderErrorState(errorMessage: e.toString()));
-    }
-  }
-
   Future<void> addOrUpdateItem(CreateOrderEntity createOrderEntity,
       String itemName, int quantity, String userId) async {
     try {
-      // Ensure items map is initialized
+      // Ensure items list is initialized
       createOrderEntity.items ??= [];
 
-      // Update item quantity
-      // if (createOrderEntity.items!.containsKey(itemName)) {
-      //   createOrderEntity.items![itemName] = quantity;
-      // } else {
-      //   // Add new item with quantity
-      //   createOrderEntity.items![itemName] = quantity;
-      // }
-      createOrderEntity.items!.add(
-          OrderItem(userId: userId, itemName: itemName, quantity: quantity));
+      // Update item quantity or add new item
+      int index = createOrderEntity.items!
+          .indexWhere((item) => item.itemName == itemName);
+      if (index != -1) {
+        createOrderEntity.items![index].quantity += quantity;
+      } else {
+        createOrderEntity.items!.add(
+            OrderItem(userId: userId, itemName: itemName, quantity: quantity));
+      }
 
       // Call update ticket function to persist changes
       await updateOrder(createOrderEntity);
@@ -103,14 +93,29 @@ class OrderCubit extends Cubit<OrderState> {
   Future<void> removeItem(
       CreateOrderEntity createOrderEntity, String itemName) async {
     try {
-      // Ensure items map is initialized
+      // Ensure items list is initialized
       createOrderEntity.items ??= [];
 
-      // Remove item from items map
+      // Remove item from items list
       createOrderEntity.items!.removeWhere((item) => item.itemName == itemName);
 
       // Call update ticket function to persist changes
       await updateOrder(createOrderEntity);
+    } catch (e) {
+      emit(OrderErrorState(errorMessage: e.toString()));
+    }
+  }
+
+  Future<void> deleteOrder() async {
+    try {
+      emit(OrderLoadingState());
+      deleteOrderUsecase = sl();
+      final deletedOrder = await deleteOrderUsecase.call();
+      if (deletedOrder.status) {
+        emit(OrderDeletedSuccessState(deletedOrder));
+      } else {
+        emit(OrderErrorState(errorMessage: deletedOrder.message));
+      }
     } catch (e) {
       emit(OrderErrorState(errorMessage: e.toString()));
     }

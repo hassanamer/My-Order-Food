@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_staggered_animations/flutter_staggered_animations.dart';
+import 'package:order/features/register/data/models/register_account_model.dart';
 
 import '../../../../domain/entities/order_entities.dart';
 
@@ -8,10 +9,12 @@ class EventDetailPageItemTile extends StatelessWidget {
     Key? key,
     required this.userId,
     required this.items,
+    required this.user,
   }) : super(key: key);
 
   final String userId;
   final List<OrderItem> items;
+  final RegisterAccountModel? user;
 
   @override
   Widget build(BuildContext context) {
@@ -49,7 +52,7 @@ class EventDetailPageItemTile extends StatelessWidget {
                     Padding(
                       padding: const EdgeInsets.all(10.0),
                       child: Text(
-                        'User: $userId',
+                        'User: ${user?.name ?? 'Unknown User'} ',
                         style: const TextStyle(
                           fontSize: 18,
                           fontWeight: FontWeight.bold,

@@ -25,6 +25,8 @@ class OrderLoadingState extends OrderState {}
 class OrderLoadedState extends OrderState {
   final List<CreateOrderEntity> eventEntity;
 
+  // List<RegisterAccountEntity> UserEntity = [];
+
   OrderLoadedState({required this.eventEntity});
 }
 

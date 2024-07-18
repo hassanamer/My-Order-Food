@@ -4,12 +4,16 @@ import 'package:flutter/material.dart';
 import 'package:order/core/widgets/app_bar_widget.dart';
 import 'package:order/features/cart/presentation/pages/view_order_page.dart';
 import 'package:order/features/event/domain/entities/order_entities.dart';
+import 'package:order/features/event/domain/remote_usecases/remote_get_user_order.dart';
 import 'package:order/features/event/presentation/pages/widgets/event_details_page/evebt_details_page_item_tile.dart';
+import 'package:order/injection_container.dart';
+
+import '../../../../../register/data/models/register_account_model.dart';
 
 class EventDetailsPage extends StatefulWidget {
   final CreateOrderEntity eventEntity;
 
-  const EventDetailsPage({
+  EventDetailsPage({
     Key? key,
     required this.eventEntity,
   }) : super(key: key);
@@ -19,28 +23,64 @@ class EventDetailsPage extends StatefulWidget {
 }
 
 class _EventDetailsPageState extends State<EventDetailsPage> {
+  late GetUserOrderUsecase getUserOrderUsecase;
+
   User? currentUser = FirebaseAuth.instance.currentUser;
 
   List<OrderItem> itemsList = [];
   TextEditingController itemController = TextEditingController();
   int itemCount = 0;
   final FirebaseFirestore _firestore = FirebaseFirestore.instance;
+  Map<String, List<OrderItem>> itemsGroupedByUser = {};
+  Map<String, RegisterAccountModel> userMap = {};
+  bool isLoading = true;
+
+  updateOrdersAndUsers() {
+    userMap = {};
+    itemsGroupedByUser = {};
+    for (var item in itemsList) {
+      itemsGroupedByUser.putIfAbsent(item.userId, () => []).add(item);
+    }
+    getUsers(itemsGroupedByUser).then((userMap) {
+      this.userMap = userMap;
+      setState(() {
+        isLoading = false;
+      });
+    });
+  }
 
   @override
-  void initState() {
+  initState() {
     super.initState();
-    // Initialize itemsList with the data passed from the previous screen
     itemsList = widget.eventEntity.items ?? [];
+    updateOrdersAndUsers();
+  }
+
+  Future<Map<String, RegisterAccountModel>> getUsers(
+      Map<String, List<OrderItem>> itemsGroupedByUser) async {
+    getUserOrderUsecase = sl();
+
+    Map<String, RegisterAccountModel> userMap = {};
+
+    List<Future<void>> futures = [];
+
+    for (var entry in itemsGroupedByUser.entries) {
+      String userId = entry.key;
+      futures.add(getUserOrderUsecase.call(userId).then((user) {
+        userMap[userId] = user;
+      }));
+    }
+
+    await Future.wait(futures);
+
+    return userMap;
   }
 
   @override
   Widget build(BuildContext context) {
-    // Group items by userId
-    Map<String, List<OrderItem>> itemsGroupedByUser = {};
-    for (var item in itemsList) {
-      itemsGroupedByUser.putIfAbsent(item.userId, () => []).add(item);
+    if (isLoading == true) {
+      return Container();
     }
-
     const divider = Divider(
       thickness: 1,
       height: 3,
@@ -70,6 +110,7 @@ class _EventDetailsPageState extends State<EventDetailsPage> {
                   return EventDetailPageItemTile(
                     userId: userId,
                     items: userItems,
+                    user: userMap[userId],
                   );
                 },
                 separatorBuilder: (context, index) => divider,
@@ -228,6 +269,7 @@ class _EventDetailsPageState extends State<EventDetailsPage> {
         }
       });
       setState(() {
+        isLoading = true;
         itemsList.add(OrderItem(
           itemName: newItem,
           quantity: itemCount,
@@ -235,6 +277,7 @@ class _EventDetailsPageState extends State<EventDetailsPage> {
         ));
         itemController.clear();
         itemCount = 0;
+        updateOrdersAndUsers();
       });
     }
   }

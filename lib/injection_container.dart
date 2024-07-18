@@ -12,6 +12,7 @@ import 'package:order/features/event/data/reporisatory/remote_order_repository_i
 import 'package:order/features/event/domain/remote_usecases/add_order_usecase.dart';
 import 'package:order/features/event/domain/remote_usecases/delete_ticket.dart';
 import 'package:order/features/event/domain/remote_usecases/remote_get_all_ticket.dart';
+import 'package:order/features/event/domain/remote_usecases/remote_get_user_order.dart';
 import 'package:order/features/event/domain/remote_usecases/update_ticket.dart';
 import 'package:order/features/event/domain/reporisatory/ticket_reporisatory.dart';
 import 'package:order/features/event/presentation/cubit/order_cubit.dart';
@@ -97,6 +98,10 @@ void init() {
   // Registering ticket use cases
   sl.registerLazySingleton<AddOrderUsecase>(
       () => AddOrderUsecase(sl<OrderRepository>()));
+
+  sl.registerLazySingleton<GetUserOrderUsecase>(
+      () => GetUserOrderUsecase(sl<OrderRepository>()));
+
   sl.registerLazySingleton<UpdateOrderUsecase>(
       () => UpdateOrderUsecase(sl<OrderRepository>()));
   sl.registerLazySingleton<DeleteOrderUsecase>(

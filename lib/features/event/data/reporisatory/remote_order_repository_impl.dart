@@ -2,8 +2,7 @@ import 'package:order/features/event/data/datasource/remote_order_datasource.dar
 import 'package:order/features/event/data/models/order_model.dart';
 import 'package:order/features/event/domain/entities/order_entities.dart';
 import 'package:order/features/event/domain/reporisatory/ticket_reporisatory.dart';
-
-import '../../../register/data/models/register_account_model.dart';
+import 'package:order/features/register/data/models/register_account_model.dart';
 
 class OrderRepositoryImpl implements OrderRepository {
   final RemoteOrderDatasourceInterface remoteOrderDatasource;
@@ -38,7 +37,7 @@ class OrderRepositoryImpl implements OrderRepository {
   }
 
   @override
-  Future<RegisterAccountModel> remoteGetUserOrders() async {
-    return await remoteOrderDatasource.getUserOrders();
+  Future<RegisterAccountModel> remoteGetUser(String userId) async {
+    return await remoteOrderDatasource.getUser(userId);
   }
 }

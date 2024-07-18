@@ -11,16 +11,17 @@ import 'get_restaurant_row_widget.dart';
 class TicketWidget extends StatefulWidget {
   final List<CreateOrderEntity> eventEntity;
 
-  const TicketWidget({
-    Key? key,
-    required this.eventEntity,
-  }) : super(key: key);
+  // final List<RegisterAccountEntity> UserEntity;
+
+  const TicketWidget({Key? key, required this.eventEntity}) : super(key: key);
 
   @override
   State<TicketWidget> createState() => _TicketWidgetState();
 }
 
 class _TicketWidgetState extends State<TicketWidget> {
+  // final List<CreateOrderEntity> filter1 = [];
+
   Future<void> _refresh() async {
     setState(() {
       context.read<OrderCubit>().getAllOrders();
@@ -30,12 +31,31 @@ class _TicketWidgetState extends State<TicketWidget> {
     );
   }
 
+  // @override
+  // void initState() {
+  //   for (var event in widget.eventEntity) {
+  //     for (var User in widget.UserEntity) {
+  //       if (event.userId == User.idUser) {
+  //         CreateOrderEntity eventEntity = CreateOrderEntity(
+  //           userId: User.name,
+  //           items: event.items,
+  //           title: event.title,
+  //           id: event.id,
+  //         );
+  //         filter1.add(eventEntity);
+  //       }
+  //     }
+  //   }
+  //   super.initState();
+  // }
+
   @override
   Widget build(BuildContext context) {
     const divider = Divider(
       thickness: 1,
       height: 3,
     );
+
     return RefreshIndicator(
       onRefresh: _refresh,
       child: Column(

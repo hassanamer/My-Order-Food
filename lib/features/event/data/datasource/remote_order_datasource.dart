@@ -4,8 +4,7 @@ import 'package:order/core/services/awesome_notification_service.dart';
 import 'package:order/features/event/data/models/order_model.dart';
 import 'package:order/features/event/domain/entities/order_entities.dart';
 import 'package:order/features/login/domain/entities/account_entites.dart';
-
-import '../../../register/data/models/register_account_model.dart';
+import 'package:order/features/register/data/models/register_account_model.dart';
 
 class FirebaseDatasourceProvider {
   static final _firebaseDatasourceProvider =
@@ -27,7 +26,7 @@ abstract class RemoteOrderDatasourceInterface
 
   Future<List<CreateOrderEntity>> getAllOrders();
 
-  Future<RegisterAccountModel> getUserOrders({OrderModel orderModel});
+  Future<RegisterAccountModel> getUser(String userId);
 
   Future<BaseResponse> addOrder(OrderModel orderModel);
 
@@ -53,7 +52,6 @@ class RemoteOrderDatasource extends RemoteOrderDatasourceInterface {
       });
       await AwesomeNotificationService.showNotification(
           title: orderModel.title ?? '', body: '');
-      await getUserOrders(orderModel: orderModel);
       return BaseResponse(status: true, message: "Order Added Successfully");
     } catch (e) {
       return BaseResponse(status: false, message: e.toString());
@@ -84,6 +82,7 @@ class RemoteOrderDatasource extends RemoteOrderDatasourceInterface {
       var data = doc.data();
       orders.add(CreateOrderEntity(
         id: doc.id,
+        userId: data['userId'] ?? '',
         title: data['title'] ?? '',
         items: (data['items'] as List<dynamic>?)
             ?.map((item) => OrderItem(
@@ -97,21 +96,36 @@ class RemoteOrderDatasource extends RemoteOrderDatasourceInterface {
     return orders;
   }
 
+  //
+  // @override
+  // Future<List<RegisterAccountEntity>> getUserOrders() async {
+  //   final retrieve = firebaseFirestore.collection("Users");
+  //   final querySnapshot = await retrieve.get();
+  //   List<RegisterAccountEntity> users = [];
+  //   for (QueryDocumentSnapshot<Map<String, dynamic>> doc
+  //       in querySnapshot.docs) {
+  //     var data = doc.data();
+  //     users.add(RegisterAccountEntity(
+  //       // id: doc.id,
+  //       email: data['email'],
+  //       name: data['name'],
+  //       gender: data['gender'],
+  //       phoneNumber: data['phoneNumber'],
+  //       username: data['userName'],
+  //       idUser: data['idUser'],
+  //     ));
+  //   }
+  //   return users;
+  // }
+
   @override
-  Future<RegisterAccountModel> getUserOrders({OrderModel? orderModel}) async {
-    final retrieve =
-        firebaseFirestore.collection("Users").doc(orderModel?.userId);
+  Future<RegisterAccountModel> getUser(String userId) async {
+    final retrieve = firebaseFirestore.collection("Users").doc(userId);
     final querySnapshot = await retrieve.get();
-    RegisterAccountModel getUser;
     RegisterAccountModel registerAccountModel = RegisterAccountModel.fromMap(
         querySnapshot.data() as Map<String, dynamic>?);
-    // for (QueryDocumentSnapshot<Map<String, dynamic>> doc
-    // in querySnapshot.d) {
-    getUser = RegisterAccountModel(
-      email: registerAccountModel.email,
-    );
-    // }
-    return getUser;
+
+    return registerAccountModel;
   }
 
   @override

@@ -11,15 +11,15 @@ class RegisterAccountModel extends RegisterAccountEntity {
     String? message,
     int? replyCode,
   }) : super(
-    idUser: idUser,
-    username: username,
-    email: email,
-    gender: gender,
-    name: name,
-    phoneNumber: phoneNumber,
-    message: message,
-    replyCode: replyCode,
-  );
+          idUser: idUser,
+          username: username,
+          email: email,
+          gender: gender,
+          name: name,
+          phoneNumber: phoneNumber,
+          message: message,
+          replyCode: replyCode,
+        );
 
   Map<String, dynamic> toMap() {
     return {

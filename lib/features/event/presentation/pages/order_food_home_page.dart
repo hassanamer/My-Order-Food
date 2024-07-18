@@ -75,6 +75,7 @@ class _OrderFoodHomePageState extends State<OrderFoodHomePage> {
             } else {
               return TicketWidget(
                 eventEntity: state.eventEntity,
+                // UserEntity: state.UserEntity,
               );
             }
           } else if (state is OrderErrorState) {
