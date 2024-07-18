@@ -4,14 +4,11 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:fluttertoast/fluttertoast.dart';
-import 'package:get/get.dart';
 import 'package:order/core/theming/colors.dart';
 import 'package:order/features/event/domain/entities/order_entities.dart';
 import 'package:order/features/event/presentation/cubit/order_cubit.dart';
 import 'package:order/features/event/presentation/pages/widgets/event_add_update_pages/create_order_button.dart';
 import 'package:order/features/event/presentation/pages/widgets/event_add_update_pages/text_form_field_widget.dart';
-
-import '../../../../../../core/persistent_bottom_nav_bar_widget.dart';
 
 class CreateOrderWidget extends StatefulWidget {
   final CreateOrderEntity? eventEntity;
@@ -103,7 +100,7 @@ class _CreateOrderWidgetState extends State<CreateOrderWidget> {
               Expanded(
                 child: TextFormField(
                   controller: itemController,
-                  decoration: InputDecoration(
+                  decoration: const InputDecoration(
                     labelText: "Item",
                     border: OutlineInputBorder(),
                   ),
@@ -175,21 +172,11 @@ class _CreateOrderWidgetState extends State<CreateOrderWidget> {
         userId: userId,
       );
 
-      Get.to(() => const NavBarWidget());
-
       if (widget.isUpdateEvent) {
         BlocProvider.of<OrderCubit>(context).updateOrder(createOrderEntity);
       } else {
         BlocProvider.of<OrderCubit>(context).addOrder(createOrderEntity);
       }
-      Fluttertoast.showToast(
-        msg: "Order ${widget.isUpdateEvent ? 'updated' : 'added'} successfully",
-        backgroundColor: ColorsManager.mainBlue,
-      );
-
-      Navigator.of(context).push(MaterialPageRoute(
-        builder: (context) => const NavBarWidget(),
-      ));
     } else if (!allItemsHaveQuantity) {
       Fluttertoast.showToast(
         msg: "All items must have a quantity greater than zero",

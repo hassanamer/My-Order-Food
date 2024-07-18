@@ -7,11 +7,14 @@ import 'package:order/features/event/domain/remote_usecases/update_ticket.dart';
 import 'package:order/features/event/presentation/cubit/order_state.dart';
 import 'package:order/injection_container.dart';
 
+import '../../domain/remote_usecases/remote_get_user_order.dart';
+
 class OrderCubit extends Cubit<OrderState> {
   late AddOrderUsecase addOrderUsecase;
   late DeleteOrderUsecase deleteOrderUsecase;
   late UpdateOrderUsecase updateOrderUsecase;
   late GetAllOrderUsecase getAllOrderUsecase;
+  late GetUserOrderUsecase getUserOrderUsecase;
 
   OrderCubit() : super(OrderStateInt());
 
@@ -32,8 +35,9 @@ class OrderCubit extends Cubit<OrderState> {
       addOrderUsecase = sl();
       final allData = await getAllOrderUsecase.call();
       final addedOrder = await addOrderUsecase.call(eventEntity);
+      final getUserOrder = await getUserOrderUsecase.call();
       if (addedOrder.status) {
-        emit(OrderSuccessState(addedOrder));
+        emit(OrderSuccessState(getUserOrder));
         emit(OrderLoadedState(eventEntity: allData));
       } else {
         emit(OrderErrorState(errorMessage: addedOrder.message));

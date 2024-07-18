@@ -25,7 +25,7 @@ class CreateOrderPage extends StatelessWidget {
       appBar: const AppBarWidget(
         pageName: "Start A New Order",
       ),
-      body: _buildBody(context), // Pass context to the body builder
+      body: _buildBody(context),
     );
   }
 
@@ -39,7 +39,6 @@ class CreateOrderPage extends StatelessWidget {
               SnackBarMessage().showSuccessSnackBar(
                   message: state.message, context: context);
               context.read<OrderCubit>().getAllOrders();
-              // Navigate to TicketPage and clear the navigation stack
               Navigator.of(context).pushAndRemoveUntil(
                   MaterialPageRoute(builder: (_) => const OrderFoodHomePage()),
                   (route) => false);

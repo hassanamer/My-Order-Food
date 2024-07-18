@@ -27,9 +27,14 @@ class _EventDetailsPageState extends State<EventDetailsPage> {
   final FirebaseFirestore _firestore = FirebaseFirestore.instance;
 
   @override
-  Widget build(BuildContext context) {
+  void initState() {
+    super.initState();
+    // Initialize itemsList with the data passed from the previous screen
     itemsList = widget.eventEntity.items ?? [];
+  }
 
+  @override
+  Widget build(BuildContext context) {
     // Group items by userId
     Map<String, List<OrderItem>> itemsGroupedByUser = {};
     for (var item in itemsList) {
@@ -205,18 +210,18 @@ class _EventDetailsPageState extends State<EventDetailsPage> {
             data['items'] = [];
           }
           data['items'].add({
-            'item_name': newItem,
+            'itemName': newItem,
             'quantity': itemCount,
-            'user_id': currentUser!.uid,
+            'userId': currentUser!.uid,
           });
           orderDocRef.update(data);
         } else {
           orderDocRef.set({
             'items': [
               {
-                'item_name': newItem,
+                'itemName': newItem,
                 'quantity': itemCount,
-                'user_id': currentUser!.uid
+                'userId': currentUser!.uid
               }
             ],
           });

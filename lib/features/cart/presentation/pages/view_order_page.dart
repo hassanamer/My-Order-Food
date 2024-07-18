@@ -42,8 +42,7 @@ class ViewOrderPage extends StatelessWidget {
                     MaterialPageRoute(
                       builder: (context) => OrderSummaryPage(
                         orderId: orderId,
-                        createdAt: createdAt,
-                        orderItems: List.from(orderData['items'] ?? []),
+                        orderData: orderData,
                       ),
                     ),
                   );

@@ -5,6 +5,8 @@ import 'package:order/features/event/data/models/order_model.dart';
 import 'package:order/features/event/domain/entities/order_entities.dart';
 import 'package:order/features/login/domain/entities/account_entites.dart';
 
+import '../../../register/data/models/register_account_model.dart';
+
 class FirebaseDatasourceProvider {
   static final _firebaseDatasourceProvider =
       FirebaseDatasourceProvider._internal();
@@ -24,6 +26,8 @@ abstract class RemoteOrderDatasourceInterface
   RemoteOrderDatasourceInterface() : super._internal();
 
   Future<List<CreateOrderEntity>> getAllOrders();
+
+  Future<RegisterAccountModel> getUserOrders({OrderModel orderModel});
 
   Future<BaseResponse> addOrder(OrderModel orderModel);
 
@@ -49,7 +53,7 @@ class RemoteOrderDatasource extends RemoteOrderDatasourceInterface {
       });
       await AwesomeNotificationService.showNotification(
           title: orderModel.title ?? '', body: '');
-
+      await getUserOrders(orderModel: orderModel);
       return BaseResponse(status: true, message: "Order Added Successfully");
     } catch (e) {
       return BaseResponse(status: false, message: e.toString());
@@ -83,14 +87,31 @@ class RemoteOrderDatasource extends RemoteOrderDatasourceInterface {
         title: data['title'] ?? '',
         items: (data['items'] as List<dynamic>?)
             ?.map((item) => OrderItem(
-                  itemName: item['item_name'] ?? '',
+                  itemName: item['itemName'] ?? '',
                   quantity: item['quantity'] ?? 0,
-                  userId: item['user_id'] ?? '',
+                  userId: item['userId'] ?? '',
                 ))
             .toList(),
       ));
     }
     return orders;
+  }
+
+  @override
+  Future<RegisterAccountModel> getUserOrders({OrderModel? orderModel}) async {
+    final retrieve =
+        firebaseFirestore.collection("Users").doc(orderModel?.userId);
+    final querySnapshot = await retrieve.get();
+    RegisterAccountModel getUser;
+    RegisterAccountModel registerAccountModel = RegisterAccountModel.fromMap(
+        querySnapshot.data() as Map<String, dynamic>?);
+    // for (QueryDocumentSnapshot<Map<String, dynamic>> doc
+    // in querySnapshot.d) {
+    getUser = RegisterAccountModel(
+      email: registerAccountModel.email,
+    );
+    // }
+    return getUser;
   }
 
   @override
