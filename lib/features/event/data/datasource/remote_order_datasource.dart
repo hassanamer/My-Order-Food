@@ -1,7 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:order/core/services/awesome_notification_service.dart';
-import 'package:order/features/event/data/models/chat_model.dart';
 import 'package:order/features/event/data/models/order_model.dart';
 import 'package:order/features/event/domain/entities/order_entities.dart';
 import 'package:order/features/login/domain/entities/account_entites.dart';
@@ -24,33 +23,32 @@ abstract class RemoteOrderDatasourceInterface
     extends FirebaseDatasourceProvider {
   RemoteOrderDatasourceInterface() : super._internal();
 
-  Future<List<CreateOrderEntity>> remoteGetAllTickets();
+  Future<List<CreateOrderEntity>> getAllOrders();
 
-  Future<BaseResponse> remoteAddOrder(OrderModel eventModel);
+  Future<BaseResponse> addOrder(OrderModel orderModel);
 
-  Future<BaseResponse> remoteUpdateOrder(OrderModel eventModel);
+  Future<BaseResponse> updateOrder(OrderModel orderModel);
 
-  Future<BaseResponse> remoteDeleteOrders();
+  Future<BaseResponse> deleteOrders();
 
   Future<BaseResponse> uploadMessage(
       String idUser, String message, Account account);
-
-  Future<List<ChattModel>> getAllMessages();
 }
 
-class RemoteTicketDatasource extends RemoteOrderDatasourceInterface {
-  RemoteTicketDatasource() : super();
+class RemoteOrderDatasource extends RemoteOrderDatasourceInterface {
+  RemoteOrderDatasource() : super();
 
   @override
-  Future<BaseResponse> remoteAddOrder(OrderModel eventModel) async {
+  Future<BaseResponse> addOrder(OrderModel orderModel) async {
     try {
-      await firebaseFirestore.collection("Order").doc(eventModel.id).set({
-        "items": eventModel.items,
-        "id": eventModel.id,
-        "title": eventModel.title,
+      await firebaseFirestore.collection("Order").doc(orderModel.id).set({
+        "userId": orderModel.userId,
+        "items": orderModel.items?.map((item) => item.toMap()).toList(),
+        "id": orderModel.id,
+        "title": orderModel.title,
       });
       await AwesomeNotificationService.showNotification(
-          title: eventModel.title ?? '', body: '');
+          title: orderModel.title ?? '', body: '');
 
       return BaseResponse(status: true, message: "Order Added Successfully");
     } catch (e) {
@@ -59,67 +57,55 @@ class RemoteTicketDatasource extends RemoteOrderDatasourceInterface {
   }
 
   @override
-  Future<BaseResponse> remoteDeleteOrders() async {
+  Future<BaseResponse> deleteOrders() async {
     try {
-      firebaseFirestore.collection('Orders').get().then((snapshot) {
+      firebaseFirestore.collection('Order').get().then((snapshot) {
         for (DocumentSnapshot ds in snapshot.docs) {
           ds.reference.delete();
         }
       });
-      // DocumentReference docRef = firebaseFirestore.collection("Ticket").doc();
-      // docRef.get().then((DocumentSnapshot documentSnapshot) {
-      //   firebaseFirestore.runTransaction((Transaction myTransaction) async {
-      //     myTransaction.delete(documentSnapshot.reference);
-      //   });
-      // });
-
-      // await firebaseFirestore
-      //     .collection('Ticket')
-      //     .snapshots()
-      //     .forEach((querySnapshot) {
-      //   for (QueryDocumentSnapshot docSnapshot in querySnapshot.docs) {
-      //     docSnapshot.id;
-
-      //     print("id of document========${docSnapshot.id}");
-      //     var ids = docSnapshot.id;
-      //     //deleting the doc with id
-
-      //     firebaseFirestore.collection("Ticket").doc(ids).update({
-      //       'title': FieldValue.delete(),
-      //       'description': FieldValue.delete()
-      //     });
-      //   }
-      // });
-      return BaseResponse(status: true, message: "Ticket Deleted Successfully");
+      return BaseResponse(status: true, message: "Orders Deleted Successfully");
     } catch (e) {
       return BaseResponse(status: false, message: e.toString());
     }
   }
 
   @override
-  Future<List<CreateOrderEntity>> remoteGetAllTickets() async {
-    final retrive = firebaseFirestore.collection("Order");
-    final querySnapshot = await retrive.get();
-    querySnapshot.docs.map((doc) => doc.data()).toList();
-    List<OrderModel> events = [];
+  Future<List<CreateOrderEntity>> getAllOrders() async {
+    final retrieve = firebaseFirestore.collection("Order");
+    final querySnapshot = await retrieve.get();
+    List<CreateOrderEntity> orders = [];
     for (QueryDocumentSnapshot<Map<String, dynamic>> doc
         in querySnapshot.docs) {
-      events.add(OrderModel.fromSnapShot(doc));
+      var data = doc.data();
+      orders.add(CreateOrderEntity(
+        id: doc.id,
+        title: data['title'] ?? '',
+        items: (data['items'] as List<dynamic>?)
+            ?.map((item) => OrderItem(
+                  itemName: item['item_name'] ?? '',
+                  quantity: item['quantity'] ?? 0,
+                  userId: item['user_id'] ?? '',
+                ))
+            .toList(),
+      ));
     }
-    return events;
+    return orders;
   }
 
   @override
-  Future<BaseResponse> remoteUpdateOrder(OrderModel eventModel) async {
+  Future<BaseResponse> updateOrder(OrderModel orderModel) async {
     try {
-      await firebaseFirestore.collection("Order").doc(eventModel.id).update({
-        "title": eventModel.title,
-        "item": eventModel.items,
+      await firebaseFirestore.collection("Order").doc(orderModel.id).update({
+        "userId": orderModel.userId,
+        "items": orderModel.items?.map((item) => item.toMap()).toList(),
+        "id": orderModel.id,
+        "title": orderModel.title,
       });
+      return BaseResponse(status: true, message: "Order Updated Successfully");
     } catch (e) {
       return BaseResponse(status: false, message: e.toString());
     }
-    return BaseResponse(status: false, message: "Something went wrong!");
   }
 
   @override
@@ -134,22 +120,9 @@ class RemoteTicketDatasource extends RemoteOrderDatasourceInterface {
         'timestamp': DateTime.now(),
         'senderEmail': currentUser,
       });
-      return BaseResponse(status: true, message: "Message send Succeflluy");
+      return BaseResponse(status: true, message: "Message Sent Successfully");
     } catch (e) {
       return BaseResponse(status: false, message: e.toString());
     }
-  }
-
-  @override
-  Future<List<ChattModel>> getAllMessages() async {
-    final retrive = firebaseFirestore.collection("Messages");
-    final querySnapshot = await retrive.get();
-    querySnapshot.docs.map((doc) => doc.data()).toSet();
-    List<ChattModel> chatModel = [];
-    for (QueryDocumentSnapshot<Map<String, dynamic>> doc
-        in querySnapshot.docs) {
-      chatModel.add(ChattModel.fromSnapshot(doc));
-    }
-    return chatModel;
   }
 }

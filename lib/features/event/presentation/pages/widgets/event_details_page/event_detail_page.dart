@@ -1,13 +1,10 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
-// Import the intl package for date formatting
 import 'package:order/core/widgets/app_bar_widget.dart';
 import 'package:order/features/cart/presentation/pages/view_order_page.dart';
 import 'package:order/features/event/domain/entities/order_entities.dart';
-import 'package:order/features/event/presentation/pages/widgets/event_details_page/evebt_details_page_placeholder.dart';
-
-import '../../../cubit/order_cubit.dart';
+import 'package:order/features/event/presentation/pages/widgets/event_details_page/evebt_details_page_item_tile.dart';
 
 class EventDetailsPage extends StatefulWidget {
   final CreateOrderEntity eventEntity;
@@ -22,18 +19,22 @@ class EventDetailsPage extends StatefulWidget {
 }
 
 class _EventDetailsPageState extends State<EventDetailsPage> {
-  List<ItemQuantity> itemsList = []; // List to hold added items
-  TextEditingController itemController =
-      TextEditingController(); // Controller for input field
-  int itemCount = 0; // Counter for the item quantity
+  User? currentUser = FirebaseAuth.instance.currentUser;
+
+  List<OrderItem> itemsList = [];
+  TextEditingController itemController = TextEditingController();
+  int itemCount = 0;
   final FirebaseFirestore _firestore = FirebaseFirestore.instance;
 
   @override
   Widget build(BuildContext context) {
-    itemsList = widget.eventEntity.items!.entries
-        .map(
-            (entry) => ItemQuantity(itemName: entry.key, quantity: entry.value))
-        .toList();
+    itemsList = widget.eventEntity.items ?? [];
+
+    // Group items by userId
+    Map<String, List<OrderItem>> itemsGroupedByUser = {};
+    for (var item in itemsList) {
+      itemsGroupedByUser.putIfAbsent(item.userId, () => []).add(item);
+    }
 
     const divider = Divider(
       thickness: 1,
@@ -50,19 +51,20 @@ class _EventDetailsPageState extends State<EventDetailsPage> {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             const Text(
-              'Items List',
+              'Items',
               style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
             ),
             const SizedBox(height: 10),
             Expanded(
               child: ListView.separated(
                 shrinkWrap: true,
-                itemCount: itemsList.length,
+                itemCount: itemsGroupedByUser.length,
                 itemBuilder: (context, index) {
-                  return EventDetailPagePlaceholder(
-                    itemTitle: itemsList[index].itemName ?? '',
-                    itemCount: itemsList[index].quantity.toString(),
-                    eventEntity: widget.eventEntity,
+                  String userId = itemsGroupedByUser.keys.elementAt(index);
+                  List<OrderItem> userItems = itemsGroupedByUser[userId]!;
+                  return EventDetailPageItemTile(
+                    userId: userId,
+                    items: userItems,
                   );
                 },
                 separatorBuilder: (context, index) => divider,
@@ -73,10 +75,7 @@ class _EventDetailsPageState extends State<EventDetailsPage> {
               width: double.infinity,
               child: ElevatedButton(
                 onPressed: () async {
-                  // Update Firestore with selected items
                   await _updateFirestore();
-
-                  // Navigate to ViewOrderPage after placing the order
                   Navigator.push(
                     context,
                     MaterialPageRoute(
@@ -88,9 +87,9 @@ class _EventDetailsPageState extends State<EventDetailsPage> {
                   backgroundColor: MaterialStateProperty.resolveWith<Color>(
                     (Set<MaterialState> states) {
                       if (states.contains(MaterialState.disabled)) {
-                        return Colors.grey; // Color when the button is disabled
+                        return Colors.grey;
                       }
-                      return Colors.blue; // Color when the button is enabled
+                      return Colors.blue;
                     },
                   ),
                   shape: MaterialStateProperty.all<RoundedRectangleBorder>(
@@ -158,11 +157,9 @@ class _EventDetailsPageState extends State<EventDetailsPage> {
                       backgroundColor: MaterialStateProperty.resolveWith<Color>(
                         (Set<MaterialState> states) {
                           if (states.contains(MaterialState.disabled)) {
-                            return Colors
-                                .grey; // Color when the button is disabled
+                            return Colors.grey;
                           }
-                          return Colors
-                              .blue; // Color when the button is enabled
+                          return Colors.blue;
                         },
                       ),
                       shape: MaterialStateProperty.all<RoundedRectangleBorder>(
@@ -199,77 +196,56 @@ class _EventDetailsPageState extends State<EventDetailsPage> {
     String newItem = itemController.text.trim();
     if (newItem.isNotEmpty && itemCount > 0) {
       final orderDocRef =
-          _firestore.collection('orders').doc(widget.eventEntity.id);
+          _firestore.collection('Order').doc(widget.eventEntity.id);
 
       await orderDocRef.get().then((docSnapshot) {
         if (docSnapshot.exists) {
           Map<String, dynamic> data = docSnapshot.data()!;
-          if (data.containsKey(newItem)) {
-            int currentCount = data[newItem];
-            data[newItem] = currentCount + itemCount;
-          } else {
-            data[newItem] = itemCount;
+          if (data['items'] == null) {
+            data['items'] = [];
           }
+          data['items'].add({
+            'item_name': newItem,
+            'quantity': itemCount,
+            'user_id': currentUser!.uid,
+          });
           orderDocRef.update(data);
         } else {
-          orderDocRef.set({newItem: itemCount});
+          orderDocRef.set({
+            'items': [
+              {
+                'item_name': newItem,
+                'quantity': itemCount,
+                'user_id': currentUser!.uid
+              }
+            ],
+          });
         }
       });
-
       setState(() {
-        bool itemExists = false;
-        for (var item in itemsList) {
-          if (item.itemName == newItem) {
-            item.quantity += itemCount;
-            itemExists = true;
-            break;
-          }
-        }
-        if (!itemExists) {
-          itemsList.add(ItemQuantity(itemName: newItem, quantity: itemCount));
-        }
+        itemsList.add(OrderItem(
+          itemName: newItem,
+          quantity: itemCount,
+          userId: currentUser!.uid,
+        ));
         itemController.clear();
         itemCount = 0;
       });
-
-      final eventEntity = CreateOrderEntity(
-        id: widget.eventEntity.id,
-        items: Map.fromIterable(
-          itemsList,
-          key: (item) => item.itemName,
-          value: (item) => item.quantity,
-        ),
-        title: widget.eventEntity.title,
-        userId: widget.eventEntity.userId,
-      );
-      BlocProvider.of<OrderCubit>(context).addOrder(eventEntity);
     }
   }
 
   Future<void> _updateFirestore() async {
-    final docRef = _firestore.collection('orders').doc();
-    await docRef.set({
-      'order_id': widget.eventEntity.id,
-      'items': itemsList
-          .map((item) => {'name': item.itemName, 'quantity': item.quantity})
-          .toList(),
-      'created_at': DateTime.now(),
+    final orderDocRef =
+        _firestore.collection('Order').doc(widget.eventEntity.id);
+
+    await orderDocRef.update({
+      'items': itemsList.map((item) {
+        return {
+          'item_name': item.itemName,
+          'quantity': item.quantity,
+          'user_id': item.userId,
+        };
+      }).toList(),
     });
   }
-
-  @override
-  void dispose() {
-    itemController.dispose();
-    super.dispose();
-  }
-}
-
-class ItemQuantity {
-  String? itemName;
-  int quantity;
-
-  ItemQuantity({
-    this.itemName,
-    this.quantity = 0,
-  });
 }

@@ -42,9 +42,11 @@ class _CreateOrderWidgetState extends State<CreateOrderWidget> {
     if (widget.isUpdateEvent) {
       titleController.text = widget.eventEntity!.title!;
       // Load existing items and quantities into the list
-      widget.eventEntity!.items?.forEach((itemName, quantity) {
-        itemList.add(
-            OrderItem(itemName: itemName, quantity: quantity, userId: userId));
+      widget.eventEntity!.items?.forEach((item) {
+        itemList.add(OrderItem(
+            itemName: item.itemName,
+            quantity: item.quantity,
+            userId: item.userId));
       });
     }
     super.initState();
@@ -169,7 +171,7 @@ class _CreateOrderWidgetState extends State<CreateOrderWidget> {
             ? widget.eventEntity!.id
             : random.nextInt(10).toString(),
         title: titleController.text,
-        items: {for (var item in itemList) item.itemName: item.quantity},
+        items: itemList,
         userId: userId,
       );
 

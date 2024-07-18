@@ -1,13 +1,12 @@
 class CreateOrderEntity {
   final String? id;
-  final String userId;
+  final String? userId;
   final String? title;
-  late final Map<String, dynamic>?
-      items; // Map to store items and their quantities
+  late final List<OrderItem>? items;
 
   CreateOrderEntity({
     this.id,
-    required this.userId,
+    this.userId,
     this.title,
     this.items,
   });
@@ -23,6 +22,22 @@ class OrderItem {
     required this.itemName,
     this.quantity = 0,
   });
+
+  Map<String, dynamic> toMap() {
+    return {
+      'itemName': itemName,
+      'quantity': quantity,
+      'userId': userId,
+    };
+  }
+
+  factory OrderItem.fromMap(Map<String, dynamic> map) {
+    return OrderItem(
+      itemName: map['itemName'] ?? '',
+      quantity: map['quantity']?.toInt() ?? 0,
+      userId: map['userId'] ?? '',
+    );
+  }
 }
 
 class CommentEntity {
@@ -52,5 +67,3 @@ class MessageEntity {
     this.receiverName,
   );
 }
-
-// Other constructors, methods, etc.

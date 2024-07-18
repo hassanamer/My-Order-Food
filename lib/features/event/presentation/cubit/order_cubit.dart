@@ -2,7 +2,6 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:order/features/event/domain/entities/order_entities.dart';
 import 'package:order/features/event/domain/remote_usecases/add_order_usecase.dart';
 import 'package:order/features/event/domain/remote_usecases/delete_ticket.dart';
-import 'package:order/features/event/domain/remote_usecases/message_usecase.dart';
 import 'package:order/features/event/domain/remote_usecases/remote_get_all_ticket.dart';
 import 'package:order/features/event/domain/remote_usecases/update_ticket.dart';
 import 'package:order/features/event/presentation/cubit/order_state.dart';
@@ -13,7 +12,6 @@ class OrderCubit extends Cubit<OrderState> {
   late DeleteOrderUsecase deleteOrderUsecase;
   late UpdateOrderUsecase updateOrderUsecase;
   late GetAllOrderUsecase getAllOrderUsecase;
-  late UploadMessageUsecase uploadMessageUsecase;
 
   OrderCubit() : super(OrderStateInt());
 
@@ -76,18 +74,20 @@ class OrderCubit extends Cubit<OrderState> {
   }
 
   Future<void> addOrUpdateItem(CreateOrderEntity createOrderEntity,
-      String itemName, int quantity) async {
+      String itemName, int quantity, String userId) async {
     try {
       // Ensure items map is initialized
-      createOrderEntity.items ??= {};
+      createOrderEntity.items ??= [];
 
       // Update item quantity
-      if (createOrderEntity.items!.containsKey(itemName)) {
-        createOrderEntity.items![itemName] = quantity;
-      } else {
-        // Add new item with quantity
-        createOrderEntity.items![itemName] = quantity;
-      }
+      // if (createOrderEntity.items!.containsKey(itemName)) {
+      //   createOrderEntity.items![itemName] = quantity;
+      // } else {
+      //   // Add new item with quantity
+      //   createOrderEntity.items![itemName] = quantity;
+      // }
+      createOrderEntity.items!.add(
+          OrderItem(userId: userId, itemName: itemName, quantity: quantity));
 
       // Call update ticket function to persist changes
       await updateOrder(createOrderEntity);
@@ -100,10 +100,10 @@ class OrderCubit extends Cubit<OrderState> {
       CreateOrderEntity createOrderEntity, String itemName) async {
     try {
       // Ensure items map is initialized
-      createOrderEntity.items ??= {};
+      createOrderEntity.items ??= [];
 
       // Remove item from items map
-      createOrderEntity.items!.remove(itemName);
+      createOrderEntity.items!.removeWhere((item) => item.itemName == itemName);
 
       // Call update ticket function to persist changes
       await updateOrder(createOrderEntity);

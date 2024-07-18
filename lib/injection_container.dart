@@ -11,12 +11,9 @@ import 'package:order/features/event/data/datasource/remote_order_datasource.dar
 import 'package:order/features/event/data/reporisatory/remote_order_repository_impl.dart';
 import 'package:order/features/event/domain/remote_usecases/add_order_usecase.dart';
 import 'package:order/features/event/domain/remote_usecases/delete_ticket.dart';
-import 'package:order/features/event/domain/remote_usecases/get_messages_usecase.dart';
-import 'package:order/features/event/domain/remote_usecases/message_usecase.dart';
 import 'package:order/features/event/domain/remote_usecases/remote_get_all_ticket.dart';
 import 'package:order/features/event/domain/remote_usecases/update_ticket.dart';
 import 'package:order/features/event/domain/reporisatory/ticket_reporisatory.dart';
-import 'package:order/features/event/presentation/cubit/cubit_message/chat_cubit.dart';
 import 'package:order/features/event/presentation/cubit/order_cubit.dart';
 import 'package:order/features/login/data/datasources/remote_login_user.dart';
 import 'package:order/features/login/domain/usecases/remote_login_usecase.dart';
@@ -91,11 +88,11 @@ void init() {
 
   // Registering ticket data source
   sl.registerLazySingleton<RemoteOrderDatasourceInterface>(
-      () => RemoteTicketDatasource());
+      () => RemoteOrderDatasource());
 
   // Registering ticket repository
   sl.registerLazySingleton<OrderRepository>(
-      () => OrderReporisatoryImlp(sl<RemoteOrderDatasourceInterface>()));
+      () => OrderRepositoryImpl(sl<RemoteOrderDatasourceInterface>()));
 
   // Registering ticket use cases
   sl.registerLazySingleton<AddOrderUsecase>(
@@ -106,14 +103,9 @@ void init() {
       () => DeleteOrderUsecase(sl<OrderRepository>()));
   sl.registerLazySingleton<GetAllOrderUsecase>(
       () => GetAllOrderUsecase(sl<OrderRepository>()));
-  sl.registerLazySingleton<UploadMessageUsecase>(
-      () => UploadMessageUsecase(sl<OrderRepository>()));
-  sl.registerLazySingleton<GetMessagesUsecase>(
-      () => GetMessagesUsecase(sl<OrderRepository>()));
 
   // Registering ticket cubits
   sl.registerFactory(() => OrderCubit());
-  sl.registerFactory(() => ChatCubit());
 
   // Registering restaurant data source
   sl.registerLazySingleton<RestaurantDatasourceInterface>(

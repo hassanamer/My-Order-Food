@@ -10,7 +10,6 @@ import 'package:order/core/bloc_observer/bloc_observer.dart';
 import 'package:order/core/theme_app.dart';
 import 'package:order/features/cart/presentation/cubit/cart_cubit.dart';
 import 'package:order/features/cart/presentation/pages/cart_page.dart';
-import 'package:order/features/event/presentation/cubit/cubit_message/chat_cubit.dart';
 import 'package:order/features/event/presentation/pages/order_food_home_page.dart';
 import 'package:order/features/event/presentation/pages/settings_page.dart';
 import 'package:order/features/login/presentation/cubit/login_cubit.dart';
@@ -77,7 +76,6 @@ class _MyAppState extends State<MyApp> {
               create: (_) => di.sl<RestaurantCubit>()..getAllRestaurants()),
           BlocProvider(create: (_) => di.sl<MenuCubit>()..getAllMenu()),
           BlocProvider(create: (_) => di.sl<CartCubit>()..getAllCartItems()),
-          BlocProvider(create: (_) => di.sl<ChatCubit>()..getChatData()),
           BlocProvider(create: (_) => di.sl<ProfileCubit>()),
         ],
         child: GetMaterialApp(

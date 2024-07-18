@@ -41,10 +41,10 @@ class CommentModel extends CommentEntity {
 
 class OrderModel extends CreateOrderEntity {
   OrderModel({
-    required String userId,
+    String? userId,
     String? id,
     String? title,
-    Map<String, dynamic>? items,
+    List<OrderItem>? items,
     int? itemCount,
   }) : super(
           userId: userId,
@@ -68,7 +68,9 @@ class OrderModel extends CreateOrderEntity {
         id: map['id'],
         title: map['title'],
         itemCount: map['itemCount'],
-        items: map['items']);
+        items: map['items']
+            ?.map((item) => OrderItem.fromMap(item as Map<String, dynamic>))
+            .toList());
   }
 
   factory OrderModel.fromSnapShot(
@@ -78,7 +80,10 @@ class OrderModel extends CreateOrderEntity {
         id: documentSnapshot.data()!['id'],
         title: documentSnapshot.data()!['title'],
         itemCount: documentSnapshot.data()!['itemCount'],
-        items: documentSnapshot.data()!['items']);
+        items: documentSnapshot
+            .data()!['items']
+            ?.map<OrderItem>((item) => OrderItem.fromMap(item))
+            .toList());
   }
 
   // factory EventModel.fromSnapShot2(

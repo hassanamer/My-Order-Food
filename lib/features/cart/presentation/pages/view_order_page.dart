@@ -1,11 +1,11 @@
-import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
 import 'package:order/core/widgets/app_bar_widget.dart';
 import 'package:order/features/event/presentation/pages/widgets/event_details_page/order_summary_page.dart';
-import 'package:intl/intl.dart'; // Import the intl package for date formatting
 
 class ViewOrderPage extends StatelessWidget {
-  const ViewOrderPage({super.key});
+  const ViewOrderPage({Key? key});
 
   @override
   Widget build(BuildContext context) {
@@ -14,8 +14,8 @@ class ViewOrderPage extends StatelessWidget {
         pageName: "Your Orders",
       ),
       body: StreamBuilder<QuerySnapshot>(
-        stream: FirebaseFirestore.instance.collection('orders').snapshots(),
-        builder: (context, snapshot) {
+        stream: FirebaseFirestore.instance.collection('Order').snapshots(),
+        builder: (context, AsyncSnapshot<QuerySnapshot> snapshot) {
           if (snapshot.connectionState == ConnectionState.waiting) {
             return const Center(child: CircularProgressIndicator());
           }
@@ -28,8 +28,13 @@ class ViewOrderPage extends StatelessWidget {
           return ListView.builder(
             itemCount: snapshot.data!.docs.length,
             itemBuilder: (context, index) {
-              var orderData = snapshot.data!.docs[index].data() as Map<String, dynamic>;
+              var orderData =
+                  snapshot.data!.docs[index].data() as Map<String, dynamic>;
               var orderId = snapshot.data!.docs[index].id;
+              var createdAt = orderData['created_at'] != null
+                  ? DateFormat('yyyy-MM-dd hh:mm a')
+                      .format((orderData['created_at'] as Timestamp).toDate())
+                  : 'Unknown';
               return GestureDetector(
                 onTap: () {
                   Navigator.push(
@@ -37,16 +42,15 @@ class ViewOrderPage extends StatelessWidget {
                     MaterialPageRoute(
                       builder: (context) => OrderSummaryPage(
                         orderId: orderId,
-                        orderData: orderData,
+                        createdAt: createdAt,
+                        orderItems: List.from(orderData['items'] ?? []),
                       ),
                     ),
                   );
                 },
                 child: _buildOrderItem(
                   title: 'Order #$orderId',
-                  createdAt: orderData['created_at'] != null
-                      ? DateFormat('yyyy-MM-dd hh:mm a').format((orderData['created_at'] as Timestamp).toDate())
-                      : 'Unknown',
+                  createdAt: createdAt,
                 ),
               );
             },
@@ -65,7 +69,7 @@ class ViewOrderPage extends StatelessWidget {
         borderRadius: BorderRadius.circular(15),
       ),
       elevation: 5,
-      margin: const EdgeInsets.symmetric(vertical: 10),
+      margin: const EdgeInsets.symmetric(vertical: 10, horizontal: 16),
       child: Padding(
         padding: const EdgeInsets.all(16.0),
         child: Column(
@@ -77,7 +81,10 @@ class ViewOrderPage extends StatelessWidget {
                 const SizedBox(width: 10),
                 Text(
                   title,
-                  style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+                  style: const TextStyle(
+                    fontSize: 18,
+                    fontWeight: FontWeight.bold,
+                  ),
                 ),
               ],
             ),
