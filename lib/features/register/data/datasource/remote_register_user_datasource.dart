@@ -15,7 +15,7 @@ abstract class RemoteRegisterDatasource {
 class RemoteRegisterDatasourceImlp implements RemoteRegisterDatasource {
   late FirebaseDatabseProvider firebaseDB;
 
-  String? idUser;
+  String? userId;
 
   RemoteRegisterDatasourceImlp(this.firebaseDB);
 
@@ -32,7 +32,7 @@ class RemoteRegisterDatasourceImlp implements RemoteRegisterDatasource {
           .collection("Users")
           .doc(userData.user!.uid)
           .set({
-        "idUser": userData.user!.uid,
+        "userId": userData.user!.uid,
         "email": userData.user!.email,
         "gender": registerAccountEntity.gender,
         "name": registerAccountEntity.name,
@@ -41,7 +41,7 @@ class RemoteRegisterDatasourceImlp implements RemoteRegisterDatasource {
       });
 
       return RegisterAccountEntity(
-        idUser: idUser,
+        userId: userId,
         email: email,
         gender: registerAccountEntity.gender,
         name: registerAccountEntity.name,

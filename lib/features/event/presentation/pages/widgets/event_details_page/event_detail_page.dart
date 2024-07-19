@@ -24,7 +24,6 @@ class EventDetailsPage extends StatefulWidget {
 
 class _EventDetailsPageState extends State<EventDetailsPage> {
   late GetUserOrderUsecase getUserOrderUsecase;
-
   User? currentUser = FirebaseAuth.instance.currentUser;
 
   List<OrderItem> itemsList = [];
@@ -42,8 +41,8 @@ class _EventDetailsPageState extends State<EventDetailsPage> {
       itemsGroupedByUser.putIfAbsent(item.userId, () => []).add(item);
     }
     getUsers(itemsGroupedByUser).then((userMap) {
-      this.userMap = userMap;
       setState(() {
+        this.userMap = userMap;
         isLoading = false;
       });
     });
@@ -78,9 +77,9 @@ class _EventDetailsPageState extends State<EventDetailsPage> {
 
   @override
   Widget build(BuildContext context) {
-    if (isLoading == true) {
-      return Container();
-    }
+    // if (isLoading) {
+    //   return const Center(child: CircularProgressIndicator());
+    // }
     const divider = Divider(
       thickness: 1,
       height: 3,
@@ -244,7 +243,20 @@ class _EventDetailsPageState extends State<EventDetailsPage> {
       final orderDocRef =
           _firestore.collection('Order').doc(widget.eventEntity.id);
 
-      await orderDocRef.get().then((docSnapshot) {
+      // Optimistically update the UI
+      setState(() {
+        itemsList.add(OrderItem(
+          itemName: newItem,
+          quantity: itemCount,
+          userId: currentUser!.uid,
+        ));
+        itemController.clear();
+        itemCount = 0;
+        updateOrdersAndUsers();
+      });
+
+      // Update Firestore in the background
+      orderDocRef.get().then((docSnapshot) {
         if (docSnapshot.exists) {
           Map<String, dynamic> data = docSnapshot.data()!;
           if (data['items'] == null) {
@@ -268,17 +280,6 @@ class _EventDetailsPageState extends State<EventDetailsPage> {
           });
         }
       });
-      setState(() {
-        isLoading = true;
-        itemsList.add(OrderItem(
-          itemName: newItem,
-          quantity: itemCount,
-          userId: currentUser!.uid,
-        ));
-        itemController.clear();
-        itemCount = 0;
-        updateOrdersAndUsers();
-      });
     }
   }
 
@@ -289,9 +290,9 @@ class _EventDetailsPageState extends State<EventDetailsPage> {
     await orderDocRef.update({
       'items': itemsList.map((item) {
         return {
-          'item_name': item.itemName,
+          'itemName': item.itemName,
           'quantity': item.quantity,
-          'user_id': item.userId,
+          'userId': item.userId,
         };
       }).toList(),
     });

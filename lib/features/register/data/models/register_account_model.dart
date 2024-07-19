@@ -2,7 +2,7 @@ import '../../domain/entities/register_entities.dart';
 
 class RegisterAccountModel extends RegisterAccountEntity {
   RegisterAccountModel({
-    String? idUser,
+    String? userId,
     String? username,
     String? name,
     String? email,
@@ -11,7 +11,7 @@ class RegisterAccountModel extends RegisterAccountEntity {
     String? message,
     int? replyCode,
   }) : super(
-          idUser: idUser,
+          userId: userId,
           username: username,
           email: email,
           gender: gender,
@@ -23,7 +23,7 @@ class RegisterAccountModel extends RegisterAccountEntity {
 
   Map<String, dynamic> toMap() {
     return {
-      'idUser': idUser,
+      'userId': userId,
       'userName': username,
       'name': name,
       'email': email,
@@ -37,7 +37,7 @@ class RegisterAccountModel extends RegisterAccountEntity {
       return RegisterAccountModel();
     }
     return RegisterAccountModel(
-      idUser: map['idUser'] ?? '',
+      userId: map['userId'] ?? '',
       username: map['userName'] ?? '',
       email: map['email'] ?? '',
       gender: map['gender'] ?? '',

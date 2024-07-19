@@ -18,8 +18,8 @@ class RegisterCubit extends Cubit<RegisterState> {
 
   Future<void> registerAccountFromRemote(BuildContext context,
       {required String email,
-        required String password,
-        required RegisterAccountEntity registerAccountEntity}) async {
+      required String password,
+      required RegisterAccountEntity registerAccountEntity}) async {
     emit(RegisterLoadingState());
     final remoteRegisterUsecase = RemoteRegisterUsecase(sl());
 

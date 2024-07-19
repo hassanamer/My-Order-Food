@@ -3,7 +3,6 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:order/core/services/awesome_notification_service.dart';
 import 'package:order/features/event/data/models/order_model.dart';
 import 'package:order/features/event/domain/entities/order_entities.dart';
-import 'package:order/features/login/domain/entities/account_entites.dart';
 import 'package:order/features/register/data/models/register_account_model.dart';
 
 class FirebaseDatasourceProvider {
@@ -33,9 +32,6 @@ abstract class RemoteOrderDatasourceInterface
   Future<BaseResponse> updateOrder(OrderModel orderModel);
 
   Future<BaseResponse> deleteOrders();
-
-  Future<BaseResponse> uploadMessage(
-      String idUser, String message, Account account);
 }
 
 class RemoteOrderDatasource extends RemoteOrderDatasourceInterface {
@@ -96,28 +92,6 @@ class RemoteOrderDatasource extends RemoteOrderDatasourceInterface {
     return orders;
   }
 
-  //
-  // @override
-  // Future<List<RegisterAccountEntity>> getUserOrders() async {
-  //   final retrieve = firebaseFirestore.collection("Users");
-  //   final querySnapshot = await retrieve.get();
-  //   List<RegisterAccountEntity> users = [];
-  //   for (QueryDocumentSnapshot<Map<String, dynamic>> doc
-  //       in querySnapshot.docs) {
-  //     var data = doc.data();
-  //     users.add(RegisterAccountEntity(
-  //       // id: doc.id,
-  //       email: data['email'],
-  //       name: data['name'],
-  //       gender: data['gender'],
-  //       phoneNumber: data['phoneNumber'],
-  //       username: data['userName'],
-  //       idUser: data['idUser'],
-  //     ));
-  //   }
-  //   return users;
-  // }
-
   @override
   Future<RegisterAccountModel> getUser(String userId) async {
     final retrieve = firebaseFirestore.collection("Users").doc(userId);
@@ -138,24 +112,6 @@ class RemoteOrderDatasource extends RemoteOrderDatasourceInterface {
         "title": orderModel.title,
       });
       return BaseResponse(status: true, message: "Order Updated Successfully");
-    } catch (e) {
-      return BaseResponse(status: false, message: e.toString());
-    }
-  }
-
-  @override
-  Future<BaseResponse> uploadMessage(
-      String idUser, String message, Account account) async {
-    try {
-      var uID = firebaseAuth.currentUser!.uid;
-      final currentUser = firebaseAuth.currentUser!.email;
-      await firebaseFirestore.collection("Messages").add({
-        'idUser': uID,
-        'message': message,
-        'timestamp': DateTime.now(),
-        'senderEmail': currentUser,
-      });
-      return BaseResponse(status: true, message: "Message Sent Successfully");
     } catch (e) {
       return BaseResponse(status: false, message: e.toString());
     }

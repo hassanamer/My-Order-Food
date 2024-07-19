@@ -4,6 +4,7 @@ import '../../../data/models/register_account_model.dart';
 
 class ProfileWidget extends StatefulWidget {
   final RegisterAccountModel registerAccountModel;
+
   const ProfileWidget({
     super.key,
     required this.registerAccountModel,

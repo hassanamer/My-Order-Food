@@ -2,7 +2,7 @@ import '../../domain/entities/account_entites.dart';
 
 class User extends Account {
   User({
-    String? idUser,
+    String? userId,
     required String username,
     required String password,
     final String? name,
@@ -10,7 +10,7 @@ class User extends Account {
     final String? phoneNumber,
     final String? gender,
   }) : super(
-          idUser: idUser,
+          userId: userId,
           username: username,
           password: password,
           email: email,
@@ -21,7 +21,7 @@ class User extends Account {
 
   Map<String, dynamic> toMap() {
     return {
-      'idUser': idUser,
+      'userId': userId,
       'username': username,
       'password': password,
     };
@@ -29,7 +29,7 @@ class User extends Account {
 
   factory User.fromMap(map) {
     return User(
-      idUser: map['idUser'],
+      userId: map['userId'],
       name: map['name'],
       username: map['username'],
       password: map['password'],

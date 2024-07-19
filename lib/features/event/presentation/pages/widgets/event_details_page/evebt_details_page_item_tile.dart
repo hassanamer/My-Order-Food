@@ -52,7 +52,7 @@ class EventDetailPageItemTile extends StatelessWidget {
                     Padding(
                       padding: const EdgeInsets.all(10.0),
                       child: Text(
-                        'User: ${user?.name ?? 'Unknown User'} ',
+                        'User: ${user?.name ?? ''} ',
                         style: const TextStyle(
                           fontSize: 18,
                           fontWeight: FontWeight.bold,
