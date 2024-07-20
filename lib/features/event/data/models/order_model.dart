@@ -39,18 +39,20 @@ class CommentModel extends CommentEntity {
       );
 }
 
-class OrderModel extends CreateOrderEntity {
+class OrderModel extends OrderEntity {
   OrderModel({
     String? userId,
-    String? id,
+    required String id,
     String? title,
     List<OrderItem>? items,
     int? itemCount,
+    String? createdAt,
   }) : super(
           userId: userId,
           id: id,
           title: title,
           items: items,
+          createdAt: createdAt,
         );
 
   Map<String, dynamic> toMap() {
@@ -58,7 +60,8 @@ class OrderModel extends CreateOrderEntity {
       'userId': userId,
       'id': id,
       'title': title,
-      "items": items,
+      "items": items?.map((item) => item.toMap()),
+      "createdAt": createdAt,
     };
   }
 
@@ -68,6 +71,7 @@ class OrderModel extends CreateOrderEntity {
         id: map['id'],
         title: map['title'],
         itemCount: map['itemCount'],
+        createdAt: map['createdAt'],
         items: map['items']
             ?.map((item) => OrderItem.fromMap(item as Map<String, dynamic>))
             .toList());
@@ -80,6 +84,7 @@ class OrderModel extends CreateOrderEntity {
         id: documentSnapshot.data()!['id'],
         title: documentSnapshot.data()!['title'],
         itemCount: documentSnapshot.data()!['itemCount'],
+        createdAt: documentSnapshot.data()!['createdAt'],
         items: documentSnapshot
             .data()!['items']
             ?.map<OrderItem>((item) => OrderItem.fromMap(item))
@@ -93,11 +98,12 @@ class OrderModel extends CreateOrderEntity {
   //   );
   // }
 
-  factory OrderModel.fromEntity(CreateOrderEntity eventEntity) => OrderModel(
+  factory OrderModel.fromEntity(OrderEntity eventEntity) => OrderModel(
         userId: eventEntity.userId,
         id: eventEntity.id,
         title: eventEntity.title,
         items: eventEntity.items,
+        createdAt: eventEntity.createdAt,
       );
 }
 

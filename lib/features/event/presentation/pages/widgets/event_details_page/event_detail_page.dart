@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:order/core/widgets/app_bar_widget.dart';
 import 'package:order/features/cart/presentation/pages/view_order_page.dart';
 import 'package:order/features/event/domain/entities/order_entities.dart';
+import 'package:order/features/event/domain/remote_usecases/add_order_usecase.dart';
 import 'package:order/features/event/domain/remote_usecases/remote_get_user_order.dart';
 import 'package:order/features/event/presentation/pages/widgets/event_details_page/evebt_details_page_item_tile.dart';
 import 'package:order/injection_container.dart';
@@ -11,11 +12,11 @@ import 'package:order/injection_container.dart';
 import '../../../../../register/data/models/register_account_model.dart';
 
 class EventDetailsPage extends StatefulWidget {
-  final CreateOrderEntity eventEntity;
+  final OrderEntity orderEntity;
 
   EventDetailsPage({
     Key? key,
-    required this.eventEntity,
+    required this.orderEntity,
   }) : super(key: key);
 
   @override
@@ -24,6 +25,8 @@ class EventDetailsPage extends StatefulWidget {
 
 class _EventDetailsPageState extends State<EventDetailsPage> {
   late GetUserOrderUsecase getUserOrderUsecase;
+  late AddOrderUsecase addOrderUsecase;
+
   User? currentUser = FirebaseAuth.instance.currentUser;
 
   List<OrderItem> itemsList = [];
@@ -51,7 +54,8 @@ class _EventDetailsPageState extends State<EventDetailsPage> {
   @override
   initState() {
     super.initState();
-    itemsList = widget.eventEntity.items ?? [];
+    addOrderUsecase = sl();
+    itemsList = widget.orderEntity.items ?? [];
     updateOrdersAndUsers();
   }
 
@@ -87,7 +91,7 @@ class _EventDetailsPageState extends State<EventDetailsPage> {
 
     return Scaffold(
       appBar: AppBarWidget(
-        pageName: widget.eventEntity.title ?? '',
+        pageName: widget.orderEntity.title ?? '',
       ),
       body: Padding(
         padding: const EdgeInsets.all(16.0),
@@ -240,61 +244,48 @@ class _EventDetailsPageState extends State<EventDetailsPage> {
   Future<void> _addItem() async {
     String newItem = itemController.text.trim();
     if (newItem.isNotEmpty && itemCount > 0) {
-      final orderDocRef =
-          _firestore.collection('Order').doc(widget.eventEntity.id);
-
+      OrderItem orderItem = OrderItem(
+        itemName: newItem,
+        quantity: itemCount,
+        userId: currentUser!.uid,
+      );
       // Optimistically update the UI
       setState(() {
-        itemsList.add(OrderItem(
-          itemName: newItem,
-          quantity: itemCount,
-          userId: currentUser!.uid,
-        ));
+        itemsList.add(orderItem);
         itemController.clear();
         itemCount = 0;
         updateOrdersAndUsers();
       });
-
+      addOrderUsecase.update(widget.orderEntity);
       // Update Firestore in the background
-      orderDocRef.get().then((docSnapshot) {
-        if (docSnapshot.exists) {
-          Map<String, dynamic> data = docSnapshot.data()!;
-          if (data['items'] == null) {
-            data['items'] = [];
-          }
-          data['items'].add({
-            'itemName': newItem,
-            'quantity': itemCount,
-            'userId': currentUser!.uid,
-          });
-          orderDocRef.update(data);
-        } else {
-          orderDocRef.set({
-            'items': [
-              {
-                'itemName': newItem,
-                'quantity': itemCount,
-                'userId': currentUser!.uid
-              }
-            ],
-          });
-        }
-      });
+      //   orderDocRef.get().then((docSnapshot) {
+      //     if (docSnapshot.exists) {
+      //       Map<String, dynamic> data = docSnapshot.data()!;
+      //       if (data['items'] == null) {
+      //         data['items'] = [];
+      //       }
+      //       data['items'].add({
+      //         'itemName': newItem,
+      //         'quantity': itemCount,
+      //         'userId': currentUser!.uid,
+      //       });
+      //       orderDocRef.update(data);
+      //     } else {
+      //       orderDocRef.set({
+      //         'items': [
+      //           {
+      //             'itemName': newItem,
+      //             'quantity': itemCount,
+      //             'userId': currentUser!.uid
+      //           }
+      //         ],
+      //       });
+      //     }
+      //   });
     }
   }
 
   Future<void> _updateFirestore() async {
-    final orderDocRef =
-        _firestore.collection('Order').doc(widget.eventEntity.id);
-
-    await orderDocRef.update({
-      'items': itemsList.map((item) {
-        return {
-          'itemName': item.itemName,
-          'quantity': item.quantity,
-          'userId': item.userId,
-        };
-      }).toList(),
-    });
+    addOrderUsecase.update(widget.orderEntity);
   }
 }

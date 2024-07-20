@@ -6,7 +6,11 @@ class AddOrderUsecase {
 
   AddOrderUsecase(this.orderRepository);
 
-  Future<BaseResponse> call(CreateOrderEntity orderEntity) async {
+  Future<BaseResponse> call(OrderEntity orderEntity) async {
     return await orderRepository.remoteAddOrders(orderEntity);
+  }
+
+  Future<BaseResponse> update(OrderEntity orderEntity) async {
+    return await orderRepository.remoteUpdateOrder(orderEntity);
   }
 }

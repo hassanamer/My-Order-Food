@@ -3,7 +3,7 @@ import 'package:order/features/event/data/models/order_model.dart';
 import 'package:order/features/event/domain/entities/order_entities.dart';
 
 abstract class OrderDataSource {
-  Future<List<CreateOrderEntity>> getAllEvent();
+  Future<List<OrderEntity>> getAllEvent();
 
   Future<List<CommentModel>> getAllComment();
 
@@ -54,7 +54,7 @@ class OrderDataSourceImpl implements OrderDataSource {
   }
 
   @override
-  Future<List<CreateOrderEntity>> getAllEvent() async {
+  Future<List<OrderEntity>> getAllEvent() async {
     List<Map<String, dynamic>> records =
         await db.database.rawQuery('select * FROM Event');
     List<OrderModel> events = [];
@@ -77,9 +77,9 @@ class OrderDataSourceImpl implements OrderDataSource {
   }
 
   @override
-  Future<BaseResponse> updateOrder(OrderModel eventModel, String id) async {
-    final records = await db.database.update('Event', eventModel.toMap(),
-        where: '$id = ?', whereArgs: [eventModel.id]);
+  Future<BaseResponse> updateOrder(OrderModel orderModel, String id) async {
+    final records = await db.database.update('Event', orderModel.toMap(),
+        where: '$id = ?', whereArgs: [orderModel.id]);
     try {
       if (records <= 1) {
         return BaseResponse(

@@ -7,7 +7,7 @@ class EventSuccessState extends EventState {
 }
 
 class EventLoadedState extends EventState {
-  final List<CreateOrderEntity> eventEntity;
+  final List<OrderEntity> eventEntity;
 
   EventLoadedState({required this.eventEntity});
 }

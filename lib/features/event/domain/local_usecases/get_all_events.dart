@@ -6,7 +6,7 @@ class GetAllEventsUsecase {
 
   GetAllEventsUsecase(this.eventRepsitory);
 
-  Future<List<CreateOrderEntity>> call() async {
+  Future<List<OrderEntity>> call() async {
     return await eventRepsitory.getAllEvents();
   }
 }

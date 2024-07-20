@@ -9,7 +9,7 @@ import 'custome_row_home_widget.dart';
 import 'get_restaurant_row_widget.dart';
 
 class TicketWidget extends StatefulWidget {
-  final List<CreateOrderEntity> eventEntity;
+  final List<OrderEntity> eventEntity;
 
   // final List<RegisterAccountEntity> UserEntity;
 

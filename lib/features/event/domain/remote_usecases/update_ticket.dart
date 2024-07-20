@@ -6,7 +6,7 @@ class UpdateOrderUsecase {
 
   UpdateOrderUsecase(this.ticketReporisatory);
 
-  Future<BaseResponse> call(CreateOrderEntity eventEntity) async {
-    return await ticketReporisatory.remoteUpdateOrders(eventEntity);
+  Future<BaseResponse> call(OrderEntity eventEntity) async {
+    return await ticketReporisatory.remoteUpdateOrder(eventEntity);
   }
 }

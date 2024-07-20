@@ -6,7 +6,7 @@ class GetAllOrderUsecase {
 
   GetAllOrderUsecase(this.orderRepository);
 
-  Future<List<CreateOrderEntity>> call() async {
+  Future<List<OrderEntity>> call() async {
     return await orderRepository.remoteGetAllOrders();
   }
 }

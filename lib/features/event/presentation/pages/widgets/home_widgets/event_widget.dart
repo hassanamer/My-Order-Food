@@ -4,7 +4,7 @@ import 'package:order/features/event/domain/entities/order_entities.dart';
 import 'package:order/features/event/presentation/pages/widgets/event_details_page/event_detail_page.dart';
 
 class EventWidget extends StatelessWidget {
-  final List<CreateOrderEntity> eventEntity;
+  final List<OrderEntity> eventEntity;
 
   const EventWidget({
     Key? key,
@@ -29,7 +29,7 @@ class EventWidget extends StatelessWidget {
           contentPadding: const EdgeInsets.symmetric(horizontal: 10),
           onTap: () {
             Get.to(EventDetailsPage(
-              eventEntity: eventEntity[index],
+              orderEntity: eventEntity[index],
             ));
           },
         );

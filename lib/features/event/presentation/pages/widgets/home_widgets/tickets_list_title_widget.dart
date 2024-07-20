@@ -12,7 +12,7 @@ class TicketsListTitleWidget extends StatelessWidget {
     required this.title,
   }) : super(key: key);
 
-  final CreateOrderEntity eventEntity;
+  final OrderEntity eventEntity;
   final String title;
 
   @override
@@ -45,7 +45,7 @@ class TicketsListTitleWidget extends StatelessWidget {
               child: InkWell(
                 borderRadius: BorderRadius.circular(15),
                 onTap: () {
-                  Get.to(() => EventDetailsPage(eventEntity: eventEntity));
+                  Get.to(() => EventDetailsPage(orderEntity: eventEntity));
                 },
                 child: ListTile(
                   trailing: const Icon(

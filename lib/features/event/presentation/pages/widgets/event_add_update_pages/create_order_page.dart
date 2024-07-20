@@ -10,7 +10,7 @@ import 'package:order/features/event/presentation/pages/order_food_home_page.dar
 import 'package:order/features/event/presentation/pages/widgets/event_add_update_pages/create_order_widget.dart';
 
 class CreateOrderPage extends StatelessWidget {
-  final CreateOrderEntity? eventEntity;
+  final OrderEntity? eventEntity;
   final bool isUpdateEvent;
 
   const CreateOrderPage({

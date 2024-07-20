@@ -2,6 +2,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:order/core/widgets/app_bar_widget.dart';
+import 'package:order/features/event/domain/entities/order_entities.dart';
 import 'package:order/features/event/presentation/pages/widgets/event_details_page/order_summary_page.dart';
 
 class ViewOrderPage extends StatelessWidget {
@@ -28,12 +29,14 @@ class ViewOrderPage extends StatelessWidget {
           return ListView.builder(
             itemCount: snapshot.data!.docs.length,
             itemBuilder: (context, index) {
-              var orderData =
+              //replace the order data by order entity
+              var orderMap =
                   snapshot.data!.docs[index].data() as Map<String, dynamic>;
-              var orderId = snapshot.data!.docs[index].id;
-              var createdAt = orderData['created_at'] != null
+              var orderEntity = OrderEntity.fromMap(orderMap);
+              var orderId = orderEntity.id;
+              var createdAt = orderEntity.createdAt != null
                   ? DateFormat('yyyy-MM-dd hh:mm a')
-                      .format((orderData['created_at'] as Timestamp).toDate())
+                      .format((orderEntity.createdAt as Timestamp).toDate())
                   : 'Unknown';
               return GestureDetector(
                 onTap: () {
@@ -42,7 +45,7 @@ class ViewOrderPage extends StatelessWidget {
                     MaterialPageRoute(
                       builder: (context) => OrderSummaryPage(
                         orderId: orderId,
-                        orderData: orderData,
+                        orderEntity: orderEntity,
                       ),
                     ),
                   );

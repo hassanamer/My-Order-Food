@@ -9,7 +9,7 @@ class EventReporisatoryImpl implements EventRepsitory {
   EventReporisatoryImpl(this.orderDatasourceImpl);
 
   @override
-  Future<BaseResponse> addEvent(CreateOrderEntity eventEntity) async {
+  Future<BaseResponse> addEvent(OrderEntity eventEntity) async {
     return await orderDatasourceImpl
         .addEvent(OrderModel.fromEntity(eventEntity));
   }
@@ -20,7 +20,7 @@ class EventReporisatoryImpl implements EventRepsitory {
   }
 
   @override
-  Future<List<CreateOrderEntity>> getAllEvents() async {
+  Future<List<OrderEntity>> getAllEvents() async {
     return await orderDatasourceImpl.getAllEvent();
   }
 
@@ -30,12 +30,8 @@ class EventReporisatoryImpl implements EventRepsitory {
   }
 
   @override
-  Future<BaseResponse> updateOrder(CreateOrderEntity orderEntity) async {
-    final OrderModel orderModel = OrderModel(
-      userId: orderEntity.userId,
-      id: orderEntity.id,
-      title: orderEntity.title,
-    );
+  Future<BaseResponse> updateOrder(OrderEntity orderEntity) async {
+    final OrderModel orderModel = orderEntity.toOrderModel();
     return await orderDatasourceImpl.updateOrder(orderModel, 'id');
   }
 

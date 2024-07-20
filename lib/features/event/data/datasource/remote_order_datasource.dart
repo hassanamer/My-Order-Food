@@ -23,7 +23,9 @@ abstract class RemoteOrderDatasourceInterface
     extends FirebaseDatasourceProvider {
   RemoteOrderDatasourceInterface() : super._internal();
 
-  Future<List<CreateOrderEntity>> getAllOrders();
+  Future<List<OrderEntity>> getAllOrders();
+
+  Future<OrderEntity> getOrder(String orderId);
 
   Future<RegisterAccountModel> getUser(String userId);
 
@@ -40,12 +42,10 @@ class RemoteOrderDatasource extends RemoteOrderDatasourceInterface {
   @override
   Future<BaseResponse> addOrder(OrderModel orderModel) async {
     try {
-      await firebaseFirestore.collection("Order").doc(orderModel.id).set({
-        "userId": orderModel.userId,
-        "items": orderModel.items?.map((item) => item.toMap()).toList(),
-        "id": orderModel.id,
-        "title": orderModel.title,
-      });
+      await firebaseFirestore
+          .collection("Order")
+          .doc(orderModel.id)
+          .set(orderModel.toMap());
       await AwesomeNotificationService.showNotification(
           title: orderModel.title ?? '', body: '');
       return BaseResponse(status: true, message: "Order Added Successfully");
@@ -69,25 +69,14 @@ class RemoteOrderDatasource extends RemoteOrderDatasourceInterface {
   }
 
   @override
-  Future<List<CreateOrderEntity>> getAllOrders() async {
+  Future<List<OrderEntity>> getAllOrders() async {
     final retrieve = firebaseFirestore.collection("Order");
     final querySnapshot = await retrieve.get();
-    List<CreateOrderEntity> orders = [];
+    List<OrderEntity> orders = [];
     for (QueryDocumentSnapshot<Map<String, dynamic>> doc
         in querySnapshot.docs) {
       var data = doc.data();
-      orders.add(CreateOrderEntity(
-        id: doc.id,
-        userId: data['userId'] ?? '',
-        title: data['title'] ?? '',
-        items: (data['items'] as List<dynamic>?)
-            ?.map((item) => OrderItem(
-                  itemName: item['itemName'] ?? '',
-                  quantity: item['quantity'] ?? 0,
-                  userId: item['userId'] ?? '',
-                ))
-            .toList(),
-      ));
+      orders.add(OrderEntity.fromMap(data));
     }
     return orders;
   }
@@ -105,15 +94,22 @@ class RemoteOrderDatasource extends RemoteOrderDatasourceInterface {
   @override
   Future<BaseResponse> updateOrder(OrderModel orderModel) async {
     try {
-      await firebaseFirestore.collection("Order").doc(orderModel.id).update({
-        "userId": orderModel.userId,
-        "items": orderModel.items?.map((item) => item.toMap()).toList(),
-        "id": orderModel.id,
-        "title": orderModel.title,
-      });
+      await firebaseFirestore
+          .collection("Order")
+          .doc(orderModel.id)
+          .update(orderModel.toMap());
       return BaseResponse(status: true, message: "Order Updated Successfully");
     } catch (e) {
       return BaseResponse(status: false, message: e.toString());
     }
+  }
+
+  @override
+  Future<OrderEntity> getOrder(String orderId) async {
+    DocumentSnapshot<Map<String, dynamic>> doc =
+        await firebaseFirestore.collection("Order").doc(orderId).get();
+
+    var data = doc.data()!;
+    return OrderEntity.fromMap(data);
   }
 }

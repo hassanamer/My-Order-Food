@@ -43,7 +43,7 @@ class EventCubit extends Cubit<EventState> {
     }
   }
 
-  Future<void> addEvent(CreateOrderEntity eventEntity) async {
+  Future<void> addEvent(OrderEntity eventEntity) async {
     try {
       emit(EventLoadingState());
       addEventUsecase = sl();
@@ -97,7 +97,7 @@ class EventCubit extends Cubit<EventState> {
     }
   }
 
-  Future<void> updateEvent(CreateOrderEntity eventEntity) async {
+  Future<void> updateEvent(OrderEntity eventEntity) async {
     try {
       emit(EventLoadingState());
       updateEventUsecase = sl();

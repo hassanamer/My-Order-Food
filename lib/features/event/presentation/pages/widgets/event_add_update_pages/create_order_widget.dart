@@ -11,7 +11,7 @@ import 'package:order/features/event/presentation/pages/widgets/event_add_update
 import 'package:order/features/event/presentation/pages/widgets/event_add_update_pages/text_form_field_widget.dart';
 
 class CreateOrderWidget extends StatefulWidget {
-  final CreateOrderEntity? eventEntity;
+  final OrderEntity? eventEntity;
   final bool isUpdateEvent;
 
   const CreateOrderWidget({
@@ -163,7 +163,7 @@ class _CreateOrderWidgetState extends State<CreateOrderWidget> {
     bool allItemsHaveQuantity = itemList.every((item) => item.quantity > 0);
 
     if (isValid && allItemsHaveQuantity) {
-      final createOrderEntity = CreateOrderEntity(
+      final createOrderEntity = OrderEntity(
         id: widget.isUpdateEvent
             ? widget.eventEntity!.id
             : random.nextInt(10).toString(),

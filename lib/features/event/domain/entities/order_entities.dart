@@ -1,26 +1,56 @@
-class CreateOrderEntity {
-  final String? id;
+import '../../data/models/order_model.dart';
+
+class OrderEntity {
+  final String id;
   final String? userId;
   final String? title;
+  final String? createdAt;
   late final List<OrderItem>? items;
 
-  CreateOrderEntity({
-    this.id,
+  OrderEntity({
+    required this.id,
     this.userId,
     this.title,
     this.items,
+    this.createdAt,
   });
+
+  factory OrderEntity.fromMap(Map<String, dynamic> map) {
+    return OrderEntity(
+      id: map["id"],
+      userId: map['userId'] ?? '',
+      title: map['title'] ?? '',
+      createdAt: map['createdAt'],
+      items: (map['items'] as List<dynamic>?)
+          ?.map((item) => OrderItem.fromMap(item))
+          .toList(),
+    );
+  }
+
+  toOrderModel() {
+    return OrderModel(
+      userId: userId,
+      id: id,
+      title: title,
+      items: items,
+      createdAt: createdAt,
+    );
+  }
 }
 
 class OrderItem {
   String userId;
   String itemName;
   int quantity;
+  double? price;
+  double? totalPrice;
 
   OrderItem({
     required this.userId,
     required this.itemName,
     this.quantity = 0,
+    this.price,
+    this.totalPrice,
   });
 
   Map<String, dynamic> toMap() {
@@ -28,6 +58,8 @@ class OrderItem {
       'itemName': itemName,
       'quantity': quantity,
       'userId': userId,
+      'price': price,
+      'totalPrice': totalPrice,
     };
   }
 
@@ -36,6 +68,8 @@ class OrderItem {
       itemName: map['itemName'] ?? '',
       quantity: map['quantity']?.toInt() ?? 0,
       userId: map['userId'] ?? '',
+      price: map['price'],
+      totalPrice: map['totalPrice'],
     );
   }
 }

@@ -30,7 +30,7 @@ class OrderCubit extends Cubit<OrderState> {
     }
   }
 
-  Future<void> addOrder(CreateOrderEntity eventEntity) async {
+  Future<void> addOrder(OrderEntity eventEntity) async {
     try {
       emit(OrderLoadingState());
       addOrderUsecase = sl();
@@ -52,7 +52,7 @@ class OrderCubit extends Cubit<OrderState> {
     }
   }
 
-  Future<void> updateOrder(CreateOrderEntity eventEntity) async {
+  Future<void> updateOrder(OrderEntity eventEntity) async {
     try {
       emit(OrderLoadingState());
       updateOrderUsecase = sl();
@@ -67,8 +67,8 @@ class OrderCubit extends Cubit<OrderState> {
     }
   }
 
-  Future<void> addOrUpdateItem(CreateOrderEntity createOrderEntity,
-      String itemName, int quantity, String userId) async {
+  Future<void> addOrUpdateItem(OrderEntity createOrderEntity, String itemName,
+      int quantity, String userId) async {
     try {
       // Ensure items list is initialized
       createOrderEntity.items ??= [];
@@ -91,7 +91,7 @@ class OrderCubit extends Cubit<OrderState> {
   }
 
   Future<void> removeItem(
-      CreateOrderEntity createOrderEntity, String itemName) async {
+      OrderEntity createOrderEntity, String itemName) async {
     try {
       // Ensure items list is initialized
       createOrderEntity.items ??= [];

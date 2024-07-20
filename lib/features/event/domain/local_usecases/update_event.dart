@@ -6,7 +6,7 @@ class UpdateEventUsecase {
 
   UpdateEventUsecase(this.eventRepsitory);
 
-  Future<BaseResponse> call(CreateOrderEntity eventEntity) async {
+  Future<BaseResponse> call(OrderEntity eventEntity) async {
     return await eventRepsitory.updateOrder(eventEntity);
   }
 }

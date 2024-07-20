@@ -23,7 +23,7 @@ class MessageAddDeleteUpdateEventState extends OrderState {
 class OrderLoadingState extends OrderState {}
 
 class OrderLoadedState extends OrderState {
-  final List<CreateOrderEntity> eventEntity;
+  final List<OrderEntity> eventEntity;
 
   // List<RegisterAccountEntity> UserEntity = [];
 

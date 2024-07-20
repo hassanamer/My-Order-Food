@@ -10,7 +10,7 @@ class OrderRepositoryImpl implements OrderRepository {
   OrderRepositoryImpl(this.remoteOrderDatasource);
 
   @override
-  Future<BaseResponse> remoteAddOrders(CreateOrderEntity eventEntity) async {
+  Future<BaseResponse> remoteAddOrders(OrderEntity eventEntity) async {
     return await remoteOrderDatasource
         .addOrder(OrderModel.fromEntity(eventEntity));
   }
@@ -21,18 +21,14 @@ class OrderRepositoryImpl implements OrderRepository {
   }
 
   @override
-  Future<List<CreateOrderEntity>> remoteGetAllOrders() async {
+  Future<List<OrderEntity>> remoteGetAllOrders() async {
     return await remoteOrderDatasource.getAllOrders();
   }
 
   @override
-  Future<BaseResponse> remoteUpdateOrders(CreateOrderEntity eventEntity) async {
-    final OrderModel orderModel = OrderModel(
-      items: eventEntity.items,
-      title: eventEntity.title,
-      userId: eventEntity.userId,
-      id: eventEntity.id,
-    );
+  Future<BaseResponse> remoteUpdateOrder(OrderEntity orderEntity) async {
+    final OrderModel orderModel = orderEntity.toOrderModel();
+
     return await remoteOrderDatasource.updateOrder(orderModel);
   }
 
