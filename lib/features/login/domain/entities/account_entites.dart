@@ -1,5 +1,5 @@
 class Account {
-  final String? idUser;
+  final String? userId;
   final String? username;
   final String? password;
   final String? name;
@@ -8,8 +8,9 @@ class Account {
   final String? gender;
   final String? message;
   final int? replyCode;
+
   Account({
-    this.idUser,
+    this.userId,
     this.username,
     this.password,
     this.name,

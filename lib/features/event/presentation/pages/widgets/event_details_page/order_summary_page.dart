@@ -18,9 +18,71 @@ class OrderSummaryPage extends StatefulWidget {
 }
 
 class _OrderSummaryPageState extends State<OrderSummaryPage> {
+  Map<String, TextEditingController> priceControllers = {};
+  Map<String, double> itemTotalPrices = {};
+  Map<String, double> userTotalPrices = {};
+
+  @override
+  void initState() {
+    super.initState();
+    _initializePriceControllers();
+  }
+
+  void _initializePriceControllers() {
+    List<dynamic> items = widget.orderData['items'] ?? [];
+    for (var item in items) {
+      String itemId = item['id'] ?? '';
+      priceControllers[itemId] = TextEditingController();
+      // Initialize the controller with the price if available
+      priceControllers[itemId]!.text = item['price']?.toString() ?? '';
+      priceControllers[itemId]!
+          .addListener(() => _updateItemPrice(itemId, item['quantity'] ?? 1));
+    }
+  }
+
+  void _updateItemPrice(String itemId, int quantity) {
+    double price =
+        double.tryParse(priceControllers[itemId]?.text ?? '0') ?? 0.0;
+    setState(() {
+      itemTotalPrices[itemId] = price * quantity;
+      _updateUserTotalPrices();
+    });
+  }
+
+  void _updateUserTotalPrices() {
+    // Clear previous user totals
+    userTotalPrices.clear();
+
+    // Recalculate totals based on the current item prices
+    Map<String, double> tempUserTotals = {};
+
+    widget.orderData['items']?.forEach((item) {
+      String userId = item['userId'] ?? 'Unknown';
+      double itemTotal = itemTotalPrices[item['id']] ?? 0.0;
+
+      if (tempUserTotals.containsKey(userId)) {
+        tempUserTotals[userId] = tempUserTotals[userId]! + itemTotal;
+      } else {
+        tempUserTotals[userId] = itemTotal;
+      }
+    });
+
+    setState(() {
+      userTotalPrices = tempUserTotals;
+    });
+  }
+
+  @override
+  void dispose() {
+    for (var controller in priceControllers.values) {
+      controller.dispose();
+    }
+    super.dispose();
+  }
+
   @override
   Widget build(BuildContext context) {
-    List<dynamic> items = widget.orderData['items'];
+    List<dynamic> items = widget.orderData['items'] ?? [];
     String createdAt = widget.orderData['created_at'] != null
         ? DateFormat('yyyy-MM-dd hh:mm a')
             .format((widget.orderData['created_at'] as Timestamp).toDate())
@@ -29,7 +91,7 @@ class _OrderSummaryPageState extends State<OrderSummaryPage> {
     // Group items by userId
     Map<String, List<dynamic>> itemsGroupedByUser = {};
     for (var item in items) {
-      String userId = item['userId'];
+      String userId = item['userId'] ?? 'Unknown';
       if (!itemsGroupedByUser.containsKey(userId)) {
         itemsGroupedByUser[userId] = [];
       }
@@ -65,68 +127,60 @@ class _OrderSummaryPageState extends State<OrderSummaryPage> {
               "Created At: $createdAt",
               style: const TextStyle(fontSize: 16),
             ),
+            const SizedBox(height: 10),
+            Text(
+              'Total (including VAT 14%): ${_calculateTotalPrice().toStringAsFixed(2)} L.E',
+              style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+            ),
           ],
         ),
       ),
     );
   }
 
+  double _calculateTotalPrice() {
+    double total = 0.0;
+    itemTotalPrices.values.forEach((price) {
+      total += price;
+    });
+    return total * 1.14; // Apply VAT
+  }
+
   Widget _buildUserItems(String userId, List<dynamic> items) {
-    Map<String, TextEditingController> priceControllers = {};
-    double totalPrice = 0.0;
-
-    return StatefulBuilder(
-      builder: (context, setState) {
-        double calculateTotalPrice() {
-          for (var item in items) {
-            double price =
-                double.tryParse(priceControllers[item['id']]?.text ?? '0') ??
-                    0.0;
-            totalPrice += price * item['quantity'];
-          }
-          return totalPrice;
-        }
-
-        return Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Text(
-              "User: $userId",
-              style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
-            ),
-            const SizedBox(height: 10),
-            ...items.map((item) {
-              String itemId = item['id'] ?? '';
-              priceControllers[itemId] = TextEditingController();
-
-              return _buildItem(
-                itemName: item['itemName'],
-                quantity: item['quantity'],
-                priceController: priceControllers[itemId]!,
-                onCalculate: () {
-                  setState(() {
-                    totalPrice = calculateTotalPrice() * 1.14; // Apply VAT
-                  });
-                },
-              );
-            }).toList(),
-            const SizedBox(height: 10),
-            Text(
-              'Total (including VAT 14%): ${totalPrice.toStringAsFixed(2)} L.E',
-              style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
-            ),
-            const SizedBox(height: 20),
-          ],
-        );
-      },
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Text(
+          "User: $userId",
+          style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+        ),
+        const SizedBox(height: 10),
+        ...items.map((item) {
+          String itemId = item['id'] ?? '';
+          return _buildItem(
+            itemName: item['itemName'] ?? 'Unknown',
+            quantity: item['quantity'] ?? 1,
+            priceController: priceControllers[itemId],
+            itemId: itemId,
+            itemQuantity: item['quantity'] ?? 1,
+          );
+        }).toList(),
+        const SizedBox(height: 10),
+        Text(
+          'Total for User: ${userTotalPrices[userId]?.toStringAsFixed(2) ?? '0.00'} L.E',
+          style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+        ),
+        const SizedBox(height: 20),
+      ],
     );
   }
 
   Widget _buildItem({
     required String itemName,
     required int quantity,
-    required TextEditingController priceController,
-    required VoidCallback onCalculate,
+    required TextEditingController? priceController,
+    required String itemId,
+    required int itemQuantity,
   }) {
     return Padding(
       padding: const EdgeInsets.symmetric(vertical: 8.0),
@@ -142,7 +196,7 @@ class _OrderSummaryPageState extends State<OrderSummaryPage> {
           ),
           const SizedBox(width: 10),
           SizedBox(
-            width: 80,
+            width: 100, // Adjust width to fit content
             child: TextFormField(
               controller: priceController,
               keyboardType: TextInputType.number,
@@ -150,11 +204,22 @@ class _OrderSummaryPageState extends State<OrderSummaryPage> {
                 labelText: 'Price',
                 border: OutlineInputBorder(),
               ),
+              onChanged: (_) => _updateItemPrice(itemId, itemQuantity),
             ),
           ),
+          const SizedBox(width: 10),
           IconButton(
             icon: const Icon(Icons.calculate),
-            onPressed: onCalculate,
+            onPressed: () {
+              if (priceController != null) {
+                _updateItemPrice(itemId, itemQuantity);
+              }
+            },
+          ),
+          const SizedBox(width: 10),
+          Text(
+            'Total: ${itemTotalPrices[itemId]?.toStringAsFixed(2) ?? '0.00'} L.E',
+            style: const TextStyle(fontSize: 16),
           ),
         ],
       ),
