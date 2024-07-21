@@ -14,7 +14,7 @@ class OrderCubit extends Cubit<OrderState> {
   late DeleteOrderUsecase deleteOrderUsecase;
   late UpdateOrderUsecase updateOrderUsecase;
   late GetAllOrderUsecase getAllOrderUsecase;
-  late GetUserOrderUsecase getUserOrderUsecase;
+  late GetUserUsecase getUserOrderUsecase;
 
   OrderCubit() : super(OrderStateInt());
 

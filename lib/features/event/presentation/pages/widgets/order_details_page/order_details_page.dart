@@ -24,7 +24,7 @@ class OrderDetailsPage extends StatefulWidget {
 }
 
 class _OrderDetailsPageState extends State<OrderDetailsPage> {
-  late GetUserOrderUsecase getUserOrderUsecase;
+  late GetUserUsecase getUserOrderUsecase;
   late AddOrderUsecase addOrderUsecase;
 
   User? currentUser = FirebaseAuth.instance.currentUser;
@@ -43,7 +43,9 @@ class _OrderDetailsPageState extends State<OrderDetailsPage> {
     for (var item in itemsList) {
       itemsGroupedByUser.putIfAbsent(item.userId, () => []).add(item);
     }
-    getUsers(itemsGroupedByUser).then((userMap) {
+    getUserOrderUsecase
+        .getUsers(itemsGroupedByUser.keys.toList())
+        .then((userMap) {
       setState(() {
         this.userMap = userMap;
         isLoading = false;
@@ -55,28 +57,9 @@ class _OrderDetailsPageState extends State<OrderDetailsPage> {
   initState() {
     super.initState();
     addOrderUsecase = sl();
+    getUserOrderUsecase = sl();
     itemsList = widget.orderEntity.items ?? [];
     updateOrdersAndUsers();
-  }
-
-  Future<Map<String, RegisterAccountModel>> getUsers(
-      Map<String, List<OrderItem>> itemsGroupedByUser) async {
-    getUserOrderUsecase = sl();
-
-    Map<String, RegisterAccountModel> userMap = {};
-
-    List<Future<void>> futures = [];
-
-    for (var entry in itemsGroupedByUser.entries) {
-      String userId = entry.key;
-      futures.add(getUserOrderUsecase.call(userId).then((user) {
-        userMap[userId] = user;
-      }));
-    }
-
-    await Future.wait(futures);
-
-    return userMap;
   }
 
   refreshOrder() async {

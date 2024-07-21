@@ -15,6 +15,7 @@ class OrderSummaryPage extends StatefulWidget {
   final String orderId;
   final OrderEntity orderEntity;
   late AddOrderUsecase addOrderUsecase;
+  late GetUserUsecase getUserUsecase;
 
   OrderSummaryPage({
     Key? key,
@@ -29,7 +30,7 @@ class OrderSummaryPage extends StatefulWidget {
 class _OrderSummaryPageState extends State<OrderSummaryPage> {
   var isLoading = true;
   Map<String, TextEditingController> priceControllers = {};
-
+  Map<String, RegisterAccountModel> userMap = {};
   Map<String, double> userTotalPrices = {};
   Map<String, List<OrderItem>> itemsGroupedByUser = {};
 
@@ -37,8 +38,14 @@ class _OrderSummaryPageState extends State<OrderSummaryPage> {
   void initState() {
     super.initState();
     widget.addOrderUsecase = sl();
+    widget.getUserUsecase = sl();
     // _initializePriceControllers();
     _intializeItemsGroupedByUser();
+    widget.getUserUsecase
+        .getUsers(itemsGroupedByUser.keys.toList())
+        .then((value) => setState(() {
+              userMap = value;
+            }));
   }
 
   void _intializeItemsGroupedByUser() {
@@ -135,7 +142,7 @@ class _OrderSummaryPageState extends State<OrderSummaryPage> {
                   String userId = itemsGroupedByUser.keys.elementAt(index);
                   List<OrderItem> userItems = itemsGroupedByUser[userId]!;
                   return UserItemsTile(
-                    userId: userId,
+                    user: userMap[userId],
                     items: userItems,
                     itemTotalPrice: widget.itemTotalPrices,
                     updateOrderPrices: _updateItemTotalPrice,
@@ -153,23 +160,21 @@ class _OrderSummaryPageState extends State<OrderSummaryPage> {
 }
 
 class UserItemsTile extends StatefulWidget {
-  final String userId;
+  final RegisterAccountModel? user;
   final List<OrderItem> items;
   final OrderEntity orderEntity;
 
 //  final Map<String, TextEditingController> priceControllers;
   final Map<String, double> itemTotalPrice;
   final Function() updateOrderPrices;
-  final RegisterAccountModel? user;
 
   const UserItemsTile({
     Key? key,
-    required this.userId,
+    required this.user,
     required this.items,
     // required this.priceControllers,
     required this.itemTotalPrice,
     required this.updateOrderPrices,
-    this.user,
     required this.orderEntity,
   }) : super(key: key);
 
@@ -178,7 +183,7 @@ class UserItemsTile extends StatefulWidget {
 }
 
 class _UserItemsTileState extends State<UserItemsTile> {
-  late GetUserOrderUsecase getUserOrderUsecase;
+  late GetUserUsecase getUserOrderUsecase;
 
   double calculateTotalPrice() {
     double total = 0.0;
@@ -194,45 +199,10 @@ class _UserItemsTileState extends State<UserItemsTile> {
   List<OrderItem> itemsList = [];
   bool isLoading = true;
 
-  updateOrdersAndUsers() {
-    userMap = {};
-    itemsGroupedByUser = {};
-    for (var item in itemsList) {
-      itemsGroupedByUser.putIfAbsent(item.userId, () => []).add(item);
-    }
-    getUsers(itemsGroupedByUser).then((userMap) {
-      setState(() {
-        this.userMap = userMap;
-        isLoading = false;
-      });
-    });
-  }
-
   @override
   initState() {
     super.initState();
     itemsList = widget.orderEntity.items ?? [];
-    updateOrdersAndUsers();
-  }
-
-  Future<Map<String, RegisterAccountModel>> getUsers(
-      Map<String, List<OrderItem>> itemsGroupedByUser) async {
-    getUserOrderUsecase = sl();
-
-    Map<String, RegisterAccountModel> userMap = {};
-
-    List<Future<void>> futures = [];
-
-    for (var entry in itemsGroupedByUser.entries) {
-      String userId = entry.key;
-      futures.add(getUserOrderUsecase.call(userId).then((user) {
-        userMap[userId] = user;
-      }));
-    }
-
-    await Future.wait(futures);
-
-    return userMap;
   }
 
   @override

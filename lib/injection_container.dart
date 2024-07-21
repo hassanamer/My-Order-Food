@@ -99,8 +99,8 @@ void init() {
   sl.registerLazySingleton<AddOrderUsecase>(
       () => AddOrderUsecase(sl<OrderRepository>()));
 
-  sl.registerLazySingleton<GetUserOrderUsecase>(
-      () => GetUserOrderUsecase(sl<OrderRepository>()));
+  sl.registerLazySingleton<GetUserUsecase>(
+      () => GetUserUsecase(sl<OrderRepository>()));
 
   sl.registerLazySingleton<UpdateOrderUsecase>(
       () => UpdateOrderUsecase(sl<OrderRepository>()));
