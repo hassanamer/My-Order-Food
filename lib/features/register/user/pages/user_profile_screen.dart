@@ -146,7 +146,7 @@ class _UserProfileScreenState extends State<UserProfileScreen> {
       try {
         final storageRef = FirebaseStorage.instance
             .ref()
-            .child('user_profiles')
+            .child('Users')
             .child(currentUser.uid);
         await storageRef.putFile(_imageFile!);
         String downloadUrl = await storageRef.getDownloadURL();

@@ -7,6 +7,7 @@ class RegisterAccountModel extends RegisterAccountEntity {
     String? name,
     String? email,
     String? phoneNumber,
+    String? profileImageUrl,
     String? gender,
     String? message,
     int? replyCode,
@@ -14,6 +15,7 @@ class RegisterAccountModel extends RegisterAccountEntity {
           userId: userId,
           username: username,
           email: email,
+          profileImageUrl: profileImageUrl,
           gender: gender,
           name: name,
           phoneNumber: phoneNumber,
@@ -28,6 +30,7 @@ class RegisterAccountModel extends RegisterAccountEntity {
       'name': name,
       'email': email,
       'gender': gender,
+      'profileImageUrl': profileImageUrl,
       'phoneNumber': phoneNumber,
     };
   }
@@ -41,6 +44,7 @@ class RegisterAccountModel extends RegisterAccountEntity {
       username: map['userName'] ?? '',
       email: map['email'] ?? '',
       gender: map['gender'] ?? '',
+      profileImageUrl: map['profileImageUrl'] ?? '',
       name: map['name'] ?? '',
       phoneNumber: map['phoneNumber'] ?? '',
     );

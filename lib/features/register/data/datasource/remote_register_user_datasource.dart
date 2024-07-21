@@ -38,6 +38,7 @@ class RemoteRegisterDatasourceImlp implements RemoteRegisterDatasource {
         "name": registerAccountEntity.name,
         "phoneNumber": registerAccountEntity.phoneNumber,
         "userName": registerAccountEntity.username,
+        "profileImageUrl": registerAccountEntity.profileImageUrl,
       });
 
       return RegisterAccountEntity(
@@ -48,6 +49,7 @@ class RemoteRegisterDatasourceImlp implements RemoteRegisterDatasource {
         phoneNumber: registerAccountEntity.phoneNumber,
         username: registerAccountEntity.username,
         message: registerAccountEntity.message,
+        profileImageUrl: registerAccountEntity.profileImageUrl,
       );
     } on FirebaseAuthException catch (e) {
       switch (e.code) {

@@ -75,7 +75,7 @@ class _OrderSummaryPageState extends State<OrderSummaryPage> {
       isLoading = true;
     });
 
-    await widget.addOrderUsecase.updatePrice(widget.orderEntity);
+    await widget.addOrderUsecase.update(widget.orderEntity);
     // _updateUserTotalPrices();
     setState(() {
       isLoading = false;
@@ -130,10 +130,6 @@ class _OrderSummaryPageState extends State<OrderSummaryPage> {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            const Text(
-              "Items:",
-              style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
-            ),
             const SizedBox(height: 10),
             Expanded(
               child: ListView.builder(
@@ -144,8 +140,8 @@ class _OrderSummaryPageState extends State<OrderSummaryPage> {
                   return UserItemsTile(
                     user: userMap[userId],
                     items: userItems,
-                    itemTotalPrice: widget.itemTotalPrices,
-                    updateOrderPrices: _updateItemTotalPrice,
+                    // itemTotalPrice: widget.itemTotalPrices,
+                    updateOrder: _updateItemTotalPrice,
                     orderEntity: widget.orderEntity,
                   );
                 },
@@ -165,16 +161,15 @@ class UserItemsTile extends StatefulWidget {
   final OrderEntity orderEntity;
 
 //  final Map<String, TextEditingController> priceControllers;
-  final Map<String, double> itemTotalPrice;
-  final Function() updateOrderPrices;
+//   final Map<String, double> itemTotalPrice;
+  final Function() updateOrder;
 
   const UserItemsTile({
     Key? key,
     required this.user,
     required this.items,
-    // required this.priceControllers,
-    required this.itemTotalPrice,
-    required this.updateOrderPrices,
+    // required this.itemTotalPrice,
+    required this.updateOrder,
     required this.orderEntity,
   }) : super(key: key);
 
@@ -185,24 +180,26 @@ class UserItemsTile extends StatefulWidget {
 class _UserItemsTileState extends State<UserItemsTile> {
   late GetUserUsecase getUserOrderUsecase;
 
-  double calculateTotalPrice() {
-    double total = 0.0;
-    widget.itemTotalPrice.values.forEach((price) {
-      total += price;
-    });
-    return total * 1.14;
-  }
-
-  final FirebaseFirestore _firestore = FirebaseFirestore.instance;
   Map<String, List<OrderItem>> itemsGroupedByUser = {};
   Map<String, RegisterAccountModel> userMap = {};
   List<OrderItem> itemsList = [];
   bool isLoading = true;
+  double? totalPrice;
 
   @override
   initState() {
     super.initState();
     itemsList = widget.orderEntity.items ?? [];
+  }
+
+  double calculateTotalPrice() {
+    double total = 0.0;
+    for (var item in widget.items) {
+      total += item.totalPrice ?? 0;
+    }
+    // Apply VAT (14%)
+    double totalWithVAT = total * 1.14;
+    return totalWithVAT;
   }
 
   @override
@@ -239,13 +236,51 @@ class _UserItemsTileState extends State<UserItemsTile> {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Padding(
-                      padding: const EdgeInsets.all(10.0),
-                      child: Text(
-                        'User: ${widget.user?.name}',
-                        style: const TextStyle(
-                          fontSize: 18,
-                          fontWeight: FontWeight.bold,
-                          color: Colors.white,
+                      padding: const EdgeInsets.all(5.0),
+                      child: Container(
+                        padding: const EdgeInsets.symmetric(
+                            horizontal: 10, vertical: 5),
+                        decoration: const BoxDecoration(
+                          boxShadow: [
+                            BoxShadow(
+                              blurRadius: 9,
+                              color: Colors.transparent,
+                            )
+                          ],
+                          color: Colors.transparent,
+                        ),
+                        child: Row(
+                          children: [
+                            CircleAvatar(
+                              backgroundColor:
+                                  const Color.fromRGBO(72, 129, 255, 0.06),
+                              radius: 50,
+                              backgroundImage:
+                                  '${widget.user?.profileImageUrl}'.isNotEmpty
+                                      ? NetworkImage(
+                                          '${widget.user?.profileImageUrl}')
+                                      : null,
+                              child: '${widget.user?.profileImageUrl}'.isEmpty
+                                  ? const Icon(Icons.add_a_photo,
+                                      size: 50, color: Colors.white)
+                                  : null,
+                            ),
+                            const SizedBox(width: 20),
+                            Expanded(
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.stretch,
+                                children: [
+                                  Text(
+                                    '${widget.user?.name}',
+                                    style: const TextStyle(
+                                        fontWeight: FontWeight.bold,
+                                        fontSize: 22.0,
+                                        color: Colors.white),
+                                  ),
+                                ],
+                              ),
+                            ),
+                          ],
                         ),
                       ),
                     ),
@@ -257,48 +292,69 @@ class _UserItemsTileState extends State<UserItemsTile> {
                                 mainAxisAlignment:
                                     MainAxisAlignment.spaceBetween,
                                 children: [
-                                  Text(
-                                    item.itemName,
-                                    style: const TextStyle(
-                                      fontSize: 22,
-                                      fontWeight: FontWeight.bold,
-                                      color: Colors.white,
+                                  Expanded(
+                                    child: Text(
+                                      item.itemName,
+                                      maxLines: 2,
+                                      overflow: TextOverflow.ellipsis,
+                                      style: const TextStyle(
+                                        fontSize: 22,
+                                        fontWeight: FontWeight.bold,
+                                        color: Colors.white,
+                                      ),
                                     ),
                                   ),
-                                  Text(
-                                    'X: ${item.quantity}',
-                                    style: const TextStyle(
-                                      fontSize: 22,
-                                      fontWeight: FontWeight.bold,
-                                      color: Colors.white,
+                                  Expanded(
+                                    child: Text(
+                                      '${item.quantity}x',
+                                      style: const TextStyle(
+                                        fontSize: 22,
+                                        fontWeight: FontWeight.bold,
+                                        color: Colors.white,
+                                      ),
                                     ),
                                   ),
-                                  SizedBox(
-                                    width: 120,
-                                    height: 50,
-                                    child: Row(
-                                      children: [
-                                        Expanded(
-                                          child: TextField(
-                                            onSubmitted: (String price) {
-                                              setState(() {
-                                                item.price =
-                                                    double.tryParse(price);
-                                                item.totalPrice =
-                                                    (item.price ?? 0.0) *
-                                                        item.quantity;
-                                              });
-                                            },
-                                            keyboardType: TextInputType.number,
-                                            decoration: const InputDecoration(
-                                              labelText: 'Price',
-                                              border: OutlineInputBorder(),
-                                              filled: true,
-                                              fillColor: Colors.white,
+                                  Expanded(
+                                    child: SizedBox(
+                                      width: 120,
+                                      height: 50,
+                                      child: Row(
+                                        children: [
+                                          Expanded(
+                                            child: TextField(
+                                              onChanged: (String price) {
+                                                setState(() {
+                                                  item.price =
+                                                      double.tryParse(price);
+                                                  item.totalPrice =
+                                                      (item.price ?? 0.0) *
+                                                          item.quantity;
+                                                });
+                                              },
+                                              keyboardType:
+                                                  TextInputType.number,
+                                              decoration: const InputDecoration(
+                                                labelText: 'Price',
+                                                border: OutlineInputBorder(),
+                                                filled: true,
+                                                fillColor: Colors.white,
+                                              ),
                                             ),
                                           ),
-                                        ),
-                                      ],
+                                        ],
+                                      ),
+                                    ),
+                                  ),
+                                  ConstrainedBox(
+                                    constraints:
+                                        const BoxConstraints(minWidth: 60),
+                                    child: Text(
+                                      '${item.totalPrice ?? ""}',
+                                      style: const TextStyle(
+                                        fontSize: 22,
+                                        fontWeight: FontWeight.bold,
+                                        color: Colors.white,
+                                      ),
                                     ),
                                   ),
                                 ],
@@ -310,7 +366,8 @@ class _UserItemsTileState extends State<UserItemsTile> {
                       child: ElevatedButton(
                         onPressed: () {
                           setState(() {
-                            widget.updateOrderPrices();
+                            widget.updateOrder();
+                            totalPrice = calculateTotalPrice();
                           });
                         },
                         style: ButtonStyle(
@@ -342,7 +399,7 @@ class _UserItemsTileState extends State<UserItemsTile> {
                           ),
                         ),
                         child: const Text(
-                          'Calculate The Total Price...',
+                          'Calculate Total Price',
                           style: TextStyle(color: Colors.white),
                         ),
                       ),
@@ -350,25 +407,24 @@ class _UserItemsTileState extends State<UserItemsTile> {
                     const SizedBox(
                       height: 10,
                     ),
-                    const Column(
+                    Column(
                       children: [
                         // Text(
                         //   //$createdAt
                         //   "Created At: ",
                         //   style: TextStyle(color: Colors.white, fontSize: 16),
                         // ),
-                        SizedBox(height: 10),
+                        const SizedBox(height: 10),
                         Center(
                           child: Text(
-                            //${calculateTotalPrice()
-                            "Total (including VAT 14%): } 0.0 L.E",
-                            style: TextStyle(
+                            "Total (including VAT 14%): ${totalPrice ?? ""}  L.E",
+                            style: const TextStyle(
                                 color: Colors.white,
                                 fontSize: 18,
                                 fontWeight: FontWeight.bold),
                           ),
                         ),
-                        SizedBox(
+                        const SizedBox(
                           height: 10,
                         )
                       ],

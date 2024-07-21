@@ -53,7 +53,7 @@ class OrderItem {
     this.totalPrice,
   });
 
-  Map<String, dynamic> withPriceToMap() {
+  Map<String, dynamic> toMap() {
     return {
       'userId': userId,
       'price': price,

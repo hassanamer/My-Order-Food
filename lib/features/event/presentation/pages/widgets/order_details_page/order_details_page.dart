@@ -113,7 +113,11 @@ class _OrderDetailsPageState extends State<OrderDetailsPage> {
               width: double.infinity,
               child: ElevatedButton(
                 onPressed: () async {
-                  await _updateFirestore();
+                  await _updateOrder().then((value) {
+                    ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
+                      content: Text('Order placed successfully!'),
+                    ));
+                  });
                   await Navigator.push(
                     context,
                     MaterialPageRoute(
@@ -278,7 +282,7 @@ class _OrderDetailsPageState extends State<OrderDetailsPage> {
     }
   }
 
-  Future<void> _updateFirestore() async {
+  Future<void> _updateOrder() async {
     addOrderUsecase.update(widget.orderEntity);
   }
 }

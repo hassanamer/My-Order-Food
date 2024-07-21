@@ -77,6 +77,8 @@ class _MyAppState extends State<MyApp> {
           BlocProvider(create: (_) => di.sl<MenuCubit>()..getAllMenu()),
           BlocProvider(create: (_) => di.sl<CartCubit>()..getAllCartItems()),
           BlocProvider(create: (_) => di.sl<ProfileCubit>()),
+          BlocProvider(
+              create: (_) => di.sl<ProfileCubit>()..fetchUserProfile()),
         ],
         child: GetMaterialApp(
           title: 'Food App',

@@ -10,8 +10,6 @@ abstract class OrderRepository {
 
   Future<BaseResponse> remoteUpdateOrder(OrderEntity orderEntity);
 
-  Future<BaseResponse> remoteUpdatePriceOrder(OrderEntity orderEntity);
-
   Future<BaseResponse> remoteDeleteOrders();
 
   Future<OrderEntity> remoteGetOrder(String orderId);

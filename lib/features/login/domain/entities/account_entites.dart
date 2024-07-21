@@ -7,6 +7,7 @@ class Account {
   final String? phoneNumber;
   final String? gender;
   final String? message;
+  final String? profileImageUrl;
   final int? replyCode;
 
   Account({
@@ -19,6 +20,7 @@ class Account {
     this.gender,
     this.message,
     this.replyCode,
+    this.profileImageUrl,
   });
 }
 

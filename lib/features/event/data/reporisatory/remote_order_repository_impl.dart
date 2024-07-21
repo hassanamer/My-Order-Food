@@ -33,13 +33,6 @@ class OrderRepositoryImpl implements OrderRepository {
   }
 
   @override
-  Future<BaseResponse> remoteUpdatePriceOrder(OrderEntity orderEntity) async {
-    final OrderModel orderModel = orderEntity.toOrderModel();
-
-    return await remoteOrderDatasource.updatePriceOrder(orderModel);
-  }
-
-  @override
   Future<RegisterAccountModel> remoteGetUser(String userId) async {
     return await remoteOrderDatasource.getUser(userId);
   }
