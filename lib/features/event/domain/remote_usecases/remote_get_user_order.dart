@@ -1,4 +1,4 @@
-import 'package:order/features/event/domain/reporisatory/ticket_reporisatory.dart';
+import 'package:order/features/event/domain/reporisatory/order_repository.dart';
 import 'package:order/features/register/data/models/register_account_model.dart';
 
 class GetUserOrderUsecase {

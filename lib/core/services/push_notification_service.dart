@@ -14,7 +14,6 @@ class PushNotificationService {
     if (Platform.isIOS) {
       _fcm.requestPermission();
     }
-
     const AndroidInitializationSettings('ic_launcher');
     var initialzationSettingsAndroid =
         const AndroidInitializationSettings('@mipmap/ic_launcher');

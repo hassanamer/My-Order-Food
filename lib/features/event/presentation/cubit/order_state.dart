@@ -23,11 +23,11 @@ class MessageAddDeleteUpdateEventState extends OrderState {
 class OrderLoadingState extends OrderState {}
 
 class OrderLoadedState extends OrderState {
-  final List<OrderEntity> eventEntity;
+  final List<OrderEntity> orderEntity;
 
   // List<RegisterAccountEntity> UserEntity = [];
 
-  OrderLoadedState({required this.eventEntity});
+  OrderLoadedState({required this.orderEntity});
 }
 
 class OrderErrorState extends OrderState {
@@ -35,37 +35,3 @@ class OrderErrorState extends OrderState {
 
   OrderErrorState({required this.errorMessage});
 }
-
-class CommentSuccessState extends OrderState {
-  CommentSuccessState(addedComment);
-}
-
-class CommentLoadedState extends OrderState {
-  final List<String?> eventEntity;
-
-  CommentLoadedState({required this.eventEntity});
-}
-
-class CommentLoadingState extends OrderState {}
-
-class MessageSuccessState extends OrderState {
-  MessageSuccessState(addedMessage);
-}
-
-class MeesageLoadedState extends OrderState {
-  final List<String?> messageEntity;
-
-  MeesageLoadedState({required this.messageEntity});
-}
-
-class MeesageLoadingState extends OrderState {}
-// last
-
-class MessageInit extends OrderState {}
-
-class MessageLoadingState extends OrderState {}
-
-// class MessageLoadedState extends TicketState {
-//   final List<ChattModel> messages;
-//   MessageLoadedState({required this.messages});
-// }

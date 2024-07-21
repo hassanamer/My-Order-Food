@@ -1,5 +1,5 @@
 import 'package:order/features/event/domain/entities/order_entities.dart';
-import 'package:order/features/event/domain/reporisatory/ticket_reporisatory.dart';
+import 'package:order/features/event/domain/reporisatory/order_repository.dart';
 
 class UpdateOrderUsecase {
   final OrderRepository ticketReporisatory;

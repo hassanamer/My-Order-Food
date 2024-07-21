@@ -1,10 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:order/features/restaurant/presentation/pages/get_menu_pages/get_menu_page.dart';
 
-import '../../../../../restaurant/data/model/restaurant_model.dart';
+import '../../../../../../restaurant/data/model/restaurant_model.dart';
 
 class RowImageTextRestaurantWidget extends StatefulWidget {
   final List<RestaurantModel> restaurantModel;
+
   const RowImageTextRestaurantWidget(
       {super.key, required this.restaurantModel});
 

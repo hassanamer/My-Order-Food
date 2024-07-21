@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:order/features/event/domain/entities/order_entities.dart';
-import 'package:order/features/event/presentation/pages/widgets/event_details_page/event_detail_page.dart';
+import 'package:order/features/event/presentation/pages/widgets/order_details_page/order_details_page.dart';
 
 class EventWidget extends StatelessWidget {
   final List<OrderEntity> eventEntity;
@@ -28,7 +28,7 @@ class EventWidget extends StatelessWidget {
           // ),
           contentPadding: const EdgeInsets.symmetric(horizontal: 10),
           onTap: () {
-            Get.to(EventDetailsPage(
+            Get.to(OrderDetailsPage(
               orderEntity: eventEntity[index],
             ));
           },

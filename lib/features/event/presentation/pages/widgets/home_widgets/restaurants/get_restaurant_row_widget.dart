@@ -5,7 +5,7 @@ import 'package:order/core/widgets/loading_widget.dart';
 import 'package:order/features/restaurant/presentation/cubit/restaurant_cubit.dart';
 import 'package:order/features/restaurant/presentation/cubit/restaurant_state.dart';
 
-import 'row_image_text_restaurant_widget.dart';
+import '../home/row_image_text_restaurant_widget.dart';
 
 class GetRestaurantRowWidget extends StatefulWidget {
   const GetRestaurantRowWidget({super.key});

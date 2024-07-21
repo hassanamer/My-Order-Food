@@ -2,24 +2,25 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:order/features/event/domain/entities/order_entities.dart';
 import 'package:order/features/event/presentation/cubit/order_cubit.dart';
-import 'package:order/features/event/presentation/pages/widgets/home_widgets/tickets_list_title_widget.dart';
+import 'package:order/features/event/presentation/pages/widgets/home_widgets/orders/orders_list_title_widget.dart';
 
-import '../../../../../restaurant/presentation/pages/get_all_restaurants_page/all_restaurants_page.dart';
-import 'custome_row_home_widget.dart';
-import 'get_restaurant_row_widget.dart';
+import '../../../../../../restaurant/presentation/pages/get_all_restaurants_page/all_restaurants_page.dart';
+import '../home/custome_row_home_widget.dart';
+import '../restaurants/get_restaurant_row_widget.dart';
 
-class TicketWidget extends StatefulWidget {
-  final List<OrderEntity> eventEntity;
+class HomePageOrdersWidget extends StatefulWidget {
+  final List<OrderEntity> orderEntity;
 
   // final List<RegisterAccountEntity> UserEntity;
 
-  const TicketWidget({Key? key, required this.eventEntity}) : super(key: key);
+  const HomePageOrdersWidget({Key? key, required this.orderEntity})
+      : super(key: key);
 
   @override
-  State<TicketWidget> createState() => _TicketWidgetState();
+  State<HomePageOrdersWidget> createState() => _HomePageOrdersWidgetState();
 }
 
-class _TicketWidgetState extends State<TicketWidget> {
+class _HomePageOrdersWidgetState extends State<HomePageOrdersWidget> {
   // final List<CreateOrderEntity> filter1 = [];
 
   Future<void> _refresh() async {
@@ -76,11 +77,11 @@ class _TicketWidgetState extends State<TicketWidget> {
             flex: 4,
             child: ListView.separated(
                 shrinkWrap: true,
-                itemCount: widget.eventEntity.length,
+                itemCount: widget.orderEntity.length,
                 itemBuilder: (context, index) {
-                  return TicketsListTitleWidget(
-                    title: widget.eventEntity[index].title ?? '',
-                    eventEntity: widget.eventEntity[index],
+                  return OrdersListTitleWidget(
+                    title: widget.orderEntity[index].title ?? '',
+                    eventEntity: widget.orderEntity[index],
                   );
                 },
                 separatorBuilder: (context, index) => divider),

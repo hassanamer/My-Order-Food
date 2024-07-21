@@ -3,18 +3,18 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:order/core/theme_app.dart';
 
-import '../../../../../../gen/assets.gen.dart';
-import '../../../cubit/order_cubit.dart';
-import 'get_restaurant_row_widget.dart';
+import '../../../../../../../gen/assets.gen.dart';
+import '../../../../cubit/order_cubit.dart';
+import '../restaurants/get_restaurant_row_widget.dart';
 
-class TicketEmptyListWidget extends StatefulWidget {
-  const TicketEmptyListWidget({super.key});
+class OrdersEmptyListWidget extends StatefulWidget {
+  const OrdersEmptyListWidget({super.key});
 
   @override
-  State<TicketEmptyListWidget> createState() => _TicketEmptyListWidgetState();
+  State<OrdersEmptyListWidget> createState() => _OrdersEmptyListWidgetState();
 }
 
-class _TicketEmptyListWidgetState extends State<TicketEmptyListWidget> {
+class _OrdersEmptyListWidgetState extends State<OrdersEmptyListWidget> {
   Future<void> _refresh() async {
     setState(() {
       context.read<OrderCubit>().getAllOrders();
@@ -46,7 +46,7 @@ class _TicketEmptyListWidgetState extends State<TicketEmptyListWidget> {
                     ),
                     const SizedBox(height: 12),
                     Text(
-                      "There is no open session at the moment..!  :) ",
+                      "There is no open orders at the moment..!  :) ",
                       style: TextStyle(color: appTheme.primaryColor),
                     )
                   ],

@@ -7,8 +7,9 @@ import 'package:fluttertoast/fluttertoast.dart';
 import 'package:order/core/theming/colors.dart';
 import 'package:order/features/event/domain/entities/order_entities.dart';
 import 'package:order/features/event/presentation/cubit/order_cubit.dart';
-import 'package:order/features/event/presentation/pages/widgets/event_add_update_pages/create_order_button.dart';
-import 'package:order/features/event/presentation/pages/widgets/event_add_update_pages/text_form_field_widget.dart';
+import 'package:order/features/event/presentation/pages/widgets/create_order_pages/text_form_field_widget.dart';
+
+import 'create_order_button.dart';
 
 class CreateOrderWidget extends StatefulWidget {
   final OrderEntity? eventEntity;

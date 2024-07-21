@@ -8,8 +8,10 @@ import 'package:order/features/event/domain/entities/order_entities.dart';
 import '../../../../../../injection_container.dart';
 import '../../../../../register/data/models/register_account_model.dart';
 import '../../../../domain/remote_usecases/add_order_usecase.dart';
+import '../../../../domain/remote_usecases/remote_get_user_order.dart';
 
 class OrderSummaryPage extends StatefulWidget {
+  Map<String, double> itemTotalPrices = {};
   final String orderId;
   final OrderEntity orderEntity;
   late AddOrderUsecase addOrderUsecase;
@@ -25,8 +27,9 @@ class OrderSummaryPage extends StatefulWidget {
 }
 
 class _OrderSummaryPageState extends State<OrderSummaryPage> {
+  var isLoading = true;
   Map<String, TextEditingController> priceControllers = {};
-  Map<String, double> itemTotalPrices = {};
+
   Map<String, double> userTotalPrices = {};
   Map<String, List<OrderItem>> itemsGroupedByUser = {};
 
@@ -42,7 +45,7 @@ class _OrderSummaryPageState extends State<OrderSummaryPage> {
     List<OrderItem> items = widget.orderEntity.items ?? [];
 
     for (var item in items) {
-      String userId = item.userId ?? 'Unknown';
+      String userId = item.userId;
       if (!itemsGroupedByUser.containsKey(userId)) {
         itemsGroupedByUser[userId] = [];
       }
@@ -60,30 +63,40 @@ class _OrderSummaryPageState extends State<OrderSummaryPage> {
   //   }
   // }
 
-  void _updateItemTotalPrice() {
-    widget.addOrderUsecase.update(widget.orderEntity);
-    // _updateUserTotalPrices();
-  }
-
-  void _updateUserTotalPrices() {
-    userTotalPrices.clear();
-    Map<String, double> tempUserTotals = {};
-
-    widget.orderEntity.items?.forEach((item) {
-      String userId = item.userId ?? 'Unknown';
-      double itemTotal = itemTotalPrices[item.itemName] ?? 0.0;
-
-      if (tempUserTotals.containsKey(userId)) {
-        tempUserTotals[userId] = tempUserTotals[userId]! + itemTotal;
-      } else {
-        tempUserTotals[userId] = itemTotal;
-      }
-    });
-
+  void _updateItemTotalPrice() async {
     setState(() {
-      userTotalPrices = tempUserTotals;
+      isLoading = true;
     });
+
+    await widget.addOrderUsecase.updatePrice(widget.orderEntity);
+    // _updateUserTotalPrices();
+    setState(() {
+      isLoading = false;
+    });
+    ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
+      content: Text('Order prices updated successfully!'),
+    ));
   }
+
+  // void _updateUserTotalPrices() {
+  //   userTotalPrices.clear();
+  //   Map<String, double> tempUserTotals = {};
+  //
+  //   widget.orderEntity.items?.forEach((item) {
+  //     String userId = item.userId;
+  //     double itemTotal = itemTotalPrices[item.itemName] ?? 0.0;
+  //
+  //     if (tempUserTotals.containsKey(userId)) {
+  //       tempUserTotals[userId] = tempUserTotals[userId]! + itemTotal;
+  //     } else {
+  //       tempUserTotals[userId] = itemTotal;
+  //     }
+  //   });
+  //
+  //   setState(() {
+  //     userTotalPrices = tempUserTotals;
+  //   });
+  // }
 
   @override
   void dispose() {
@@ -124,40 +137,25 @@ class _OrderSummaryPageState extends State<OrderSummaryPage> {
                   return UserItemsTile(
                     userId: userId,
                     items: userItems,
-                    itemTotalPrice: itemTotalPrices,
+                    itemTotalPrice: widget.itemTotalPrices,
                     updateOrderPrices: _updateItemTotalPrice,
+                    orderEntity: widget.orderEntity,
                   );
                 },
               ),
             ),
             const SizedBox(height: 20),
-            Text(
-              "Created At: $createdAt",
-              style: const TextStyle(fontSize: 16),
-            ),
-            const SizedBox(height: 10),
-            Text(
-              'Total (including VAT 14%): ${calculateTotalPrice().toStringAsFixed(2)} L.E',
-              style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
-            ),
           ],
         ),
       ),
     );
-  }
-
-  double calculateTotalPrice() {
-    double total = 0.0;
-    itemTotalPrices.values.forEach((price) {
-      total += price;
-    });
-    return total * 1.14;
   }
 }
 
 class UserItemsTile extends StatefulWidget {
   final String userId;
   final List<OrderItem> items;
+  final OrderEntity orderEntity;
 
 //  final Map<String, TextEditingController> priceControllers;
   final Map<String, double> itemTotalPrice;
@@ -172,6 +170,7 @@ class UserItemsTile extends StatefulWidget {
     required this.itemTotalPrice,
     required this.updateOrderPrices,
     this.user,
+    required this.orderEntity,
   }) : super(key: key);
 
   @override
@@ -179,6 +178,63 @@ class UserItemsTile extends StatefulWidget {
 }
 
 class _UserItemsTileState extends State<UserItemsTile> {
+  late GetUserOrderUsecase getUserOrderUsecase;
+
+  double calculateTotalPrice() {
+    double total = 0.0;
+    widget.itemTotalPrice.values.forEach((price) {
+      total += price;
+    });
+    return total * 1.14;
+  }
+
+  final FirebaseFirestore _firestore = FirebaseFirestore.instance;
+  Map<String, List<OrderItem>> itemsGroupedByUser = {};
+  Map<String, RegisterAccountModel> userMap = {};
+  List<OrderItem> itemsList = [];
+  bool isLoading = true;
+
+  updateOrdersAndUsers() {
+    userMap = {};
+    itemsGroupedByUser = {};
+    for (var item in itemsList) {
+      itemsGroupedByUser.putIfAbsent(item.userId, () => []).add(item);
+    }
+    getUsers(itemsGroupedByUser).then((userMap) {
+      setState(() {
+        this.userMap = userMap;
+        isLoading = false;
+      });
+    });
+  }
+
+  @override
+  initState() {
+    super.initState();
+    itemsList = widget.orderEntity.items ?? [];
+    updateOrdersAndUsers();
+  }
+
+  Future<Map<String, RegisterAccountModel>> getUsers(
+      Map<String, List<OrderItem>> itemsGroupedByUser) async {
+    getUserOrderUsecase = sl();
+
+    Map<String, RegisterAccountModel> userMap = {};
+
+    List<Future<void>> futures = [];
+
+    for (var entry in itemsGroupedByUser.entries) {
+      String userId = entry.key;
+      futures.add(getUserOrderUsecase.call(userId).then((user) {
+        userMap[userId] = user;
+      }));
+    }
+
+    await Future.wait(futures);
+
+    return userMap;
+  }
+
   @override
   Widget build(BuildContext context) {
     return AnimationConfiguration.staggeredList(
@@ -215,7 +271,7 @@ class _UserItemsTileState extends State<UserItemsTile> {
                     Padding(
                       padding: const EdgeInsets.all(10.0),
                       child: Text(
-                        'User: ${widget.userId}',
+                        'User: ${widget.user?.name}',
                         style: const TextStyle(
                           fontSize: 18,
                           fontWeight: FontWeight.bold,
@@ -232,30 +288,36 @@ class _UserItemsTileState extends State<UserItemsTile> {
                                     MainAxisAlignment.spaceBetween,
                                 children: [
                                   Text(
-                                    item.itemName ?? 'Unknown',
+                                    item.itemName,
                                     style: const TextStyle(
-                                      fontSize: 16,
+                                      fontSize: 22,
+                                      fontWeight: FontWeight.bold,
                                       color: Colors.white,
                                     ),
                                   ),
                                   Text(
-                                    'Qty: ${item.quantity ?? 1}',
+                                    'X: ${item.quantity}',
                                     style: const TextStyle(
-                                      fontSize: 16,
+                                      fontSize: 22,
+                                      fontWeight: FontWeight.bold,
                                       color: Colors.white,
                                     ),
                                   ),
                                   SizedBox(
-                                    width: 100,
+                                    width: 120,
+                                    height: 50,
                                     child: Row(
                                       children: [
                                         Expanded(
                                           child: TextField(
                                             onSubmitted: (String price) {
-                                              item.price =
-                                                  double.tryParse(price);
-                                              item.totalPrice = item.price ??
-                                                  0.0 * item.quantity;
+                                              setState(() {
+                                                item.price =
+                                                    double.tryParse(price);
+                                                item.totalPrice =
+                                                    (item.price ?? 0.0) *
+                                                        item.quantity;
+                                              });
                                             },
                                             keyboardType: TextInputType.number,
                                             decoration: const InputDecoration(
@@ -269,25 +331,77 @@ class _UserItemsTileState extends State<UserItemsTile> {
                                       ],
                                     ),
                                   ),
-                                  Text(
-                                    'Total: ${(widget.itemTotalPrice[item.itemName] ?? 0).toStringAsFixed(2)} L.E',
-                                    style: const TextStyle(
-                                      fontSize: 16,
-                                      color: Colors.white,
-                                    ),
-                                  ),
                                 ],
                               ),
                             ))
                         .toList(),
                     const SizedBox(height: 10),
-                    IconButton(
-                      icon: const Icon(Icons.calculate, color: Colors.blue),
-                      onPressed: () {
-                        setState(() {
-                          widget.updateOrderPrices();
-                        }); // Trigger rebuild
-                      },
+                    Center(
+                      child: ElevatedButton(
+                        onPressed: () {
+                          setState(() {
+                            widget.updateOrderPrices();
+                          });
+                        },
+                        style: ButtonStyle(
+                          backgroundColor:
+                              MaterialStateProperty.resolveWith<Color>(
+                            (Set<MaterialState> states) {
+                              if (states.contains(MaterialState.disabled)) {
+                                return Colors.grey;
+                              }
+                              return Colors.blue;
+                            },
+                          ),
+                          shape:
+                              MaterialStateProperty.all<RoundedRectangleBorder>(
+                            RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(15),
+                            ),
+                          ),
+                          elevation: MaterialStateProperty.all<double>(5),
+                          shadowColor: MaterialStateProperty.all<Color>(
+                            Colors.grey.withOpacity(0.5),
+                          ),
+                          padding:
+                              MaterialStateProperty.all<EdgeInsetsGeometry>(
+                            const EdgeInsets.all(15),
+                          ),
+                          textStyle: MaterialStateProperty.all<TextStyle>(
+                            const TextStyle(fontSize: 18),
+                          ),
+                        ),
+                        child: const Text(
+                          'Calculate The Total Price...',
+                          style: TextStyle(color: Colors.white),
+                        ),
+                      ),
+                    ),
+                    const SizedBox(
+                      height: 10,
+                    ),
+                    const Column(
+                      children: [
+                        // Text(
+                        //   //$createdAt
+                        //   "Created At: ",
+                        //   style: TextStyle(color: Colors.white, fontSize: 16),
+                        // ),
+                        SizedBox(height: 10),
+                        Center(
+                          child: Text(
+                            //${calculateTotalPrice()
+                            "Total (including VAT 14%): } 0.0 L.E",
+                            style: TextStyle(
+                                color: Colors.white,
+                                fontSize: 18,
+                                fontWeight: FontWeight.bold),
+                          ),
+                        ),
+                        SizedBox(
+                          height: 10,
+                        )
+                      ],
                     ),
                   ],
                 ),

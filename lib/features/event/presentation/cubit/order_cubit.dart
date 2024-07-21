@@ -24,7 +24,7 @@ class OrderCubit extends Cubit<OrderState> {
       getAllOrderUsecase = sl();
       final allOrders = await getAllOrderUsecase.call();
       // final allUser = await getUserOrderUsecase.call(userId);
-      emit(OrderLoadedState(eventEntity: allOrders));
+      emit(OrderLoadedState(orderEntity: allOrders));
     } catch (e) {
       emit(OrderErrorState(errorMessage: e.toString()));
     }
@@ -43,7 +43,7 @@ class OrderCubit extends Cubit<OrderState> {
         // final allUser = await getUserOrderUsecase.call();
 
         emit(OrderSuccessState(addedOrder));
-        emit(OrderLoadedState(eventEntity: allData));
+        emit(OrderLoadedState(orderEntity: allData));
       } else {
         emit(OrderErrorState(errorMessage: addedOrder.message));
       }

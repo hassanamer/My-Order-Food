@@ -2,11 +2,11 @@ import 'package:flutter/material.dart';
 import 'package:flutter_staggered_animations/flutter_staggered_animations.dart';
 import 'package:get/get.dart';
 
-import '../../../../domain/entities/order_entities.dart';
-import '../event_details_page/event_detail_page.dart';
+import '../../../../../domain/entities/order_entities.dart';
+import '../../order_details_page/order_details_page.dart';
 
-class TicketsListTitleWidget extends StatelessWidget {
-  const TicketsListTitleWidget({
+class OrdersListTitleWidget extends StatelessWidget {
+  const OrdersListTitleWidget({
     Key? key,
     required this.eventEntity,
     required this.title,
@@ -45,7 +45,7 @@ class TicketsListTitleWidget extends StatelessWidget {
               child: InkWell(
                 borderRadius: BorderRadius.circular(15),
                 onTap: () {
-                  Get.to(() => EventDetailsPage(orderEntity: eventEntity));
+                  Get.to(() => OrderDetailsPage(orderEntity: eventEntity));
                 },
                 child: ListTile(
                   trailing: const Icon(

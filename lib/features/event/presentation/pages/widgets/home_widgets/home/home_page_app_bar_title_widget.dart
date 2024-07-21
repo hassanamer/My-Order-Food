@@ -1,9 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:order/core/theming/colors.dart';
 import 'package:order/core/theming/styles.dart';
 
-class TicketPageAppBarTitleWidget extends StatelessWidget {
-  const TicketPageAppBarTitleWidget({
+class HomePageAppBarTitleWidget extends StatelessWidget {
+  const HomePageAppBarTitleWidget({
     Key? key,
   }) : super(key: key);
 
@@ -20,14 +19,13 @@ class TicketPageAppBarTitleWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return  Row(
-        children: [
-          Text(
-            'Welcome, ${_greetings()}',
-            style: TextStyles.font22BlackBold.copyWith(color: Colors.white),
-          ),
-        ],
-
+    return Row(
+      children: [
+        Text(
+          'Welcome, ${_greetings()}',
+          style: TextStyles.font22BlackBold.copyWith(color: Colors.white),
+        ),
+      ],
     );
   }
 }

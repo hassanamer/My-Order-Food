@@ -7,7 +7,8 @@ import 'package:order/features/event/domain/entities/order_entities.dart';
 import 'package:order/features/event/presentation/cubit/order_cubit.dart';
 import 'package:order/features/event/presentation/cubit/order_state.dart';
 import 'package:order/features/event/presentation/pages/order_food_home_page.dart';
-import 'package:order/features/event/presentation/pages/widgets/event_add_update_pages/create_order_widget.dart';
+
+import 'create_order_widget.dart';
 
 class CreateOrderPage extends StatelessWidget {
   final OrderEntity? eventEntity;

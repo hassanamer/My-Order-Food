@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:order/features/event/domain/entities/order_entities.dart';
-import 'package:order/features/event/presentation/pages/widgets/event_add_update_pages/create_order_page.dart';
+import 'package:order/features/event/presentation/pages/widgets/create_order_pages/create_order_page.dart';
 
 class UpdateBtnWidget extends StatelessWidget {
   final OrderEntity eventEntity;

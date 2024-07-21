@@ -53,13 +53,21 @@ class OrderItem {
     this.totalPrice,
   });
 
-  Map<String, dynamic> toMap() {
+  Map<String, dynamic> withPriceToMap() {
+    return {
+      'userId': userId,
+      'price': price,
+      'itemName': itemName,
+      'quantity': quantity,
+      'totalPrice': totalPrice,
+    };
+  }
+
+  Map<String, dynamic> withoutPriceToMap() {
     return {
       'itemName': itemName,
       'quantity': quantity,
       'userId': userId,
-      'price': price,
-      'totalPrice': totalPrice,
     };
   }
 

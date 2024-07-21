@@ -14,7 +14,7 @@ import 'package:order/features/event/domain/remote_usecases/delete_ticket.dart';
 import 'package:order/features/event/domain/remote_usecases/remote_get_all_ticket.dart';
 import 'package:order/features/event/domain/remote_usecases/remote_get_user_order.dart';
 import 'package:order/features/event/domain/remote_usecases/update_ticket.dart';
-import 'package:order/features/event/domain/reporisatory/ticket_reporisatory.dart';
+import 'package:order/features/event/domain/reporisatory/order_repository.dart';
 import 'package:order/features/event/presentation/cubit/order_cubit.dart';
 import 'package:order/features/login/data/datasources/remote_login_user.dart';
 import 'package:order/features/login/domain/usecases/remote_login_usecase.dart';

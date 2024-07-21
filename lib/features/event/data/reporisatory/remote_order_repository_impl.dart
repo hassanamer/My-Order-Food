@@ -1,7 +1,7 @@
 import 'package:order/features/event/data/datasource/remote_order_datasource.dart';
 import 'package:order/features/event/data/models/order_model.dart';
 import 'package:order/features/event/domain/entities/order_entities.dart';
-import 'package:order/features/event/domain/reporisatory/ticket_reporisatory.dart';
+import 'package:order/features/event/domain/reporisatory/order_repository.dart';
 import 'package:order/features/register/data/models/register_account_model.dart';
 
 class OrderRepositoryImpl implements OrderRepository {
@@ -33,7 +33,19 @@ class OrderRepositoryImpl implements OrderRepository {
   }
 
   @override
+  Future<BaseResponse> remoteUpdatePriceOrder(OrderEntity orderEntity) async {
+    final OrderModel orderModel = orderEntity.toOrderModel();
+
+    return await remoteOrderDatasource.updatePriceOrder(orderModel);
+  }
+
+  @override
   Future<RegisterAccountModel> remoteGetUser(String userId) async {
     return await remoteOrderDatasource.getUser(userId);
+  }
+
+  @override
+  Future<OrderEntity> remoteGetOrder(String orderId) async {
+    return await remoteOrderDatasource.getOrder(orderId);
   }
 }

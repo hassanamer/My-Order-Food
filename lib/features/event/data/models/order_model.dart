@@ -60,8 +60,16 @@ class OrderModel extends OrderEntity {
       'userId': userId,
       'id': id,
       'title': title,
-      "items": items?.map((item) => item.toMap()),
+      "items": items?.map((item) => item.withPriceToMap()),
       "createdAt": createdAt,
+    };
+  }
+
+  Map<String, dynamic> pricetoMap() {
+    return {
+      'userId': userId,
+      'id': id,
+      "items": items?.map((item) => item.withPriceToMap()),
     };
   }
 

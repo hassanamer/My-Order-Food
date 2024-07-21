@@ -6,24 +6,24 @@ import 'package:order/features/cart/presentation/pages/view_order_page.dart';
 import 'package:order/features/event/domain/entities/order_entities.dart';
 import 'package:order/features/event/domain/remote_usecases/add_order_usecase.dart';
 import 'package:order/features/event/domain/remote_usecases/remote_get_user_order.dart';
-import 'package:order/features/event/presentation/pages/widgets/event_details_page/evebt_details_page_item_tile.dart';
+import 'package:order/features/event/presentation/pages/widgets/order_details_page/order_details_page_item_tile.dart';
 import 'package:order/injection_container.dart';
 
 import '../../../../../register/data/models/register_account_model.dart';
 
-class EventDetailsPage extends StatefulWidget {
-  final OrderEntity orderEntity;
+class OrderDetailsPage extends StatefulWidget {
+  late OrderEntity orderEntity;
 
-  EventDetailsPage({
+  OrderDetailsPage({
     Key? key,
     required this.orderEntity,
   }) : super(key: key);
 
   @override
-  State<EventDetailsPage> createState() => _EventDetailsPageState();
+  State<OrderDetailsPage> createState() => _OrderDetailsPageState();
 }
 
-class _EventDetailsPageState extends State<EventDetailsPage> {
+class _OrderDetailsPageState extends State<OrderDetailsPage> {
   late GetUserOrderUsecase getUserOrderUsecase;
   late AddOrderUsecase addOrderUsecase;
 
@@ -79,6 +79,12 @@ class _EventDetailsPageState extends State<EventDetailsPage> {
     return userMap;
   }
 
+  refreshOrder() async {
+    widget.orderEntity =
+        await addOrderUsecase.remoteGetOrder(widget.orderEntity.id);
+    updateOrdersAndUsers();
+  }
+
   @override
   Widget build(BuildContext context) {
     // if (isLoading) {
@@ -125,12 +131,16 @@ class _EventDetailsPageState extends State<EventDetailsPage> {
               child: ElevatedButton(
                 onPressed: () async {
                   await _updateFirestore();
-                  Navigator.push(
+                  await Navigator.push(
                     context,
                     MaterialPageRoute(
                       builder: (context) => const ViewOrderPage(),
                     ),
                   );
+
+                  setState(() {
+                    refreshOrder();
+                  });
                 },
                 style: ButtonStyle(
                   backgroundColor: MaterialStateProperty.resolveWith<Color>(

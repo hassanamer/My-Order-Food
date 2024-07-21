@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:order/core/widgets/app_bar_widget.dart';
 import 'package:order/features/event/domain/entities/order_entities.dart';
-import 'package:order/features/event/presentation/pages/widgets/event_details_page/order_summary_page.dart';
+import 'package:order/features/event/presentation/pages/widgets/order_details_page/order_summary_page.dart';
 
 class ViewOrderPage extends StatelessWidget {
   const ViewOrderPage({Key? key});

@@ -1,5 +1,5 @@
 import 'package:order/features/event/domain/entities/order_entities.dart';
-import 'package:order/features/event/domain/reporisatory/ticket_reporisatory.dart';
+import 'package:order/features/event/domain/reporisatory/order_repository.dart';
 
 class AddOrderUsecase {
   final OrderRepository orderRepository;
@@ -12,5 +12,13 @@ class AddOrderUsecase {
 
   Future<BaseResponse> update(OrderEntity orderEntity) async {
     return await orderRepository.remoteUpdateOrder(orderEntity);
+  }
+
+  Future<BaseResponse> updatePrice(OrderEntity orderEntity) async {
+    return await orderRepository.remoteUpdatePriceOrder(orderEntity);
+  }
+
+  Future<OrderEntity> remoteGetOrder(String orderId) async {
+    return await orderRepository.remoteGetOrder(orderId);
   }
 }

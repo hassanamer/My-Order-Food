@@ -33,6 +33,8 @@ abstract class RemoteOrderDatasourceInterface
 
   Future<BaseResponse> updateOrder(OrderModel orderModel);
 
+  Future<BaseResponse> updatePriceOrder(OrderModel orderModel);
+
   Future<BaseResponse> deleteOrders();
 }
 
@@ -98,6 +100,19 @@ class RemoteOrderDatasource extends RemoteOrderDatasourceInterface {
           .collection("Order")
           .doc(orderModel.id)
           .update(orderModel.toMap());
+      return BaseResponse(status: true, message: "Order Updated Successfully");
+    } catch (e) {
+      return BaseResponse(status: false, message: e.toString());
+    }
+  }
+
+  @override
+  Future<BaseResponse> updatePriceOrder(OrderModel orderModel) async {
+    try {
+      await firebaseFirestore
+          .collection("Order")
+          .doc(orderModel.id)
+          .update(orderModel.pricetoMap());
       return BaseResponse(status: true, message: "Order Updated Successfully");
     } catch (e) {
       return BaseResponse(status: false, message: e.toString());

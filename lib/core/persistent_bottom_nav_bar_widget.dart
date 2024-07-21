@@ -3,7 +3,7 @@ import 'package:order/features/event/presentation/pages/order_food_home_page.dar
 import 'package:order/features/event/presentation/pages/settings_page.dart';
 import 'package:persistent_bottom_nav_bar/persistent_tab_view.dart';
 
-import '../features/event/presentation/pages/widgets/event_add_update_pages/create_order_page.dart';
+import '../features/event/presentation/pages/widgets/create_order_pages/create_order_page.dart';
 
 class NavBarWidget extends StatelessWidget {
   const NavBarWidget({Key? key}) : super(key: key);
