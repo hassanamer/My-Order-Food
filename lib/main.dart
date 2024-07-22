@@ -4,7 +4,6 @@ import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:get/get.dart';
 import 'package:order/core/bloc_observer/bloc_observer.dart';
 import 'package:order/core/theme_app.dart';
@@ -22,7 +21,6 @@ import 'package:order/features/restaurant/presentation/pages/get_all_restaurants
 import 'package:order/features/restaurant/presentation/pages/menu_page/menu_page.dart';
 
 import 'core/services/awesome_notification_service.dart';
-import 'core/services/push_notification_service.dart';
 import 'core/widgets/welcome_splash_widget.dart';
 import 'features/event/presentation/cubit/order_cubit.dart';
 import 'features/login/presentation/pages/login_page.dart';
@@ -39,13 +37,10 @@ void main() async {
     await Firebase.initializeApp(
       options: DefaultFirebaseOptions.currentPlatform,
     );
-
     await AwesomeNotificationService.initializeNotification();
-
-    // await di.sl<DatabaseProvider>().initDB(); sqlite DB
-
+    await FirebaseMessaging.instance.getInitialMessage();
+    await FirebaseMessaging.instance.requestPermission();
     Bloc.observer = MyGlobalObserver();
-
     runApp(const MyApp());
   }, (e, s) {});
 }
@@ -53,19 +48,30 @@ void main() async {
 class MyApp extends StatefulWidget {
   const MyApp({super.key});
 
-  static final FirebaseMessaging _firebaseMessaging =
-      FirebaseMessaging.instance;
-
   @override
   State<MyApp> createState() => _MyAppState();
 }
 
 class _MyAppState extends State<MyApp> {
+  // late RegisterAccountRepository userRepository;
+  // late RegisterAccountModel registerAccountModel;
+
+  // Future<void> updateUserFcmToken() async {
+  //   _userFcmToken = await _fcm.getToken();
+  //   setState(() {
+  //     registerAccountModel.fcmToken = _userFcmToken;
+  //   });
+  // }
+
+  @override
+  void initState() {
+    super.initState();
+    // updateUserFcmToken();
+  }
+
   @override
   Widget build(BuildContext context) {
-    final pushNotificationService =
-        PushNotificationService(MyApp._firebaseMessaging);
-    pushNotificationService.initialise();
+    // String? userId = FirebaseAuth.instance.currentUser?.uid;
 
     return MultiBlocProvider(
         providers: [
@@ -99,6 +105,3 @@ class _MyAppState extends State<MyApp> {
         ));
   }
 }
-
-final FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin =
-    FlutterLocalNotificationsPlugin();

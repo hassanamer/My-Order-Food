@@ -10,6 +10,8 @@ abstract class RemoteRegisterDatasource {
       String password, RegisterAccountEntity registerAccountEntity);
 
   Future<RegisterAccountModel> getUserInfo();
+
+  Future<void> updateUserFcmToken(String userId, String fcmToken);
 }
 
 class RemoteRegisterDatasourceImlp implements RemoteRegisterDatasource {
@@ -39,6 +41,7 @@ class RemoteRegisterDatasourceImlp implements RemoteRegisterDatasource {
         "phoneNumber": registerAccountEntity.phoneNumber,
         "userName": registerAccountEntity.username,
         "profileImageUrl": registerAccountEntity.profileImageUrl,
+        "fcmToken": registerAccountEntity.fcmToken,
       });
 
       return RegisterAccountEntity(
@@ -50,6 +53,7 @@ class RemoteRegisterDatasourceImlp implements RemoteRegisterDatasource {
         username: registerAccountEntity.username,
         message: registerAccountEntity.message,
         profileImageUrl: registerAccountEntity.profileImageUrl,
+        fcmToken: registerAccountEntity.fcmToken,
       );
     } on FirebaseAuthException catch (e) {
       switch (e.code) {
@@ -104,5 +108,13 @@ class RemoteRegisterDatasourceImlp implements RemoteRegisterDatasource {
     } catch (e) {
       return RegisterAccountModel(message: e.toString(), replyCode: 500);
     }
+  }
+
+  @override
+  Future<void> updateUserFcmToken(String userId, String fcmToken) async {
+    await FirebaseFirestore.instance
+        .collection('Users')
+        .doc(userId)
+        .update({'fcmToken': fcmToken});
   }
 }

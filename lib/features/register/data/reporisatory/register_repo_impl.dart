@@ -9,6 +9,7 @@ class RegisterReporisatoryImpl implements RegisterAccountRepository {
   late RemoteRegisterDatasource remoteRegisterDatasourceImlp;
 
   RegisterReporisatoryImpl(this.remoteRegisterDatasourceImlp);
+
   // @override
   // Future<BaseResponse> registerAccount(
   //     RegisterAccountEntity registerAccount) async {
@@ -26,5 +27,11 @@ class RegisterReporisatoryImpl implements RegisterAccountRepository {
   @override
   Future<RegisterAccountModel> getUserInfo() async {
     return await remoteRegisterDatasourceImlp.getUserInfo();
+  }
+
+  @override
+  Future<void> updateUserFcmToken(String userId, String fcmToken) async {
+    return await remoteRegisterDatasourceImlp.updateUserFcmToken(
+        userId, fcmToken);
   }
 }

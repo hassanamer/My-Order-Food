@@ -9,6 +9,7 @@ class Account {
   final String? message;
   final String? profileImageUrl;
   final int? replyCode;
+  String? fcmToken;
 
   Account({
     this.userId,
@@ -21,6 +22,7 @@ class Account {
     this.message,
     this.replyCode,
     this.profileImageUrl,
+    this.fcmToken,
   });
 }
 

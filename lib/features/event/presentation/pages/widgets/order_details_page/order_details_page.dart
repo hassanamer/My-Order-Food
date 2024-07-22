@@ -9,6 +9,7 @@ import 'package:order/features/event/domain/remote_usecases/remote_get_user_orde
 import 'package:order/features/event/presentation/pages/widgets/order_details_page/order_details_page_item_tile.dart';
 import 'package:order/injection_container.dart';
 
+import '../../../../../../core/services/awesome_notification_service.dart';
 import '../../../../../register/data/models/register_account_model.dart';
 
 class OrderDetailsPage extends StatefulWidget {
@@ -113,11 +114,10 @@ class _OrderDetailsPageState extends State<OrderDetailsPage> {
               width: double.infinity,
               child: ElevatedButton(
                 onPressed: () async {
-                  await _updateOrder().then((value) {
-                    ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
-                      content: Text('Order placed successfully!'),
-                    ));
-                  });
+                  await AwesomeNotificationService.showNotification(
+                      title: "Order Placed Successfully",
+                      body:
+                          'Order That You\'re Joined Is Placed successfully, When It Arrive You Will Notified');
                   await Navigator.push(
                     context,
                     MaterialPageRoute(

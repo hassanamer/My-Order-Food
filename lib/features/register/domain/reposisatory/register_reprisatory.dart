@@ -7,4 +7,6 @@ abstract class RegisterAccountRepository {
       String password, RegisterAccountEntity registerAccountEntity);
 
   Future<RegisterAccountModel> getUserInfo();
+
+  Future<void> updateUserFcmToken(String userId, String fcmToken);
 }

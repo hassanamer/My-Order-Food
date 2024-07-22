@@ -1,8 +1,10 @@
+import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:order/features/register/presentation/pages/register_page.dart';
 
+import '../../../../../core/services/push_notification_service.dart';
 import '../../../../../core/widgets/botton_auth_row_widget.dart';
 import '../../../../../core/widgets/common_elevated_button_widget.dart';
 import '../../cubit/login_cubit.dart';
@@ -22,6 +24,8 @@ class _LoginWidgetState extends State<LoginWidget> {
   late TextEditingController controllerPassword;
   final GlobalKey<FormState> _keyform = GlobalKey<FormState>();
   bool passwordVisible = false;
+  static final FirebaseMessaging _firebaseMessaging =
+      FirebaseMessaging.instance;
 
   @override
   void initState() {
@@ -40,10 +44,9 @@ class _LoginWidgetState extends State<LoginWidget> {
 
   @override
   Widget build(BuildContext context) {
-
-    if(kDebugMode){
-      controllerEmail.text="hassanamer281@gmail.com";
-          controllerPassword.text= "P@ssw0rd" ;
+    if (kDebugMode) {
+      controllerEmail.text = "hassanamer281@gmail.com";
+      controllerPassword.text = "P@ssw0rd";
     }
     return Form(
       key: _keyform,
@@ -82,6 +85,12 @@ class _LoginWidgetState extends State<LoginWidget> {
               CommonElevatedButton(
                 text: "Log in",
                 onTap: () {
+                  final PushNotificationService pushNotificationService =
+                      PushNotificationService(
+                    _firebaseMessaging,
+                  );
+                  pushNotificationService.updateUserFcmToken();
+                  pushNotificationService.initialise();
                   setState(() {
                     if (_keyform.currentState!.validate()) {
                       context.read<LoginCubit>().remoteLogin(

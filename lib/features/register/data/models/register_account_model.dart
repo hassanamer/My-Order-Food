@@ -11,6 +11,7 @@ class RegisterAccountModel extends RegisterAccountEntity {
     String? gender,
     String? message,
     int? replyCode,
+    String? fcmToken,
   }) : super(
           userId: userId,
           username: username,
@@ -21,6 +22,7 @@ class RegisterAccountModel extends RegisterAccountEntity {
           phoneNumber: phoneNumber,
           message: message,
           replyCode: replyCode,
+          fcmToken: fcmToken,
         );
 
   Map<String, dynamic> toMap() {
@@ -32,6 +34,7 @@ class RegisterAccountModel extends RegisterAccountEntity {
       'gender': gender,
       'profileImageUrl': profileImageUrl,
       'phoneNumber': phoneNumber,
+      'fcmToken': fcmToken,
     };
   }
 
@@ -47,6 +50,7 @@ class RegisterAccountModel extends RegisterAccountEntity {
       profileImageUrl: map['profileImageUrl'] ?? '',
       name: map['name'] ?? '',
       phoneNumber: map['phoneNumber'] ?? '',
+      fcmToken: map['fcmToken'],
     );
   }
 }

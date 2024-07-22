@@ -5,6 +5,7 @@ import 'package:intl/intl.dart';
 import 'package:order/core/widgets/app_bar_widget.dart';
 import 'package:order/features/event/domain/entities/order_entities.dart';
 
+import '../../../../../../core/services/push_notification_service.dart';
 import '../../../../../../injection_container.dart';
 import '../../../../../register/data/models/register_account_model.dart';
 import '../../../../domain/remote_usecases/add_order_usecase.dart';
@@ -70,7 +71,7 @@ class _OrderSummaryPageState extends State<OrderSummaryPage> {
   //   }
   // }
 
-  void _updateItemTotalPrice() async {
+  void _updateItemTotalPrice(String? userId, double? totalPrice) async {
     setState(() {
       isLoading = true;
     });
@@ -80,6 +81,9 @@ class _OrderSummaryPageState extends State<OrderSummaryPage> {
     setState(() {
       isLoading = false;
     });
+    // Send notification to the user with their total price
+    PushNotificationService.sendNotificationToUser(userId, totalPrice);
+
     ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
       content: Text('Order prices updated successfully!'),
     ));
@@ -162,7 +166,7 @@ class UserItemsTile extends StatefulWidget {
 
 //  final Map<String, TextEditingController> priceControllers;
 //   final Map<String, double> itemTotalPrice;
-  final Function() updateOrder;
+  final Function(String? userId, double? totalPrice) updateOrder;
 
   const UserItemsTile({
     Key? key,
@@ -366,8 +370,8 @@ class _UserItemsTileState extends State<UserItemsTile> {
                       child: ElevatedButton(
                         onPressed: () {
                           setState(() {
-                            widget.updateOrder();
                             totalPrice = calculateTotalPrice();
+                            widget.updateOrder(widget.user?.userId, totalPrice);
                           });
                         },
                         style: ButtonStyle(
