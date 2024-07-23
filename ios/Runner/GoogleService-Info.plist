@@ -9,15 +9,15 @@
 	<key>API_KEY</key>
 	<string>AIzaSyCPoAXJANCCee_2sfV38Tpb6ZZPuaIn9iU</string>
 	<key>GCM_SENDER_ID</key>
-	<string>87000291885</string>
+	<string>500192069011</string>
 	<key>PLIST_VERSION</key>
 	<string>1</string>
 	<key>BUNDLE_ID</key>
 	<string>com.example.order</string>
 	<key>PROJECT_ID</key>
-	<string>food-fa54e</string>
+	<string>food-order-a2d6c</string>
 	<key>STORAGE_BUCKET</key>
-	<string>food-fa54e.appspot.com</string>
+	<string>food-order-a2d6c.appspot.com</string>
 	<key>IS_ADS_ENABLED</key>
 	<false></false>
 	<key>IS_ANALYTICS_ENABLED</key>

@@ -17,10 +17,7 @@ import 'package:flutter/foundation.dart'
 class DefaultFirebaseOptions {
   static FirebaseOptions get currentPlatform {
     if (kIsWeb) {
-      throw UnsupportedError(
-        'DefaultFirebaseOptions have not been configured for web - '
-        'you can reconfigure this by running the FlutterFire CLI again.',
-      );
+      return web;
     }
     switch (defaultTargetPlatform) {
       case TargetPlatform.android:
@@ -28,15 +25,9 @@ class DefaultFirebaseOptions {
       case TargetPlatform.iOS:
         return ios;
       case TargetPlatform.macOS:
-        throw UnsupportedError(
-          'DefaultFirebaseOptions have not been configured for macos - '
-          'you can reconfigure this by running the FlutterFire CLI again.',
-        );
+        return macos;
       case TargetPlatform.windows:
-        throw UnsupportedError(
-          'DefaultFirebaseOptions have not been configured for windows - '
-          'you can reconfigure this by running the FlutterFire CLI again.',
-        );
+        return windows;
       case TargetPlatform.linux:
         throw UnsupportedError(
           'DefaultFirebaseOptions have not been configured for linux - '
@@ -58,12 +49,41 @@ class DefaultFirebaseOptions {
   );
 
   static const FirebaseOptions ios = FirebaseOptions(
-    apiKey: 'AIzaSyAnMojJ_tt1rjXMtNrx15W3apbZKktWmRM',
-    appId: '1:500192069011:android:a531cb6029ade634289466',
+    apiKey: 'AIzaSyDcQDC1k0xvKZyhNHthxgWXOdiip8CaA-o',
+    appId: '1:500192069011:ios:b43b8487181cc367289466',
     messagingSenderId: '500192069011',
     projectId: 'food-order-a2d6c',
     storageBucket: 'food-order-a2d6c.appspot.com',
-    iosClientId: '87000291885-sqffish0loq0jc3204jt36vm5u3m71aq.apps.googleusercontent.com',
     iosBundleId: 'com.example.order',
   );
+
+  static const FirebaseOptions web = FirebaseOptions(
+    apiKey: 'AIzaSyAHNA42XcluTsb2GPpcxuEphDIIT639VJ0',
+    appId: '1:500192069011:web:a27989be6b19457e289466',
+    messagingSenderId: '500192069011',
+    projectId: 'food-order-a2d6c',
+    authDomain: 'food-order-a2d6c.firebaseapp.com',
+    storageBucket: 'food-order-a2d6c.appspot.com',
+    measurementId: 'G-Z1NVF45H20',
+  );
+
+  static const FirebaseOptions macos = FirebaseOptions(
+    apiKey: 'AIzaSyDcQDC1k0xvKZyhNHthxgWXOdiip8CaA-o',
+    appId: '1:500192069011:ios:b43b8487181cc367289466',
+    messagingSenderId: '500192069011',
+    projectId: 'food-order-a2d6c',
+    storageBucket: 'food-order-a2d6c.appspot.com',
+    iosBundleId: 'com.example.order',
+  );
+
+  static const FirebaseOptions windows = FirebaseOptions(
+    apiKey: 'AIzaSyAHNA42XcluTsb2GPpcxuEphDIIT639VJ0',
+    appId: '1:500192069011:web:be5d9f7ab5b59a3f289466',
+    messagingSenderId: '500192069011',
+    projectId: 'food-order-a2d6c',
+    authDomain: 'food-order-a2d6c.firebaseapp.com',
+    storageBucket: 'food-order-a2d6c.appspot.com',
+    measurementId: 'G-7W3NSM3S61',
+  );
+
 }

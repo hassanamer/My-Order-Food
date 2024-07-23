@@ -54,6 +54,7 @@ dependencies:
   get: ^4.6.5
   badges: ^3.0.2
   counter_button: ^1.0.1
+  overlay_support: ^2.1.0
   email_validator: ^2.1.17
   awesome_notifications: ^0.7.4+1
   onesignal_flutter: ^5.1.2
