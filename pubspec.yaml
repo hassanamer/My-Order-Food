@@ -35,36 +35,36 @@ dependencies:
 
   # The following adds the Cupertino Icons font to your application.
   # Use with the CupertinoIcons class for iOS style icons.
-  cupertino_icons: ^1.0.2
-  flutter_bloc: ^8.1.1
-  get_it: ^7.2.0
-  http: ^1.0.0
+  cupertino_icons: ^1.0.8
+  flutter_bloc: ^8.1.6
+  get_it: ^7.7.0
+  http: ^1.2.2
   equatable: ^2.0.5
   dartz: ^0.10.1
-  sqflite: ^2.2.4+1
-  firebase_core: ^2.2.0
-  firebase_messaging: ^14.7.19
-  flutter_local_notifications: ^12.0.4
+  sqflite: ^2.3.3+1
+  firebase_core: ^3.2.0
+  firebase_messaging: ^15.0.3
+  flutter_local_notifications: ^17.2.1+2
   # cloud_functions: ^4.0.4
-  cloud_firestore: ^4.0.5
-  firebase_auth: ^4.1.4
-  firebase_database: ^10.0.7
-  firebase_storage: ^11.0.10
-  permission_handler: ^10.2.0
-  get: ^4.6.5
-  badges: ^3.0.2
+  cloud_firestore: ^5.1.0
+  firebase_auth: ^5.1.2
+  firebase_database: ^11.0.3
+  firebase_storage: ^12.1.1
+  permission_handler: ^11.3.1
+  get: ^4.6.6
+  badges: ^3.1.2
   counter_button: ^1.0.1
   overlay_support: ^2.1.0
-  email_validator: ^2.1.17
-  awesome_notifications: ^0.7.4+1
-  onesignal_flutter: ^5.1.2
-  flutter_svg: ^2.0.7
-  persistent_bottom_nav_bar: ^5.0.2
-  fluttertoast: ^8.2.2
+  email_validator: ^3.0.0
+  awesome_notifications: ^0.9.3+1
+  flutter_svg: ^2.0.10+1
+  persistent_bottom_nav_bar: ^6.2.1
+  fluttertoast: ^8.2.6
   googleapis_auth: ^1.6.0
   # overlay_support: ^2.1.0
-  flutter_staggered_animations: ^1.0.0
-  image_picker: ^1.0.8
+  flutter_staggered_animations: ^1.1.1
+  image_picker: ^1.1.2
+  rxdart: ^0.28.0
 
 
 dev_dependencies:
@@ -76,8 +76,7 @@ dev_dependencies:
   # activated in the `analysis_options.yaml` file located at the root of your
   # package. See that file for information about deactivating specific lint
   # rules and activating additional ones.
-  flutter_lints: ^2.0.0
-
+  flutter_lints: ^4.0.0
 # For information on the generic Dart part of this file, see the
 # following page: https://dart.dev/tools/pub/pubspec
 

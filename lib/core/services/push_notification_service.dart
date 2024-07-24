@@ -26,8 +26,7 @@ class PushNotificationService {
       "type": "service_account",
       "project_id": "food-order-a2d6c",
       "private_key_id": "216b90e86735c6bba0e57e2e146a86fdb4e24992",
-      "private_key":
-          "-----BEGIN PRIVATE KEY-----\nMIIEvAIBADANBgkqhkiG9w0BAQEFAASCBKYwggSiAgEAAoIBAQDB4Ux8KDwaMq5o\nAXBRrGmDky7uFzWt4CzjfJDOfRzUvuk7+mFAvYaX4ZiV382Vu1tWMkHvPMjTp3jk\nbGnZQ88Wf9wSb5xj+oiGX6mHtFKaqnA3CVaZwDOSGC9MPZDW/AgGgu0H86fpQNMG\n1qldOf5k3woAyoOgvGScPGLfJlKiW9XoYQOCsB34txRim14CvlZrdjW92TsySp4W\nJuxHcOI8l7HYAgHFJADiAC5ivJIfuDpRQB/xoOfRhebuHf1XvfbbN2kjz2/h//5U\nwzNatW7DrT6F9u/oA5t9sTNxF2EktHG4B35pdIK/BejA08iNXgtDfBscqsbyMfNv\nErzlz4JrAgMBAAECggEAROdo0uFLxvXHJSCJxgUT9NaMwcJO6g43ddvR7QjrA7Mb\n2hyYjrUszfK302AYRQQyqFYxN7CvIQWugeQD1Fr0kOb9FDJFbwTdm4AJFLkh+GTl\nf7HabMcxrNTajmp8/OLSiVnjmsVeIhhPR2loBMF1J21bNT/D+w6pZRtS+kK48Ik6\nXGFUkytQZ2FtnRAlC3yCj9q6c0GgSmaKy0TBQC8fLrQGQ/9/9ZO52yRbAXYXvZM2\nnhQTIB4wdJd6rB5Cf8ZVOg5npRV0fdX9t7k8TxHZMaIYR20uIWY6rGI0h6K5lBI3\nboqiNtjombpNEPDug6D+QoDs0YG5V+/d3FmLia4dOQKBgQD7kbcl2UCWTVX0uU8S\nKtceSi40ikSqyxnO7KmSM+V2luyoxTUp7Y3wtNYdcO8pve76xViEeYMTadUrDPcA\nN861yabLboaa+DMKcGv7CHFvvn4d6YLmwJBQb8mNtqfIN//NvTLbKlt8FlfiqPaZ\njAvgQgBnVztUSByAHLCzgVV9EwKBgQDFS3jzSAtgwNHHAcYZTJhwlPtTwvV2HhRY\ndbwPwq3CHcbl966fnFNQlJasZ7g8kcjwOGRX68t0slfGNcjnQ1PwPbQvx8rfWgaY\nWZVpuR/ZU4w2VyNcNpYx2bQtRc5jVu/r03Wr5Y6gUD8Gz3teVnruCbrjADn44X+w\nAGEPSWjISQKBgAK4t9eD+yvlGEn2e0GCDyO3v7o3yLhkTBot+0OmphPbXCITSBj1\nBfUVr79PynaUJHK4EdYVDnL2USUPFdj9wZG75b8Lqg8hIkQ5pSFpHPkNgYXHUfA3\nIxiLrQ2IbVZALNdH9bXjRmwYPcko9MoCdtptPF3h1rV5tj04kjzO6GLbAoGAHdC6\nBonsrkJ1cU2jUk9w+hKJqK7dyWviRzwDn54cBCnb1QUJLrXBIXxTCNrjzMN7SlI7\nV84agRgyi5G1Or3CAZxRjqby0a4ZMQzYt5FybrVhixTAEz9skzwDLpRODFUnDMx4\nC/I1C6UU4UKZsjf/e9mclJGEMUhis4ZbJKRDYYECgYABAvggEs3XyhrREF3UlmyM\n330Xixnqvwfib20b5ezuD+0xu2UbZj217jlgHcHBJRRG2bN87GTRGi+oLoVeHKuT\nccuqZOKxmecQY+uy6CPolaoBpdxE+K6jGxn0N521bbsHd5wl5NF4FzJF9bPxmDK+\nKHdKhcxsYBMqAdZoELfjAQ==\n-----END PRIVATE KEY-----\n",
+      "private_key": "YOUR_PRIVATE_KEY",
       "client_email": "food-order-a2d6c@appspot.gserviceaccount.com",
       "client_id": "110117234038964388473",
       "auth_uri": "https://accounts.google.com/o/oauth2/auth",
@@ -66,7 +65,8 @@ class PushNotificationService {
     registerAccountRepository.updateUserFcmToken(userId!, _userFcmToken!);
   }
 
-  static showLocalNotification(String title, String body, String payload) {
+  static void showLocalNotification(
+      String title, String body, String payload) async {
     const androidNotificationDetail = AndroidNotificationDetails(
       '0',
       'general',
@@ -89,7 +89,7 @@ class PushNotificationService {
   static final FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin =
       FlutterLocalNotificationsPlugin();
 
-  Future initialise() async {
+  Future<void> initialise() async {
     if (Platform.isIOS) {
       _fcm.requestPermission();
     }
@@ -98,21 +98,27 @@ class PushNotificationService {
         const AndroidInitializationSettings('@mipmap/ic_launcher');
     var initializationSettings =
         InitializationSettings(android: initialzationSettingsAndroid);
-
-    flutterLocalNotificationsPlugin.initialize(initializationSettings);
-
     if (_userFcmToken != null) {
       print("Using user's FCM token:$_userFcmToken");
 
-      FirebaseMessaging.onMessage.listen((RemoteMessage message) {
+      FirebaseMessaging.onMessage.listen((RemoteMessage message) async {
         RemoteNotification? notification = message.notification;
         AndroidNotification? android = message.notification?.android;
         if (notification != null && android != null) {
           if (kDebugMode) {
             print('message : ${notification.body}');
           }
+          const AndroidNotificationChannel channel = AndroidNotificationChannel(
+            'high_importance_channel', // id
+            'High Importance Notifications', // title
+            importance: Importance.max,
+          );
 
-          FlutterLocalNotificationsPlugin().show(
+          await flutterLocalNotificationsPlugin
+              .resolvePlatformSpecificImplementation<
+                  AndroidFlutterLocalNotificationsPlugin>()
+              ?.createNotificationChannel(channel);
+          flutterLocalNotificationsPlugin.show(
               notification.hashCode,
               notification.title,
               notification.body,
@@ -120,18 +126,45 @@ class PushNotificationService {
                 android: AndroidNotificationDetails(
                   channel.id,
                   channel.name,
-                  // channel.description,
-                  // color: Colors.blue,
-                  icon: "@mipmap/ic_launcher",
+                  icon: android?.smallIcon,
+                  // other properties...
                 ),
               ));
         }
       });
 
+      // const AndroidInitializationSettings('ic_launcher');
+      // var initialzationSettingsAndroid =
+      //     const AndroidInitializationSettings('@mipmap/ic_launcher');
+      // var initializationSettings =
+      //     InitializationSettings(android: initialzationSettingsAndroid);
+      //
+      // await flutterLocalNotificationsPlugin.initialize(initializationSettings);
+
+      // FirebaseMessaging.onMessage.listen((RemoteMessage message) {
+      //   RemoteNotification? notification = message.notification;
+      //   AndroidNotification? android = message.notification?.android;
+      //   if (notification != null && android != null) {
+      //     flutterLocalNotificationsPlugin.show(
+      //         notification.hashCode,
+      //         notification.title,
+      //         notification.body,
+      //         NotificationDetails(
+      //           android: AndroidNotificationDetails(
+      //             '0',
+      //             'general',
+      //             // color: Colors.blue,
+      //             icon: "@mipmap/ic_launcher",
+      //           ),
+      //         ));
+      //   }
+      // });
+
       FirebaseMessaging.onMessageOpenedApp.listen((RemoteMessage message) {
         RemoteNotification? notification = message.notification;
         AndroidNotification? android = message.notification?.android;
         if (notification != null && android != null) {
+          // Handle the message when the app is opened from a notification
           if (kDebugMode) {
             print('$message');
           }
@@ -140,14 +173,6 @@ class PushNotificationService {
     }
   }
 
-  AndroidNotificationChannel channel = const AndroidNotificationChannel(
-    'high_importance_channel',
-    'High Importance Notifications',
-    description: 'This channel is used for important notifications.',
-    importance: Importance.high,
-  );
-
-  // method to send notification to a specific user
   static Future<void> sendNotificationToUser(
       String? userId, double? totalPrice) async {
     final String serverKey = await getAccessToken();
@@ -161,12 +186,12 @@ class PushNotificationService {
       'message': {
         'token': userFcmToken,
         'notification': {
-          'title': 'your Total price is ',
-          'body': 'body',
+          'title': 'Your Total Price is $totalPrice',
+          'body': 'Your order total is $totalPrice',
           "sound": "default",
           "payload": "Urgent"
         },
-        'data': {userFcmToken}
+        'data': {'userFcmToken': userFcmToken}
       },
     };
     final http.Response response = await http.post(

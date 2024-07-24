@@ -83,7 +83,6 @@ class _OrderSummaryPageState extends State<OrderSummaryPage> {
     });
     // Send notification to the user with their total price
     PushNotificationService.sendNotificationToUser(userId, totalPrice);
-
     ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
       content: Text('Order prices updated successfully!'),
     ));

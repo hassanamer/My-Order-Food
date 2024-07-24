@@ -107,7 +107,7 @@ class _UserProfileScreenState extends State<UserProfileScreen> {
                       },
                       child: Text(_isEditing ? 'Done' : 'Edit Profile'),
                       style: ElevatedButton.styleFrom(
-                        primary: Colors.blue,
+                        backgroundColor: Colors.blue,
                         padding:
                             EdgeInsets.symmetric(horizontal: 50, vertical: 15),
                         textStyle: TextStyle(fontSize: 18),
