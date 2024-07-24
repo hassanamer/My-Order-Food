@@ -78,4 +78,32 @@ class PushNotification {
     await _flutterLocalNotificationsPlugin
         .show(0, title, body, notificationDetails, payload: payload);
   }
+//
+// Future<void> sendNotificationToUser(
+//     String? userId, String title, String body) async {
+//   try {
+//     DocumentSnapshot userDoc = await FirebaseFirestore.instance
+//         .collection('Users')
+//         .doc(userId)
+//         .get();
+//     String? userFcmToken = userDoc['fcmToken'];
+//
+//     // if (userFcmToken != null) {
+//     //   RemoteMessage message = await _firebaseMessaging.sendAndRetrieveMessage(
+//     //     to: userFcmToken,
+//     //     data: {
+//     //       'title': title,
+//     //       'body': body,
+//     //     },
+//     //   );
+//
+//       print("Notification sent to $userId");
+//       print("Message ID: ${message.messageId}"); // Print the message ID
+//     } else {
+//       print("User FCM token is null");
+//     }
+//   } catch (e) {
+//     print("Error sending notification: $e");
+//   }
+// }
 }

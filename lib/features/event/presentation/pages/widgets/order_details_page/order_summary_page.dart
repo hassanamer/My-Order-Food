@@ -371,6 +371,9 @@ class _UserItemsTileState extends State<UserItemsTile> {
                           setState(() {
                             totalPrice = calculateTotalPrice();
                             widget.updateOrder(widget.user?.userId, totalPrice);
+                            // Send notification to the user
+                            PushNotificationService.sendNotificationToUser(
+                                widget.user?.userId, totalPrice);
                           });
                         },
                         style: ButtonStyle(

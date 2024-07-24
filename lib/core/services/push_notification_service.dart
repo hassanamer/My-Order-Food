@@ -25,8 +25,9 @@ class PushNotificationService {
     final serviceAccountJson = {
       "type": "service_account",
       "project_id": "food-order-a2d6c",
-      "private_key_id": "216b90e86735c6bba0e57e2e146a86fdb4e24992",
-      "private_key": "YOUR_PRIVATE_KEY",
+      "private_key_id": "5b7ec6d5a5475f3c5a85b3db8abb1c18d4df2b42",
+      "private_key":
+          "-----BEGIN PRIVATE KEY-----\nMIIEvgIBADANBgkqhkiG9w0BAQEFAASCBKgwggSkAgEAAoIBAQDWF1Y7CEmeXm/m\nkUiGbYixaDxQF8CpPOKJMXjpBddd0DZBHG319IvaG1w3XGlYwe2zeKKeelqZj/it\nsm+MRJKeESneEoIP87DttIr+mwuK41GI/fZw6TmP0ufCLnTDkOqDNndqfC82cvtV\n98FX/SO0b0O18n/pPY1WD6tIE40+9U07OC53gL7vx2Ct4hN0n5UxmLfbSApDFYMS\nys3L86YDEB5wyoa9gx+Sql19zn28qrulsR3F2xN4BIFp3IScMsTGWxkjP0yoUKyK\nBODcIj+3sWfo/MGbSodn9VHcoybVO07ecPGz+tod401aNBb+E2q+dDDt/pbhcmIp\nf/ZoqdXzAgMBAAECggEAH8F8Z+s1yEjnvkKEiHQM14vHjnXHfRLr4z+0WJQmOuMc\neRH3eYkZiXOPfSK2+ZRiZsGZFXq+n5KMZ29VPnAZc1rGZAtIwYb7Enc6OsPStXo8\naN6KxHrDsAKvn8z2Qt/m+SmGEwRymFf70eebBSsmNahfWcirknQv17khReKoi9Lf\ndzaivohQp71YqmWf3inZNsLMgz2BEmha9EV0gIqkPkojYIutadMksRLKw396ra+1\nkymTRL39NIqsaq1gGTr9xDeYBauihy7ESxhzoO5g9EUufeNyTuqSRc4w/5SzqjRN\nmoOrOWYEx3CQMaIyKW0EmJ0klkIayUcTrp+HBNlUiQKBgQDvKqzzDsPrVrVUZeos\nVc73ivjozr8X7xXKF37s9XdLacnyyLxGoUvv2Pq8hexW+J8DOu3sJ11fZqt9aCRR\nT3s7NOX8hB4JX4PzQOXVwslBbai9H+0bDu+Qu5BDkfisvCZXTy9i/QG4A6J94vJr\nOGQhEwC5HTe088FzWuDgKSoxvQKBgQDlKNkhn3xoJpflk2jl8N5GC6TbnA8Pqtby\nZrR8XvLW7UWZlgPSrRg6wP6O695NSgbXcVea5aQFlg05saraxc08voh2Jxrv8JIQ\nU1iKEzYhD2979duv3HgBfLC4f8PAd4TlDROH/2Mm9mBRAFGOZIE6TMjXCAkIwxyJ\now7p4/MpbwKBgQCIpVVTOahumYfYxLHaytwJSvmT6iv8PLmyUWJPeJ/EEpkzgcUw\nhY+hZdM8SzgRKNORQOYW+xa6Hyrz58B4RHUgCsUsVT/kExKMtROb4kKig0jZZZhO\n0WXGx6NRN+Fgr88oKzHj2LJWtJzuV/AxmnJ7AyRyn2LonCx3AAFjkaFt8QKBgDmC\nYdN1UeRVYyNjNh0WsMGFZI8UgBcfeagFrF/V+D2F+ESOCFGTzRPZoUi+2uAspsDk\nmeauoNYiDRmgg885esM20cpNEA6NIirkr8CfB6OOWx0R21ssChXddAApWDfyBrDw\n8ijcJ8b8Z7mMSethP6kg4fpM8u92/69u82wxH7ITAoGBAIdEGI6w6skiPNiXpV6Y\noryaKhGK+uTVufsLXx6eKeDnWKoEhyURF5yP7h8FWvogEe8KH3IEiZ0Ym24aLZdo\nylrqbiTH++PGYyE/8FrLTyFh376Lw0YCMFhObNk8WEYEWhGfPacQjr8lXN9LqOmG\nZiZ5P025B+VnNT17rAeNslqL\n-----END PRIVATE KEY-----\n",
       "client_email": "food-order-a2d6c@appspot.gserviceaccount.com",
       "client_id": "110117234038964388473",
       "auth_uri": "https://accounts.google.com/o/oauth2/auth",
@@ -188,10 +189,8 @@ class PushNotificationService {
         'notification': {
           'title': 'Your Total Price is $totalPrice',
           'body': 'Your order total is $totalPrice',
-          "sound": "default",
-          "payload": "Urgent"
         },
-        'data': {'userFcmToken': userFcmToken}
+        'data': {}
       },
     };
     final http.Response response = await http.post(
