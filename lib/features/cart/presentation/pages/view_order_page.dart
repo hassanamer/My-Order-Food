@@ -6,7 +6,9 @@ import 'package:order/features/event/domain/entities/order_entities.dart';
 import 'package:order/features/event/presentation/pages/widgets/order_details_page/order_summary_page.dart';
 
 class ViewOrderPage extends StatelessWidget {
-  const ViewOrderPage({Key? key});
+  final VoidCallback? onCalculate; // Add the onCalculate parameter;
+
+  const ViewOrderPage({Key? key, this.onCalculate});
 
   @override
   Widget build(BuildContext context) {
@@ -44,9 +46,9 @@ class ViewOrderPage extends StatelessWidget {
                     context,
                     MaterialPageRoute(
                       builder: (context) => OrderSummaryPage(
-                        orderId: orderId,
-                        orderEntity: orderEntity,
-                      ),
+                          orderId: orderId,
+                          orderEntity: orderEntity,
+                          onCalculate: onCalculate),
                     ),
                   );
                 },

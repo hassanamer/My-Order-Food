@@ -4,17 +4,32 @@ import 'package:order/features/register/data/models/register_account_model.dart'
 
 import '../../../../domain/entities/order_entities.dart';
 
-class EventDetailPageItemTile extends StatelessWidget {
-  const EventDetailPageItemTile({
-    Key? key,
+class EventDetailPageItemTile extends StatefulWidget {
+  EventDetailPageItemTile({
+    super.key,
     required this.userId,
     required this.items,
     required this.user,
-  }) : super(key: key);
+    required this.status,
+    this.orderEntity,
+  });
 
   final String userId;
+  final String? status;
   final List<OrderItem> items;
   final RegisterAccountModel? user;
+  late OrderEntity? orderEntity;
+
+  @override
+  State<EventDetailPageItemTile> createState() =>
+      _EventDetailPageItemTileState();
+}
+
+class _EventDetailPageItemTileState extends State<EventDetailPageItemTile> {
+  // Update
+
+  @override
+  void initState() {}
 
   @override
   Widget build(BuildContext context) {
@@ -52,7 +67,7 @@ class EventDetailPageItemTile extends StatelessWidget {
                     Padding(
                       padding: const EdgeInsets.all(10.0),
                       child: Text(
-                        'User: ${user?.name ?? ''} ',
+                        'User: ${widget.user?.name ?? ''} ',
                         style: const TextStyle(
                           fontSize: 18,
                           fontWeight: FontWeight.bold,
@@ -60,7 +75,7 @@ class EventDetailPageItemTile extends StatelessWidget {
                         ),
                       ),
                     ),
-                    ...items
+                    ...widget.items
                         .map((item) => Padding(
                               padding: const EdgeInsets.symmetric(
                                   horizontal: 10.0, vertical: 5.0),
@@ -86,6 +101,17 @@ class EventDetailPageItemTile extends StatelessWidget {
                               ),
                             ))
                         .toList(),
+                    Padding(
+                      padding: const EdgeInsets.all(10.0),
+                      child: Text(
+                        'Status: ${widget.status}',
+                        style: const TextStyle(
+                          fontSize: 16,
+                          fontWeight: FontWeight.bold,
+                          color: Colors.white,
+                        ),
+                      ),
+                    ),
                   ],
                 ),
               ),

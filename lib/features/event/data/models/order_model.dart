@@ -1,43 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:order/features/event/domain/entities/order_entities.dart';
-import 'package:order/features/event/domain/entities/remote_chat_entities.dart';
-
-class CommentModel extends CommentEntity {
-  CommentModel({
-    int? id,
-    required String comment,
-  }) : super(
-          id: id,
-          comment: comment,
-        );
-
-  Map<String, dynamic> toMap() {
-    return {
-      'id': id,
-      'comment': comment,
-    };
-  }
-
-  factory CommentModel.fromMap(Map<String, dynamic> map) {
-    return CommentModel(
-      id: map['id'],
-      comment: map['comment'],
-    );
-  }
-
-  factory CommentModel.fromSnapShot(
-      DocumentSnapshot<Map<String, dynamic>> documentSnapshot) {
-    return CommentModel(
-      id: documentSnapshot.data()!['id'],
-      comment: documentSnapshot.data()!['comment'],
-    );
-  }
-
-  factory CommentModel.fromEntity(CommentEntity commentEntity) => CommentModel(
-        id: commentEntity.id,
-        comment: commentEntity.comment,
-      );
-}
 
 class OrderModel extends OrderEntity {
   OrderModel({
@@ -47,12 +9,14 @@ class OrderModel extends OrderEntity {
     List<OrderItem>? items,
     int? itemCount,
     String? createdAt,
+    String? status,
   }) : super(
           userId: userId,
           id: id,
           title: title,
           items: items,
           createdAt: createdAt,
+          status: status,
         );
 
   Map<String, dynamic> toMap() {
@@ -62,6 +26,7 @@ class OrderModel extends OrderEntity {
       'title': title,
       "items": items?.map((item) => item.toMap()),
       "createdAt": createdAt,
+      "status": status,
     };
   }
 
@@ -72,6 +37,7 @@ class OrderModel extends OrderEntity {
         title: map['title'],
         itemCount: map['itemCount'],
         createdAt: map['createdAt'],
+        status: map['status'],
         items: map['items']
             ?.map((item) => OrderItem.fromMap(item as Map<String, dynamic>))
             .toList());
@@ -85,6 +51,7 @@ class OrderModel extends OrderEntity {
         title: documentSnapshot.data()!['title'],
         itemCount: documentSnapshot.data()!['itemCount'],
         createdAt: documentSnapshot.data()!['createdAt'],
+        status: documentSnapshot.data()!['status'],
         items: documentSnapshot
             .data()!['items']
             ?.map<OrderItem>((item) => OrderItem.fromMap(item))
@@ -104,22 +71,6 @@ class OrderModel extends OrderEntity {
         title: eventEntity.title,
         items: eventEntity.items,
         createdAt: eventEntity.createdAt,
+        status: 'active',
       );
-}
-
-class ChateMessageModel extends ChatMessages {
-  ChateMessageModel({
-    String? idFrom,
-    required String content,
-  }) : super(
-          idFrom: idFrom,
-          content: content,
-        );
-
-  Map<String, dynamic> toJson() {
-    return {
-      idFrom!: idFrom,
-      content: content,
-    };
-  }
 }

@@ -5,6 +5,7 @@ class OrderEntity {
   final String? userId;
   final String? title;
   final String? createdAt;
+  String? status;
   late final List<OrderItem>? items;
 
   OrderEntity({
@@ -13,6 +14,7 @@ class OrderEntity {
     this.title,
     this.items,
     this.createdAt,
+    this.status,
   });
 
   factory OrderEntity.fromMap(Map<String, dynamic> map) {
@@ -21,6 +23,7 @@ class OrderEntity {
       userId: map['userId'] ?? '',
       title: map['title'] ?? '',
       createdAt: map['createdAt'],
+      status: map['status'],
       items: (map['items'] as List<dynamic>?)
           ?.map((item) => OrderItem.fromMap(item))
           .toList(),
@@ -34,6 +37,7 @@ class OrderEntity {
       title: title,
       items: items,
       createdAt: createdAt,
+      status: status,
     );
   }
 }

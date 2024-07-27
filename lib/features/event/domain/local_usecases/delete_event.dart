@@ -2,7 +2,7 @@ import 'package:order/features/event/domain/entities/order_entities.dart';
 import 'package:order/features/event/domain/reporisatory/event_reprisatory.dart';
 
 class DeleteEventUsecase {
-  final EventRepsitory eventRepsitory;
+  final OrderRepsitory eventRepsitory;
 
   DeleteEventUsecase(this.eventRepsitory);
 

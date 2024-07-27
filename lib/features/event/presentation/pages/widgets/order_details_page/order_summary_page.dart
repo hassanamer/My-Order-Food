@@ -13,6 +13,8 @@ import '../../../../domain/remote_usecases/remote_get_user_order.dart';
 
 class OrderSummaryPage extends StatefulWidget {
   Map<String, double> itemTotalPrices = {};
+  final VoidCallback? onCalculate;
+
   final String orderId;
   final OrderEntity orderEntity;
   late AddOrderUsecase addOrderUsecase;
@@ -22,6 +24,7 @@ class OrderSummaryPage extends StatefulWidget {
     Key? key,
     required this.orderId,
     required this.orderEntity,
+    this.onCalculate,
   }) : super(key: key);
 
   @override
@@ -88,26 +91,6 @@ class _OrderSummaryPageState extends State<OrderSummaryPage> {
     ));
   }
 
-  // void _updateUserTotalPrices() {
-  //   userTotalPrices.clear();
-  //   Map<String, double> tempUserTotals = {};
-  //
-  //   widget.orderEntity.items?.forEach((item) {
-  //     String userId = item.userId;
-  //     double itemTotal = itemTotalPrices[item.itemName] ?? 0.0;
-  //
-  //     if (tempUserTotals.containsKey(userId)) {
-  //       tempUserTotals[userId] = tempUserTotals[userId]! + itemTotal;
-  //     } else {
-  //       tempUserTotals[userId] = itemTotal;
-  //     }
-  //   });
-  //
-  //   setState(() {
-  //     userTotalPrices = tempUserTotals;
-  //   });
-  // }
-
   @override
   void dispose() {
     for (var controller in priceControllers.values) {
@@ -143,7 +126,6 @@ class _OrderSummaryPageState extends State<OrderSummaryPage> {
                   return UserItemsTile(
                     user: userMap[userId],
                     items: userItems,
-                    // itemTotalPrice: widget.itemTotalPrices,
                     updateOrder: _updateItemTotalPrice,
                     orderEntity: widget.orderEntity,
                   );
@@ -151,6 +133,43 @@ class _OrderSummaryPageState extends State<OrderSummaryPage> {
               ),
             ),
             const SizedBox(height: 20),
+            Center(
+              child: ElevatedButton(
+                onPressed: () {
+                  widget.onCalculate!();
+                  setState(() {});
+                },
+                style: ButtonStyle(
+                  backgroundColor: MaterialStateProperty.resolveWith<Color>(
+                    (Set<MaterialState> states) {
+                      if (states.contains(MaterialState.disabled)) {
+                        return Colors.grey;
+                      }
+                      return Colors.blue;
+                    },
+                  ),
+                  shape: MaterialStateProperty.all<RoundedRectangleBorder>(
+                    RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(15),
+                    ),
+                  ),
+                  elevation: MaterialStateProperty.all<double>(5),
+                  shadowColor: MaterialStateProperty.all<Color>(
+                    Colors.grey.withOpacity(0.5),
+                  ),
+                  padding: MaterialStateProperty.all<EdgeInsetsGeometry>(
+                    const EdgeInsets.all(15),
+                  ),
+                  textStyle: MaterialStateProperty.all<TextStyle>(
+                    const TextStyle(fontSize: 18),
+                  ),
+                ),
+                child: const Text(
+                  'Order Arrived',
+                  style: TextStyle(color: Colors.white),
+                ),
+              ),
+            ),
           ],
         ),
       ),
@@ -182,7 +201,6 @@ class UserItemsTile extends StatefulWidget {
 
 class _UserItemsTileState extends State<UserItemsTile> {
   late GetUserUsecase getUserOrderUsecase;
-
   Map<String, List<OrderItem>> itemsGroupedByUser = {};
   Map<String, RegisterAccountModel> userMap = {};
   List<OrderItem> itemsList = [];
@@ -423,7 +441,7 @@ class _UserItemsTileState extends State<UserItemsTile> {
                         const SizedBox(height: 10),
                         Center(
                           child: Text(
-                            "Total (including VAT 14%): ${totalPrice ?? ""}  L.E",
+                            "Total (including VAT 14%): ${totalPrice?.toStringAsFixed(2) ?? ""} L.E",
                             style: const TextStyle(
                                 color: Colors.white,
                                 fontSize: 18,

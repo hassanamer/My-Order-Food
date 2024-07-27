@@ -30,6 +30,10 @@ class _OrderDetailsPageState extends State<OrderDetailsPage> {
 
   User? currentUser = FirebaseAuth.instance.currentUser;
 
+  void onCalculatePressed() {
+    refreshOrder();
+  }
+
   List<OrderItem> itemsList = [];
   TextEditingController itemController = TextEditingController();
   int itemCount = 0;
@@ -67,6 +71,7 @@ class _OrderDetailsPageState extends State<OrderDetailsPage> {
     widget.orderEntity =
         await addOrderUsecase.remoteGetOrder(widget.orderEntity.id);
     updateOrdersAndUsers();
+    addOrderUsecase.updateOrderStatus(widget.orderEntity.id);
   }
 
   @override
@@ -104,6 +109,7 @@ class _OrderDetailsPageState extends State<OrderDetailsPage> {
                     userId: userId,
                     items: userItems,
                     user: userMap[userId],
+                    status: widget.orderEntity.status,
                   );
                 },
                 separatorBuilder: (context, index) => divider,
@@ -114,6 +120,9 @@ class _OrderDetailsPageState extends State<OrderDetailsPage> {
               width: double.infinity,
               child: ElevatedButton(
                 onPressed: () async {
+                  setState(() {
+                    refreshOrder();
+                  });
                   await AwesomeNotificationService.showNotification(
                       title: "Order Placed Successfully",
                       body:
@@ -121,13 +130,11 @@ class _OrderDetailsPageState extends State<OrderDetailsPage> {
                   await Navigator.push(
                     context,
                     MaterialPageRoute(
-                      builder: (context) => const ViewOrderPage(),
+                      builder: (context) => ViewOrderPage(
+                        onCalculate: onCalculatePressed,
+                      ),
                     ),
                   );
-
-                  setState(() {
-                    refreshOrder();
-                  });
                 },
                 style: ButtonStyle(
                   backgroundColor: MaterialStateProperty.resolveWith<Color>(
@@ -254,31 +261,6 @@ class _OrderDetailsPageState extends State<OrderDetailsPage> {
         updateOrdersAndUsers();
       });
       addOrderUsecase.update(widget.orderEntity);
-      // Update Firestore in the background
-      //   orderDocRef.get().then((docSnapshot) {
-      //     if (docSnapshot.exists) {
-      //       Map<String, dynamic> data = docSnapshot.data()!;
-      //       if (data['items'] == null) {
-      //         data['items'] = [];
-      //       }
-      //       data['items'].add({
-      //         'itemName': newItem,
-      //         'quantity': itemCount,
-      //         'userId': currentUser!.uid,
-      //       });
-      //       orderDocRef.update(data);
-      //     } else {
-      //       orderDocRef.set({
-      //         'items': [
-      //           {
-      //             'itemName': newItem,
-      //             'quantity': itemCount,
-      //             'userId': currentUser!.uid
-      //           }
-      //         ],
-      //       });
-      //     }
-      //   });
     }
   }
 

@@ -10,6 +10,8 @@ class Account {
   final String? profileImageUrl;
   final int? replyCode;
   String? fcmToken;
+  String? hasCar;
+  String? deliveryPreference;
 
   Account({
     this.userId,
@@ -23,6 +25,8 @@ class Account {
     this.replyCode,
     this.profileImageUrl,
     this.fcmToken,
+    this.hasCar,
+    this.deliveryPreference,
   });
 }
 

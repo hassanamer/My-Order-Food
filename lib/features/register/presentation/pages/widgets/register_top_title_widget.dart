@@ -11,7 +11,7 @@ class RegisterTopTitleWidget extends StatelessWidget {
       width: double.infinity,
       padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 20),
       child: Text(
-        'Creat a new account',
+        'Create a new account',
         style: TextStyle(
             color: Theme.of(context).textTheme.displayLarge!.color,
             fontSize: 26,

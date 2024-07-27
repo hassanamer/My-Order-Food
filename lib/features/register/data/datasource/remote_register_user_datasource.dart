@@ -42,6 +42,8 @@ class RemoteRegisterDatasourceImlp implements RemoteRegisterDatasource {
         "userName": registerAccountEntity.username,
         "profileImageUrl": registerAccountEntity.profileImageUrl,
         "fcmToken": registerAccountEntity.fcmToken,
+        "hasCar": registerAccountEntity.hasCar,
+        "deliveryPreference": registerAccountEntity.deliveryPreference,
       });
 
       return RegisterAccountEntity(
@@ -53,7 +55,8 @@ class RemoteRegisterDatasourceImlp implements RemoteRegisterDatasource {
         username: registerAccountEntity.username,
         message: registerAccountEntity.message,
         profileImageUrl: registerAccountEntity.profileImageUrl,
-        fcmToken: registerAccountEntity.fcmToken,
+        hasCar: registerAccountEntity.hasCar,
+        deliveryPreference: registerAccountEntity.deliveryPreference,
       );
     } on FirebaseAuthException catch (e) {
       switch (e.code) {

@@ -134,33 +134,6 @@ class PushNotificationService {
         }
       });
 
-      // const AndroidInitializationSettings('ic_launcher');
-      // var initialzationSettingsAndroid =
-      //     const AndroidInitializationSettings('@mipmap/ic_launcher');
-      // var initializationSettings =
-      //     InitializationSettings(android: initialzationSettingsAndroid);
-      //
-      // await flutterLocalNotificationsPlugin.initialize(initializationSettings);
-
-      // FirebaseMessaging.onMessage.listen((RemoteMessage message) {
-      //   RemoteNotification? notification = message.notification;
-      //   AndroidNotification? android = message.notification?.android;
-      //   if (notification != null && android != null) {
-      //     flutterLocalNotificationsPlugin.show(
-      //         notification.hashCode,
-      //         notification.title,
-      //         notification.body,
-      //         NotificationDetails(
-      //           android: AndroidNotificationDetails(
-      //             '0',
-      //             'general',
-      //             // color: Colors.blue,
-      //             icon: "@mipmap/ic_launcher",
-      //           ),
-      //         ));
-      //   }
-      // });
-
       FirebaseMessaging.onMessageOpenedApp.listen((RemoteMessage message) {
         RemoteNotification? notification = message.notification;
         AndroidNotification? android = message.notification?.android;

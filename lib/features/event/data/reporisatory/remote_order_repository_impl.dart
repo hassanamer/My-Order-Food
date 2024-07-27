@@ -33,6 +33,11 @@ class OrderRepositoryImpl implements OrderRepository {
   }
 
   @override
+  Future<BaseResponse> remoteUpdateOrderStatus(String orderId) async {
+    return await remoteOrderDatasource.updateOrderStatus(orderId);
+  }
+
+  @override
   Future<RegisterAccountModel> remoteGetUser(String userId) async {
     return await remoteOrderDatasource.getUser(userId);
   }

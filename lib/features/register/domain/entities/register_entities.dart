@@ -13,6 +13,8 @@ class RegisterAccountEntity extends Account {
     int? replyCode,
     String? profileImageUrl,
     String? fcmToken,
+    String? hasCar,
+    String? deliveryPreference,
   }) : super(
           message: message,
           replyCode: replyCode,
@@ -25,5 +27,7 @@ class RegisterAccountEntity extends Account {
           name: name,
           phoneNumber: phoneNumber,
           fcmToken: fcmToken,
+          hasCar: hasCar,
+          deliveryPreference: deliveryPreference,
         );
 }
