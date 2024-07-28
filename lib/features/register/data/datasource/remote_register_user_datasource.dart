@@ -44,6 +44,8 @@ class RemoteRegisterDatasourceImlp implements RemoteRegisterDatasource {
         "fcmToken": registerAccountEntity.fcmToken,
         "hasCar": registerAccountEntity.hasCar,
         "deliveryPreference": registerAccountEntity.deliveryPreference,
+        "receivedOrderCount": registerAccountEntity.receivedOrderCount,
+        "placedOrderCount": registerAccountEntity.placedOrderCount,
       });
 
       return RegisterAccountEntity(
@@ -57,6 +59,8 @@ class RemoteRegisterDatasourceImlp implements RemoteRegisterDatasource {
         profileImageUrl: registerAccountEntity.profileImageUrl,
         hasCar: registerAccountEntity.hasCar,
         deliveryPreference: registerAccountEntity.deliveryPreference,
+        placedOrderCount: registerAccountEntity.placedOrderCount,
+        receivedOrderCount: registerAccountEntity.receivedOrderCount,
       );
     } on FirebaseAuthException catch (e) {
       switch (e.code) {

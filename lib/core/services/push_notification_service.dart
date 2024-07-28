@@ -148,7 +148,7 @@ class PushNotificationService {
   }
 
   static Future<void> sendNotificationToUser(
-      String? userId, double? totalPrice) async {
+      String? userId, String? body) async {
     final String serverKey = await getAccessToken();
     const String endPointFirebaseCloudingMessaging =
         'https://fcm.googleapis.com/v1/projects/food-order-a2d6c/messages:send';
@@ -160,8 +160,8 @@ class PushNotificationService {
       'message': {
         'token': userFcmToken,
         'notification': {
-          'title': 'Your Total Price is $totalPrice',
-          'body': 'Your order total is $totalPrice',
+          'title': '$body',
+          'body': '$body',
         },
         'data': {}
       },

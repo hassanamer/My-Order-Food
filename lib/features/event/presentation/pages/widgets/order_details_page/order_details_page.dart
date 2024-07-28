@@ -1,6 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:order/core/services/push_notification_service.dart';
 import 'package:order/core/widgets/app_bar_widget.dart';
 import 'package:order/features/cart/presentation/pages/view_order_page.dart';
 import 'package:order/features/event/domain/entities/order_entities.dart';
@@ -74,6 +75,49 @@ class _OrderDetailsPageState extends State<OrderDetailsPage> {
     addOrderUsecase.updateOrderStatus(widget.orderEntity.id);
   }
 
+  Future<void> assignUsersAndNotify() async {
+    List<RegisterAccountModel> usersInOrder = userMap.values.toList();
+    usersInOrder
+        .sort((a, b) => a.placedOrderCount!.compareTo(b.placedOrderCount!));
+
+    RegisterAccountModel? placer;
+    RegisterAccountModel? receiver;
+
+    for (var user in usersInOrder) {
+      if (placer == null && user.deliveryPreference == "Place the order") {
+        placer = user;
+      } else if (receiver == null && user.hasCar == "Yes") {
+        receiver = user;
+      }
+
+      if (placer != null && receiver != null) {
+        break;
+      }
+    }
+
+    if (placer != null) {
+      await placer.incrementPlacedOrderCount();
+      await _firestore
+          .collection('Users')
+          .doc(placer.userId)
+          .update(placer.toMap());
+      PushNotificationService.sendNotificationToUser(placer.userId,
+          "You're Choosed To Place The Order, Thank You So Much For Your Help");
+    }
+
+    if (receiver != null) {
+      await receiver.incrementReceivedOrderCount();
+      await _firestore
+          .collection('Users')
+          .doc(receiver.userId)
+          .update(receiver.toMap());
+      PushNotificationService.sendNotificationToUser(receiver.userId,
+          "You're Choosed To Rcieve The Order At The Gate, Thank You So Much For Your Help");
+    }
+
+    setState(() {});
+  }
+
   @override
   Widget build(BuildContext context) {
     // if (isLoading) {
@@ -127,6 +171,8 @@ class _OrderDetailsPageState extends State<OrderDetailsPage> {
                       title: "Order Placed Successfully",
                       body:
                           'Order That You\'re Joined Is Placed successfully, When It Arrive You Will Notified');
+                  await Future.delayed(Duration(seconds: 10));
+                  await assignUsersAndNotify();
                   await Navigator.push(
                     context,
                     MaterialPageRoute(

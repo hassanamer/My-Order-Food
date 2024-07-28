@@ -14,6 +14,8 @@ class RegisterAccountModel extends RegisterAccountEntity {
     String? fcmToken,
     String? hasCar,
     String? deliveryPreference,
+    int? placedOrderCount = 0,
+    int? receivedOrderCount = 0,
   }) : super(
           userId: userId,
           username: username,
@@ -27,6 +29,8 @@ class RegisterAccountModel extends RegisterAccountEntity {
           fcmToken: fcmToken,
           hasCar: hasCar,
           deliveryPreference: deliveryPreference,
+          placedOrderCount: placedOrderCount,
+          receivedOrderCount: receivedOrderCount,
         );
 
   Map<String, dynamic> toMap() {
@@ -41,6 +45,8 @@ class RegisterAccountModel extends RegisterAccountEntity {
       'fcmToken': fcmToken,
       'hasCar': hasCar,
       'deliveryPreference': deliveryPreference,
+      'receivedOrderCount': receivedOrderCount,
+      'placedOrderCount': placedOrderCount,
     };
   }
 
@@ -59,6 +65,16 @@ class RegisterAccountModel extends RegisterAccountEntity {
       fcmToken: map['fcmToken'],
       hasCar: map['hasCar'],
       deliveryPreference: map['deliveryPreference'],
+      placedOrderCount: map['placedOrderCount'],
+      receivedOrderCount: map['receivedOrderCount'],
     );
+  }
+
+  Future<void> incrementPlacedOrderCount() async {
+    placedOrderCount = (placedOrderCount ?? 0) + 1;
+  }
+
+  Future<void> incrementReceivedOrderCount() async {
+    receivedOrderCount = (receivedOrderCount ?? 0) + 1;
   }
 }

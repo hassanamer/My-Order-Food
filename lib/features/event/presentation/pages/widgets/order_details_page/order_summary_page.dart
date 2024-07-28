@@ -85,7 +85,8 @@ class _OrderSummaryPageState extends State<OrderSummaryPage> {
       isLoading = false;
     });
     // Send notification to the user with their total price
-    PushNotificationService.sendNotificationToUser(userId, totalPrice);
+    PushNotificationService.sendNotificationToUser(
+        userId, "Your Total Price Is  ${totalPrice?.toStringAsFixed(2) ?? ""}");
     ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
       content: Text('Order prices updated successfully!'),
     ));
@@ -391,7 +392,8 @@ class _UserItemsTileState extends State<UserItemsTile> {
                             widget.updateOrder(widget.user?.userId, totalPrice);
                             // Send notification to the user
                             PushNotificationService.sendNotificationToUser(
-                                widget.user?.userId, totalPrice);
+                                widget.user?.userId,
+                                totalPrice?.toStringAsFixed(2));
                           });
                         },
                         style: ButtonStyle(

@@ -12,6 +12,8 @@ class Account {
   String? fcmToken;
   String? hasCar;
   String? deliveryPreference;
+  int? placedOrderCount;
+  int? receivedOrderCount;
 
   Account({
     this.userId,
@@ -27,6 +29,8 @@ class Account {
     this.fcmToken,
     this.hasCar,
     this.deliveryPreference,
+    this.receivedOrderCount,
+    this.placedOrderCount,
   });
 }
 
