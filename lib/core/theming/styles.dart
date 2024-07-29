@@ -148,6 +148,12 @@ class TextStyles {
     color: ColorsManager.darkBlue,
     fontFamily: 'Roboto',
   );
+  static const TextStyle font18WhiteBold = TextStyle(
+    fontSize: 18,
+    fontWeight: FontWeightHelper.bold,
+    color: ColorsManager.white,
+    fontFamily: 'Roboto',
+  );
 
   static const TextStyle font18BlueSemiBold = TextStyle(
     fontSize: 18,

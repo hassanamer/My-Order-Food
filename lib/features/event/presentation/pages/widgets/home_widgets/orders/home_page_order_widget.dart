@@ -70,7 +70,6 @@ class _HomePageOrdersWidgetState extends State<HomePageOrdersWidget> {
                 Navigator.of(context).push(MaterialPageRoute(
                     builder: (context) => const AllRestaurantPage()));
               }),
-          const SizedBox(height: 16),
           const GetRestaurantRowWidget(),
           divider,
           Flexible(

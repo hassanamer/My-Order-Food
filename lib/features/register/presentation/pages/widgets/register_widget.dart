@@ -1,5 +1,9 @@
+import 'dart:io';
+
+import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:image_picker/image_picker.dart';
 import 'package:order/core/theme_app.dart';
 import 'package:order/core/widgets/botton_auth_row_widget.dart';
 import 'package:order/core/widgets/common_elevated_button_widget.dart';
@@ -31,6 +35,7 @@ class _RegisterWidgetState extends State<RegisterWidget> {
   String? hasCar;
   String? deliveryPreference;
   bool isPasswordVisible = false;
+  String? profileImageUrl;
 
   List<String> genderItems = ['Female', 'Male'];
   List<String> carItems = ['Yes', 'No'];
@@ -59,6 +64,23 @@ class _RegisterWidgetState extends State<RegisterWidget> {
     super.dispose();
   }
 
+  Future<void> _pickImage() async {
+    final ImagePicker _picker = ImagePicker();
+    final XFile? image = await _picker.pickImage(source: ImageSource.gallery);
+
+    if (image != null) {
+      final storageRef = FirebaseStorage.instance
+          .ref()
+          .child('profile_images/${DateTime.now().millisecondsSinceEpoch}.jpg');
+      final uploadTask = storageRef.putFile(File(image.path));
+      final snapshot = await uploadTask;
+      final downloadUrl = await snapshot.ref.getDownloadURL();
+      setState(() {
+        profileImageUrl = downloadUrl;
+      });
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     const sizedBox = SizedBox(height: 12);
@@ -76,6 +98,16 @@ class _RegisterWidgetState extends State<RegisterWidget> {
                 height: 20,
               ),
               const RegisterTopTitleWidget(),
+              ElevatedButton.icon(
+                onPressed: _pickImage,
+                icon: const Icon(Icons.camera_alt),
+                label: const Text("Pick Profile Image"),
+              ),
+              if (profileImageUrl != null)
+                Image.network(
+                  profileImageUrl!,
+                  height: 150,
+                ),
               TextFormField(
                 controller: controllerUsername,
                 decoration: const InputDecoration(

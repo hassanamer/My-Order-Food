@@ -31,7 +31,7 @@ class _RowImageTextRestaurantWidgetState
               child: Column(children: [
                 Container(
                   padding: const EdgeInsets.symmetric(horizontal: 12),
-                  margin: const EdgeInsets.all(5),
+                  margin: const EdgeInsets.all(2),
                   decoration: BoxDecoration(
                     color: Colors.white,
                     borderRadius: BorderRadius.circular(10),

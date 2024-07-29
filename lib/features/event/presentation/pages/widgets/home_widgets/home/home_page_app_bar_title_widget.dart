@@ -23,7 +23,7 @@ class HomePageAppBarTitleWidget extends StatelessWidget {
       children: [
         Text(
           'Welcome, ${_greetings()}',
-          style: TextStyles.font22BlackBold.copyWith(color: Colors.white),
+          style: TextStyles.font18WhiteBold,
         ),
       ],
     );

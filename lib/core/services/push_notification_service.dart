@@ -11,6 +11,8 @@ import 'package:http/http.dart' as http;
 
 import '../../features/register/domain/reposisatory/register_reprisatory.dart';
 import '../../injection_container.dart';
+import '../../main.dart';
+import 'my_firebase_notification.dart';
 
 class PushNotificationService {
   FirebaseMessaging _fcm = FirebaseMessaging.instance;
@@ -138,12 +140,27 @@ class PushNotificationService {
         RemoteNotification? notification = message.notification;
         AndroidNotification? android = message.notification?.android;
         if (notification != null && android != null) {
-          // Handle the message when the app is opened from a notification
           if (kDebugMode) {
             print('$message');
           }
         }
+        handleNotification(message);
       });
+      FirebaseMessaging.onMessage.listen((RemoteMessage message) {
+        String payloadData = jsonEncode(message.data);
+        print("GOT MESSAGE IN THE FOREGROUND");
+        if (message.notification != null) {
+          PushNotification.showSimpleNotification(
+              title: message.notification!.title!,
+              body: message.notification!.body!,
+              payload: payloadData);
+        }
+      });
+      final RemoteMessage? message =
+          await FirebaseMessaging.instance.getInitialMessage();
+      if (message != null) {
+        handleNotification(message);
+      }
     }
   }
 

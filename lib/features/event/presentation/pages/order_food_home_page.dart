@@ -3,8 +3,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:order/core/widgets/app_bar_widget.dart';
 import 'package:order/core/widgets/loading_widget.dart';
-import 'package:order/features/cart/presentation/cubit/cart_cubit.dart';
-import 'package:order/features/cart/presentation/pages/cart_page.dart';
 import 'package:order/features/event/presentation/cubit/order_cubit.dart';
 import 'package:order/features/event/presentation/cubit/order_state.dart';
 import 'package:order/features/event/presentation/pages/widgets/home_widgets/home/home_page_app_bar_title_widget.dart';
@@ -32,20 +30,22 @@ class _OrderFoodHomePageState extends State<OrderFoodHomePage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBarWidget(
+        // titleWidget: const HomePageAppBarTitleWidget(),
+        // hideBackButton: true,
+        // actions: [
+        //   Badge(
+        //     child: IconButton(
+        //       onPressed: () {
+        //         context.read<CartCubit>().getAllCartItems();
+        //         Navigator.of(context).push(
+        //             MaterialPageRoute(builder: (context) => const CartPage()));
+        //       },
+        //       icon: const Icon(Icons.shopping_bag_outlined),
+        //     ),
+        //   ),
+        // ],
         titleWidget: const HomePageAppBarTitleWidget(),
         hideBackButton: true,
-        actions: [
-          Badge(
-            child: IconButton(
-              onPressed: () {
-                context.read<CartCubit>().getAllCartItems();
-                Navigator.of(context).push(
-                    MaterialPageRoute(builder: (context) => const CartPage()));
-              },
-              icon: const Icon(Icons.shopping_bag_outlined),
-            ),
-          ),
-        ],
       ),
       body: _buildBody(),
     );

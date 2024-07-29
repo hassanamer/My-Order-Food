@@ -11,6 +11,7 @@ import 'package:order/features/event/presentation/pages/widgets/order_details_pa
 import 'package:order/injection_container.dart';
 
 import '../../../../../../core/services/awesome_notification_service.dart';
+import '../../../../../../core/services/notification_service.dart';
 import '../../../../../register/data/models/register_account_model.dart';
 
 class OrderDetailsPage extends StatefulWidget {
@@ -103,6 +104,8 @@ class _OrderDetailsPageState extends State<OrderDetailsPage> {
           .update(placer.toMap());
       PushNotificationService.sendNotificationToUser(placer.userId,
           "You're Choosed To Place The Order, Thank You So Much For Your Help");
+      NotificationService.saveNotification("You're Choosed To Place The Order",
+          "Thank You So Much For Your Help");
     }
 
     if (receiver != null) {
@@ -113,6 +116,9 @@ class _OrderDetailsPageState extends State<OrderDetailsPage> {
           .update(receiver.toMap());
       PushNotificationService.sendNotificationToUser(receiver.userId,
           "You're Choosed To Rcieve The Order At The Gate, Thank You So Much For Your Help");
+      NotificationService.saveNotification(
+          "You're Choosed To Rcieve The Order At The Gate",
+          "Thank You So Much For Your Help");
     }
 
     setState(() {});
@@ -171,6 +177,9 @@ class _OrderDetailsPageState extends State<OrderDetailsPage> {
                       title: "Order Placed Successfully",
                       body:
                           'Order That You\'re Joined Is Placed successfully, When It Arrive You Will Notified');
+                  NotificationService.saveNotification(
+                      "Order Placed Successfully",
+                      "Order That You\'re Joined Is Placed successfully, When It Arrive You Will Notified");
                   await Future.delayed(Duration(seconds: 10));
                   await assignUsersAndNotify();
                   await Navigator.push(

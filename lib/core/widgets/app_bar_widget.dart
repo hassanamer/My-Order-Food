@@ -2,7 +2,11 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:order/core/theming/colors.dart';
 import 'package:order/core/theming/styles.dart';
+import 'package:order/features/notification/notification_page.dart';
 import 'package:order/features/restaurant/presentation/cubit/restaurant_cubit.dart';
+
+import '../services/notification_model.dart';
+import '../services/notification_service.dart';
 
 class AppBarWidget extends StatefulWidget implements PreferredSizeWidget {
   final String? pageName;
@@ -32,6 +36,14 @@ class AppBarWidget extends StatefulWidget implements PreferredSizeWidget {
 class _AppBarWidgetState extends State<AppBarWidget> {
   bool _isSearching = false;
   TextEditingController _searchController = TextEditingController();
+  static bool hasNotificationNotSeen = false;
+  static List<NotificationModel> notificationModels = []; // Declare here
+
+  @override
+  void initState() {
+    _getNotfications();
+    super.initState();
+  }
 
   @override
   void dispose() {
@@ -45,6 +57,15 @@ class _AppBarWidgetState extends State<AppBarWidget> {
     });
   }
 
+  static _getNotfications() async {
+    notificationModels = await NotificationService.getUserNotifications();
+    notificationModels.map((notification) {
+      if (notification.notificationNotSeenYet == false) {
+        hasNotificationNotSeen = true;
+      }
+    });
+  }
+
   void _stopSearch() {
     setState(() {
       _isSearching = false;
@@ -53,13 +74,22 @@ class _AppBarWidgetState extends State<AppBarWidget> {
   }
 
   void _performSearch(String query, BuildContext context) {
-    // Implement your search logic here based on your requirements
     if (query.isEmpty) {
-      // If query is empty, show all restaurants
       BlocProvider.of<RestaurantCubit>(context).getAllRestaurants();
-    } else {
-      // Otherwise, filter based on restaurant name or order title
-    }
+    } else {}
+  }
+
+  void _goToNotifications() async {
+    final notifications = await NotificationService.getUserNotifications();
+
+    Navigator.push(
+      context,
+      new MaterialPageRoute(
+        builder: (context) => new NotificationPage(),
+      ),
+    );
+
+    // Navigator.of(context).pushNamed('/notifications', arguments: notifications);
   }
 
   @override
@@ -112,11 +142,13 @@ class _AppBarWidgetState extends State<AppBarWidget> {
                   icon: const Icon(Icons.search),
                   onPressed: _startSearch,
                 ),
-                IconButton(
-                  icon: const Icon(Icons.notifications),
-                  onPressed: () {
-                    // Add notification functionality here
-                  },
+                Stack(
+                  children: [
+                    IconButton(
+                      icon: const Icon(Icons.notifications),
+                      onPressed: _goToNotifications,
+                    ),
+                  ],
                 ),
               ],
     );

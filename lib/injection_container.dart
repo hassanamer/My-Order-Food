@@ -39,7 +39,6 @@ import 'package:order/features/restaurant/presentation/cubit/menu_cubit.dart';
 import 'package:order/features/restaurant/presentation/cubit/restaurant_cubit.dart';
 
 import 'features/cart/domain/usecase/view_orders_usecase.dart';
-import 'features/login/data/datasources/local_login_user.dart';
 import 'features/login/data/reporisatory/account_reporisatory_impl.dart';
 import 'features/login/domain/repositories/account_repository.dart';
 import 'features/register/user/profile_cubit.dart';
@@ -49,10 +48,6 @@ final sl = GetIt.instance;
 void init() {
   // lazy singleton for FirebaseDatabaseProvider
   sl.registerLazySingleton(() => FirebaseDatabseProvider());
-
-  // Registering local database data source
-  sl.registerLazySingleton<LocalDatabaseDataSource>(
-      () => DatabaseDataSourceImpl(sl()));
 
   // Registering remote login data source
   sl.registerLazySingleton<RemoteLoginDatasource>(

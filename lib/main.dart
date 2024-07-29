@@ -14,6 +14,7 @@ import 'package:order/features/cart/presentation/pages/cart_page.dart';
 import 'package:order/features/event/presentation/pages/order_food_home_page.dart';
 import 'package:order/features/event/presentation/pages/settings_page.dart';
 import 'package:order/features/login/presentation/cubit/login_cubit.dart';
+import 'package:order/features/notification/notification_page.dart';
 import 'package:order/features/register/presentation/cubit/register_cubit.dart';
 import 'package:order/features/restaurant/presentation/cubit/menu_cubit.dart';
 import 'package:order/features/restaurant/presentation/cubit/restaurant_cubit.dart';
@@ -22,7 +23,7 @@ import 'package:order/features/restaurant/presentation/pages/get_all_restaurants
 import 'package:order/features/restaurant/presentation/pages/menu_page/menu_page.dart';
 
 import 'core/services/awesome_notification_service.dart';
-import 'core/services/message.dart';
+import 'core/services/notification_model.dart';
 import 'features/event/presentation/cubit/order_cubit.dart';
 import 'features/login/presentation/pages/login_page.dart';
 import 'features/register/presentation/pages/profile_page.dart';
@@ -32,10 +33,15 @@ import 'firebase_options.dart';
 import 'injection_container.dart' as di;
 
 final navigatorKey = GlobalKey<NavigatorState>();
+final List<Map<String, String>> _notifications = [];
 
-Future _firbaseBackgroundMessage(RemoteMessage message) async {
+Future _firebaseBackgroundMessage(RemoteMessage message) async {
   if (message.notification != null) {
-    print("NOTIFICATION RECIEVED IN THE BACKGROUND");
+    print("NOTIFICATION RECEIVED IN THE BACKGROUND");
+    _notifications.add({
+      'title': message.notification!.title ?? 'No Title',
+      'body': message.notification!.body ?? 'No Body',
+    });
   }
 }
 
@@ -46,37 +52,34 @@ void main() async {
     await Firebase.initializeApp(
       options: DefaultFirebaseOptions.currentPlatform,
     );
-    await PushNotification.init();
 
+    await PushNotification.init();
     await PushNotification.localNotificationInit();
-    FirebaseMessaging.onBackgroundMessage(_firbaseBackgroundMessage);
+
+    FirebaseMessaging.onBackgroundMessage(_firebaseBackgroundMessage);
+
     FirebaseMessaging.onMessageOpenedApp.listen((RemoteMessage message) {
-      if (message != null) {
-        print("BACKGROUND NOTIFICATION TAPPED");
-        navigatorKey.currentState!
-            .pushNamed("/allrestaurant", arguments: message);
-      }
+      handleNotification(message);
     });
 
     FirebaseMessaging.onMessage.listen((RemoteMessage message) {
       String payloadData = jsonEncode(message.data);
-      print("GOT MESSAGE IN THE FOUREGROUND");
+      print("GOT MESSAGE IN THE FOREGROUND");
       if (message.notification != null) {
         PushNotification.showSimpleNotification(
-            title: message.notification!.title!,
-            body: message.notification!.body!,
-            payload: payloadData);
+          title: message.notification!.title!,
+          body: message.notification!.body!,
+          payload: payloadData,
+        );
       }
+      handleNotification(message);
     });
 
-    final RemoteMessage? message =
+    final RemoteMessage? initialMessage =
         await FirebaseMessaging.instance.getInitialMessage();
-    if (message != null) {
+    if (initialMessage != null) {
       print('Launched FROM TERMINATED');
-      Future.delayed(Duration(seconds: 1), () {
-        navigatorKey.currentState!
-            .pushNamed("/allrestaurant", arguments: message);
-      });
+      handleNotification(initialMessage);
     }
 
     await AwesomeNotificationService.initializeNotification();
@@ -84,7 +87,26 @@ void main() async {
     Bloc.observer = MyGlobalObserver();
 
     runApp(const MyApp());
-  }, (e, s) {});
+  }, (e, s) {
+    print(e);
+    print(s);
+  });
+}
+
+void handleNotification(RemoteMessage message) {
+  final notification = {
+    'title': message.notification?.title ?? 'No Title',
+    'body': message.notification?.body ?? 'No Body',
+  };
+  _notifications.add(notification);
+
+  final List<NotificationModel> notificationModels =
+      _notifications.map((notificationMap) {
+    return NotificationModel.fromMap(notificationMap);
+  }).toList();
+
+  Navigator.of(navigatorKey.currentState!.context)
+      .pushNamed('notifications', arguments: notificationModels);
 }
 
 class MyApp extends StatefulWidget {
@@ -132,7 +154,7 @@ class _MyAppState extends State<MyApp> {
           'cart': (context) => const CartPage(),
           'settings': (context) => const SettingsPage(),
           'profile': (context) => const ProfilePage(),
-          'message': (context) => const Message(),
+          'notifications': (context) => NotificationPage(),
         },
         initialRoute: 'login',
       ),

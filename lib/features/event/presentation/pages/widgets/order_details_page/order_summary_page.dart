@@ -2,6 +2,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_staggered_animations/flutter_staggered_animations.dart';
 import 'package:intl/intl.dart';
+import 'package:order/core/services/notification_service.dart';
 import 'package:order/core/widgets/app_bar_widget.dart';
 import 'package:order/features/event/domain/entities/order_entities.dart';
 
@@ -64,29 +65,20 @@ class _OrderSummaryPageState extends State<OrderSummaryPage> {
     }
   }
 
-  // void _initializePriceControllers() {
-  //   for (var item in items) {
-  //     String itemId = item['itemName'] ?? '';
-  //     priceControllers[itemId] = TextEditingController();
-  //     priceControllers[itemId]!.text = item['price']?.toString() ?? '';
-  //     priceControllers[itemId]!.addListener(
-  //         () => _updateItemTotalPrice(itemId, item['quantity'] ?? 1));
-  //   }
-  // }
-
   void _updateItemTotalPrice(String? userId, double? totalPrice) async {
     setState(() {
       isLoading = true;
     });
 
     await widget.addOrderUsecase.update(widget.orderEntity);
-    // _updateUserTotalPrices();
     setState(() {
       isLoading = false;
     });
     // Send notification to the user with their total price
     PushNotificationService.sendNotificationToUser(
         userId, "Your Total Price Is  ${totalPrice?.toStringAsFixed(2) ?? ""}");
+    NotificationService.saveNotification(
+        "Your Total Price Is", totalPrice?.toStringAsFixed(2) ?? "");
     ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
       content: Text('Order prices updated successfully!'),
     ));
@@ -183,8 +175,6 @@ class UserItemsTile extends StatefulWidget {
   final List<OrderItem> items;
   final OrderEntity orderEntity;
 
-//  final Map<String, TextEditingController> priceControllers;
-//   final Map<String, double> itemTotalPrice;
   final Function(String? userId, double? totalPrice) updateOrder;
 
   const UserItemsTile({
@@ -391,9 +381,11 @@ class _UserItemsTileState extends State<UserItemsTile> {
                             totalPrice = calculateTotalPrice();
                             widget.updateOrder(widget.user?.userId, totalPrice);
                             // Send notification to the user
-                            PushNotificationService.sendNotificationToUser(
-                                widget.user?.userId,
-                                totalPrice?.toStringAsFixed(2));
+                            // PushNotificationService.sendNotificationToUser(
+                            //     widget.user?.userId,
+                            //     totalPrice?.toStringAsFixed(2));
+                            // NotificationService.saveNotification(
+                            //     "", "Thank You So Much For Your Help");
                           });
                         },
                         style: ButtonStyle(
