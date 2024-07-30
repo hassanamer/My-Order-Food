@@ -6,7 +6,7 @@ import 'package:order/features/event/domain/entities/order_entities.dart';
 import 'package:order/features/event/presentation/pages/widgets/order_details_page/order_summary_page.dart';
 
 class ViewOrderPage extends StatelessWidget {
-  final VoidCallback? onCalculate; // Add the onCalculate parameter;
+  final VoidCallback? onCalculate;
 
   const ViewOrderPage({Key? key, this.onCalculate});
 
@@ -31,14 +31,13 @@ class ViewOrderPage extends StatelessWidget {
           return ListView.builder(
             itemCount: snapshot.data!.docs.length,
             itemBuilder: (context, index) {
-              //replace the order data by order entity
               var orderMap =
                   snapshot.data!.docs[index].data() as Map<String, dynamic>;
               var orderEntity = OrderEntity.fromMap(orderMap);
               var orderId = orderEntity.id;
               var createdAt = orderEntity.createdAt != null
                   ? DateFormat('yyyy-MM-dd hh:mm a')
-                      .format((orderEntity.createdAt as Timestamp).toDate())
+                      .format(orderEntity.createdAt)
                   : 'Unknown';
               return GestureDetector(
                 onTap: () {
@@ -53,7 +52,7 @@ class ViewOrderPage extends StatelessWidget {
                   );
                 },
                 child: _buildOrderItem(
-                  title: 'Order #$orderId',
+                  title: 'Order ${orderEntity.title}',
                   createdAt: createdAt,
                 ),
               );
@@ -98,7 +97,7 @@ class ViewOrderPage extends StatelessWidget {
                 const Icon(Icons.date_range, color: Colors.grey),
                 const SizedBox(width: 10),
                 Text(
-                  createdAt,
+                  createdAt.toString(),
                   style: const TextStyle(fontSize: 16),
                 ),
               ],
