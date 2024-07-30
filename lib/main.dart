@@ -23,7 +23,7 @@ import 'package:order/features/restaurant/presentation/pages/get_all_restaurants
 import 'package:order/features/restaurant/presentation/pages/menu_page/menu_page.dart';
 
 import 'core/services/awesome_notification_service.dart';
-import 'core/services/notification_model.dart';
+import 'core/services/notification_cubit.dart';
 import 'features/event/presentation/cubit/order_cubit.dart';
 import 'features/login/presentation/pages/login_page.dart';
 import 'features/register/presentation/pages/profile_page.dart';
@@ -99,14 +99,6 @@ void handleNotification(RemoteMessage message) {
     'body': message.notification?.body ?? 'No Body',
   };
   _notifications.add(notification);
-
-  final List<NotificationModel> notificationModels =
-      _notifications.map((notificationMap) {
-    return NotificationModel.fromMap(notificationMap);
-  }).toList();
-
-  Navigator.of(navigatorKey.currentState!.context)
-      .pushNamed('notifications', arguments: notificationModels);
 }
 
 class MyApp extends StatefulWidget {
@@ -138,6 +130,8 @@ class _MyAppState extends State<MyApp> {
         BlocProvider(create: (_) => di.sl<CartCubit>()..getAllCartItems()),
         BlocProvider(create: (_) => di.sl<ProfileCubit>()),
         BlocProvider(create: (_) => di.sl<ProfileCubit>()..fetchUserProfile()),
+        BlocProvider(create: (_) => di.sl<NotificationCubit>()),
+        // Add your NotificationCubit here
       ],
       child: GetMaterialApp(
         title: 'Food App',

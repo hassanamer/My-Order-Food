@@ -14,8 +14,9 @@ class AddOrderUsecase {
     return await orderRepository.remoteUpdateOrder(orderEntity);
   }
 
-  Future<BaseResponse> updateOrderStatus(String orderId) async {
-    return await orderRepository.remoteUpdateOrderStatus(orderId);
+  Future<BaseResponse> updateOrderStatus(
+      String orderId, String newStatus) async {
+    return await orderRepository.remoteUpdateOrderStatus(orderId, newStatus);
   }
 
   Future<OrderEntity> remoteGetOrder(String orderId) async {

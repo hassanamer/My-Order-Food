@@ -33,7 +33,7 @@ abstract class RemoteOrderDatasourceInterface
 
   Future<BaseResponse> updateOrder(OrderModel orderModel);
 
-  Future<BaseResponse> updateOrderStatus(String orderId);
+  Future<BaseResponse> updateOrderStatus(String orderId, String newStatus);
 
   Future<BaseResponse> deleteOrders();
 }
@@ -115,25 +115,9 @@ class RemoteOrderDatasource extends RemoteOrderDatasourceInterface {
     return OrderEntity.fromMap(data);
   }
 
-  Future<BaseResponse> updateOrderStatus(String orderId) async {
+  Future<BaseResponse> updateOrderStatus(
+      String orderId, String newStatus) async {
     try {
-      DocumentSnapshot orderDoc = await FirebaseFirestore.instance
-          .collection('Order')
-          .doc(orderId)
-          .get();
-      String currentStatus = orderDoc['status'];
-      String newStatus;
-
-      if (currentStatus == 'Active') {
-        newStatus = 'Placed';
-      } else if (currentStatus == 'Placed') {
-        newStatus = 'Arrived';
-      } else {
-        // If status is already "Arrived", you can handle it as needed
-        // For example, you might reset it to "Active" or keep it as "Arrived"
-        newStatus = 'Active'; // Or keepit as 'Arrived'
-      }
-
       await FirebaseFirestore.instance
           .collection('Order')
           .doc(orderId)

@@ -3,10 +3,8 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:order/core/theming/colors.dart';
 import 'package:order/core/theming/styles.dart';
 import 'package:order/features/notification/notification_page.dart';
-import 'package:order/features/restaurant/presentation/cubit/restaurant_cubit.dart';
 
-import '../services/notification_model.dart';
-import '../services/notification_service.dart';
+import '../services/notification_cubit.dart';
 
 class AppBarWidget extends StatefulWidget implements PreferredSizeWidget {
   final String? pageName;
@@ -37,11 +35,9 @@ class _AppBarWidgetState extends State<AppBarWidget> {
   bool _isSearching = false;
   TextEditingController _searchController = TextEditingController();
   static bool hasNotificationNotSeen = false;
-  static List<NotificationModel> notificationModels = []; // Declare here
 
   @override
   void initState() {
-    _getNotfications();
     super.initState();
   }
 
@@ -57,15 +53,6 @@ class _AppBarWidgetState extends State<AppBarWidget> {
     });
   }
 
-  static _getNotfications() async {
-    notificationModels = await NotificationService.getUserNotifications();
-    notificationModels.map((notification) {
-      if (notification.notificationNotSeenYet == false) {
-        hasNotificationNotSeen = true;
-      }
-    });
-  }
-
   void _stopSearch() {
     setState(() {
       _isSearching = false;
@@ -75,21 +62,16 @@ class _AppBarWidgetState extends State<AppBarWidget> {
 
   void _performSearch(String query, BuildContext context) {
     if (query.isEmpty) {
-      BlocProvider.of<RestaurantCubit>(context).getAllRestaurants();
     } else {}
   }
 
-  void _goToNotifications() async {
-    final notifications = await NotificationService.getUserNotifications();
-
+  void _goToNotifications() {
     Navigator.push(
       context,
-      new MaterialPageRoute(
-        builder: (context) => new NotificationPage(),
+      MaterialPageRoute(
+        builder: (context) => NotificationPage(),
       ),
     );
-
-    // Navigator.of(context).pushNamed('/notifications', arguments: notifications);
   }
 
   @override
@@ -142,13 +124,46 @@ class _AppBarWidgetState extends State<AppBarWidget> {
                   icon: const Icon(Icons.search),
                   onPressed: _startSearch,
                 ),
-                Stack(
-                  children: [
-                    IconButton(
-                      icon: const Icon(Icons.notifications),
-                      onPressed: _goToNotifications,
-                    ),
-                  ],
+                BlocBuilder<NotificationCubit, NotificationState>(
+                  builder: (context, state) {
+                    bool hasUnseenNotifications = false;
+
+                    if (state is NotificationLoaded) {
+                      hasUnseenNotifications = state.unseenNotifications;
+                    }
+                    return Stack(
+                      children: [
+                        IconButton(
+                          icon: const Icon(Icons.notifications),
+                          onPressed: _goToNotifications,
+                        ),
+                        if (hasUnseenNotifications)
+                          Positioned(
+                            right: 0,
+                            child: Container(
+                              padding: const EdgeInsets.all(2),
+                              decoration: BoxDecoration(
+                                color: Colors.red,
+                                shape: BoxShape.circle,
+                              ),
+                              constraints: BoxConstraints(
+                                minWidth: 16,
+                                minHeight: 16,
+                              ),
+                              child: Center(
+                                child: Text(
+                                  '!',
+                                  style: TextStyle(
+                                    color: Colors.white,
+                                    fontSize: 12,
+                                  ),
+                                ),
+                              ),
+                            ),
+                          ),
+                      ],
+                    );
+                  },
                 ),
               ],
     );

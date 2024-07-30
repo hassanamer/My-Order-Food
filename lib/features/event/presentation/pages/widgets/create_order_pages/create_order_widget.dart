@@ -165,13 +165,13 @@ class _CreateOrderWidgetState extends State<CreateOrderWidget> {
 
     if (isValid && allItemsHaveQuantity) {
       final createOrderEntity = OrderEntity(
-        id: widget.isUpdateEvent
-            ? widget.eventEntity!.id
-            : random.nextInt(10).toString(),
-        title: titleController.text,
-        items: itemList,
-        userId: userId,
-      );
+          id: widget.isUpdateEvent
+              ? widget.eventEntity!.id
+              : random.nextInt(10).toString(),
+          title: titleController.text,
+          items: itemList,
+          userId: userId,
+          status: "Active");
 
       if (widget.isUpdateEvent) {
         BlocProvider.of<OrderCubit>(context).updateOrder(createOrderEntity);

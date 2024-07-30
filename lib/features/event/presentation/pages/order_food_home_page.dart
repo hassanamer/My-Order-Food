@@ -8,6 +8,7 @@ import 'package:order/features/event/presentation/cubit/order_state.dart';
 import 'package:order/features/event/presentation/pages/widgets/home_widgets/home/home_page_app_bar_title_widget.dart';
 import 'package:order/features/event/presentation/pages/widgets/home_widgets/orders/orders_empty_list_widget.dart';
 
+import '../../../../core/services/notification_cubit.dart';
 import 'widgets/home_widgets/orders/home_page_order_widget.dart';
 
 class OrderFoodHomePage extends StatefulWidget {
@@ -20,10 +21,11 @@ class OrderFoodHomePage extends StatefulWidget {
 class _OrderFoodHomePageState extends State<OrderFoodHomePage> {
   @override
   void initState() {
+    super.initState();
     setState(() {
       context.read<OrderCubit>().getAllOrders();
     });
-    super.initState();
+    context.read<NotificationCubit>().loadNotifications();
   }
 
   @override

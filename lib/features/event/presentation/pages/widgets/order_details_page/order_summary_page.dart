@@ -129,6 +129,7 @@ class _OrderSummaryPageState extends State<OrderSummaryPage> {
             Center(
               child: ElevatedButton(
                 onPressed: () {
+                  widget.orderEntity.status = 'Arrived';
                   widget.onCalculate!();
                   setState(() {});
                 },

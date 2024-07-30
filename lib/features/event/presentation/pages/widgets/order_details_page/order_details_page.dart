@@ -73,7 +73,11 @@ class _OrderDetailsPageState extends State<OrderDetailsPage> {
     widget.orderEntity =
         await addOrderUsecase.remoteGetOrder(widget.orderEntity.id);
     updateOrdersAndUsers();
-    addOrderUsecase.updateOrderStatus(widget.orderEntity.id);
+  }
+
+  updateOrderStatus() {
+    addOrderUsecase.updateOrderStatus(
+        widget.orderEntity.id, widget.orderEntity.status);
   }
 
   Future<void> assignUsersAndNotify() async {
@@ -166,134 +170,147 @@ class _OrderDetailsPageState extends State<OrderDetailsPage> {
               ),
             ),
             const SizedBox(height: 20),
-            SizedBox(
-              width: double.infinity,
-              child: ElevatedButton(
-                onPressed: () async {
-                  setState(() {
-                    refreshOrder();
-                  });
-                  await AwesomeNotificationService.showNotification(
-                      title: "Order Placed Successfully",
-                      body:
-                          'Order That You\'re Joined Is Placed successfully, When It Arrive You Will Notified');
-                  NotificationService.saveNotification(
-                      "Order Placed Successfully",
-                      "Order That You\'re Joined Is Placed successfully, When It Arrive You Will Notified");
-                  await Future.delayed(Duration(seconds: 10));
-                  await assignUsersAndNotify();
-                  await Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                      builder: (context) => ViewOrderPage(
-                        onCalculate: onCalculatePressed,
-                      ),
-                    ),
-                  );
-                },
-                style: ButtonStyle(
-                  backgroundColor: MaterialStateProperty.resolveWith<Color>(
-                    (Set<MaterialState> states) {
-                      if (states.contains(MaterialState.disabled)) {
-                        return Colors.grey;
-                      }
-                      return Colors.blue;
-                    },
-                  ),
-                  shape: MaterialStateProperty.all<RoundedRectangleBorder>(
-                    RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(15),
-                    ),
-                  ),
-                  elevation: MaterialStateProperty.all<double>(5),
-                  shadowColor: MaterialStateProperty.all<Color>(
-                    Colors.grey.withOpacity(0.5),
-                  ),
-                  padding: MaterialStateProperty.all<EdgeInsetsGeometry>(
-                    const EdgeInsets.all(15),
-                  ),
-                  textStyle: MaterialStateProperty.all<TextStyle>(
-                    const TextStyle(fontSize: 18),
-                  ),
-                ),
-                child: const Text(
-                  'Place Your Order...',
-                  style: TextStyle(color: Colors.white),
-                ),
-              ),
-            ),
-            const SizedBox(height: 20),
-            Row(
-              children: [
-                Expanded(
-                  child: TextField(
-                    controller: itemController,
-                    decoration: const InputDecoration(
-                      hintText: 'Enter item',
-                    ),
-                  ),
-                ),
-                const SizedBox(width: 10),
-                IconButton(
-                  onPressed: () {
-                    setState(() {
-                      itemCount = itemCount > 0 ? itemCount - 1 : 0;
-                    });
-                  },
-                  icon: const Icon(Icons.remove),
-                  color: Colors.red,
-                ),
-                Text(
-                  '$itemCount',
-                  style: const TextStyle(fontSize: 18),
-                ),
-                IconButton(
-                  onPressed: () {
-                    setState(() {
-                      itemCount++;
-                    });
-                  },
-                  icon: const Icon(Icons.add),
-                  color: Colors.blue,
-                ),
-                const SizedBox(width: 10),
-                SizedBox(
-                  width: 100,
-                  child: ElevatedButton(
-                    onPressed: () => _addItem(),
-                    style: ButtonStyle(
-                      backgroundColor: MaterialStateProperty.resolveWith<Color>(
-                        (Set<MaterialState> states) {
-                          if (states.contains(MaterialState.disabled)) {
-                            return Colors.grey;
-                          }
-                          return Colors.blue;
-                        },
-                      ),
-                      shape: MaterialStateProperty.all<RoundedRectangleBorder>(
-                        RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(15),
+            Visibility(
+              visible: widget.orderEntity.status == 'Active',
+              child: Column(
+                children: [
+                  SizedBox(
+                    width: double.infinity,
+                    child: ElevatedButton(
+                      onPressed: () async {
+                        setState(() {
+                          widget.orderEntity.status = 'Placed';
+                          updateOrderStatus();
+                        });
+                        await AwesomeNotificationService.showNotification(
+                            title: "Order Placed Successfully",
+                            body:
+                                'Order That You\'re Joined Is Placed successfully, When It Arrive You Will Notified');
+                        NotificationService.saveNotification(
+                            "Order Placed Successfully",
+                            "Order That You\'re Joined Is Placed successfully, When It Arrive You Will Notified");
+                        await Future.delayed(Duration(seconds: 10));
+                        await assignUsersAndNotify();
+                        await Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) => ViewOrderPage(
+                              onCalculate: onCalculatePressed,
+                            ),
+                          ),
+                        );
+                      },
+                      style: ButtonStyle(
+                        backgroundColor:
+                            MaterialStateProperty.resolveWith<Color>(
+                          (Set<MaterialState> states) {
+                            if (states.contains(MaterialState.disabled)) {
+                              return Colors.grey;
+                            }
+                            return Colors.blue;
+                          },
+                        ),
+                        shape:
+                            MaterialStateProperty.all<RoundedRectangleBorder>(
+                          RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(15),
+                          ),
+                        ),
+                        elevation: MaterialStateProperty.all<double>(5),
+                        shadowColor: MaterialStateProperty.all<Color>(
+                          Colors.grey.withOpacity(0.5),
+                        ),
+                        padding: MaterialStateProperty.all<EdgeInsetsGeometry>(
+                          const EdgeInsets.all(15),
+                        ),
+                        textStyle: MaterialStateProperty.all<TextStyle>(
+                          const TextStyle(fontSize: 18),
                         ),
                       ),
-                      elevation: MaterialStateProperty.all<double>(5),
-                      shadowColor: MaterialStateProperty.all<Color>(
-                        Colors.grey.withOpacity(0.5),
+                      child: const Text(
+                        'Place Your Order...',
+                        style: TextStyle(color: Colors.white),
                       ),
-                      padding: MaterialStateProperty.all<EdgeInsetsGeometry>(
-                        const EdgeInsets.all(15),
-                      ),
-                      textStyle: MaterialStateProperty.all<TextStyle>(
-                        const TextStyle(fontSize: 18),
-                      ),
-                    ),
-                    child: const Text(
-                      'Add',
-                      style: TextStyle(color: Colors.white),
                     ),
                   ),
-                ),
-              ],
-            ),
+                  const SizedBox(height: 20),
+                  Row(
+                    children: [
+                      Expanded(
+                        child: TextField(
+                          controller: itemController,
+                          decoration: const InputDecoration(
+                            hintText: 'Enter item',
+                          ),
+                        ),
+                      ),
+                      const SizedBox(width: 10),
+                      IconButton(
+                        onPressed: () {
+                          setState(() {
+                            itemCount = itemCount > 0 ? itemCount - 1 : 0;
+                          });
+                        },
+                        icon: const Icon(Icons.remove),
+                        color: Colors.red,
+                      ),
+                      Text(
+                        '$itemCount',
+                        style: const TextStyle(fontSize: 18),
+                      ),
+                      IconButton(
+                        onPressed: () {
+                          setState(() {
+                            itemCount++;
+                          });
+                        },
+                        icon: const Icon(Icons.add),
+                        color: Colors.blue,
+                      ),
+                      const SizedBox(width: 10),
+                      SizedBox(
+                        width: 100,
+                        child: ElevatedButton(
+                          onPressed: () => _addItem(),
+                          style: ButtonStyle(
+                            backgroundColor:
+                                MaterialStateProperty.resolveWith<Color>(
+                              (Set<MaterialState> states) {
+                                if (states.contains(MaterialState.disabled)) {
+                                  return Colors.grey;
+                                }
+                                return Colors.blue;
+                              },
+                            ),
+                            shape: MaterialStateProperty.all<
+                                RoundedRectangleBorder>(
+                              RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(15),
+                              ),
+                            ),
+                            elevation: MaterialStateProperty.all<double>(5),
+                            shadowColor: MaterialStateProperty.all<Color>(
+                              Colors.grey.withOpacity(0.5),
+                            ),
+                            padding:
+                                MaterialStateProperty.all<EdgeInsetsGeometry>(
+                              const EdgeInsets.all(15),
+                            ),
+                            textStyle: MaterialStateProperty.all<TextStyle>(
+                              const TextStyle(fontSize: 18),
+                            ),
+                          ),
+                          child: const Text(
+                            'Add',
+                            style: TextStyle(color: Colors.white),
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
+                ],
+              ),
+            )
           ],
         ),
       ),

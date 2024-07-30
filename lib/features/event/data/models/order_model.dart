@@ -9,7 +9,7 @@ class OrderModel extends OrderEntity {
     List<OrderItem>? items,
     int? itemCount,
     String? createdAt,
-    String? status,
+    required String status,
   }) : super(
           userId: userId,
           id: id,
@@ -37,7 +37,7 @@ class OrderModel extends OrderEntity {
         title: map['title'],
         itemCount: map['itemCount'],
         createdAt: map['createdAt'],
-        status: map['status'],
+        status: map['status'] ?? '',
         items: map['items']
             ?.map((item) => OrderItem.fromMap(item as Map<String, dynamic>))
             .toList());
@@ -65,12 +65,12 @@ class OrderModel extends OrderEntity {
   //   );
   // }
 
-  factory OrderModel.fromEntity(OrderEntity eventEntity) => OrderModel(
-        userId: eventEntity.userId,
-        id: eventEntity.id,
-        title: eventEntity.title,
-        items: eventEntity.items,
-        createdAt: eventEntity.createdAt,
-        status: 'active',
+  factory OrderModel.fromEntity(OrderEntity orderEntity) => OrderModel(
+        userId: orderEntity.userId,
+        id: orderEntity.id,
+        title: orderEntity.title,
+        items: orderEntity.items,
+        createdAt: orderEntity.createdAt,
+        status: orderEntity.status,
       );
 }

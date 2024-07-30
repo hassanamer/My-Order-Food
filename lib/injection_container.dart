@@ -1,5 +1,6 @@
 import 'package:get_it/get_it.dart';
 import 'package:order/core/database/firebase_db.dart';
+import 'package:order/core/services/notification_cubit.dart';
 import 'package:order/features/cart/data/datasource/cart_datasource.dart';
 import 'package:order/features/cart/data/reporisatory_imlp/cart_reporisatory_impl.dart';
 import 'package:order/features/cart/domain/reporisatory/cart_reporisatory.dart';
@@ -57,18 +58,6 @@ void init() {
   sl.registerLazySingleton<AccountRepository>(
       () => AccountRepositoryImlp(sl()));
 
-  // Registering login use cases
-  sl.registerLazySingleton<RemoteLoginUsecase>(() => RemoteLoginUsecase(sl()));
-  sl.registerLazySingleton<RemoteLogoutUsecase>(
-      () => RemoteLogoutUsecase(sl()));
-
-  // Registering login cubit
-  sl.registerFactory<LoginCubit>(() => LoginCubit());
-
-  // Registering remote register data source
-  sl.registerLazySingleton<RemoteRegisterDatasource>(
-      () => RemoteRegisterDatasourceImlp(sl()));
-
   // Registering register account repository
   sl.registerLazySingleton<RegisterAccountRepository>(
       () => RegisterReporisatoryImpl(sl<RemoteRegisterDatasource>()));
@@ -78,6 +67,19 @@ void init() {
       () => RemoteRegisterUsecase(sl<RegisterAccountRepository>()));
   sl.registerLazySingleton<GetUserInfoUsecase>(
       () => GetUserInfoUsecase(sl<RegisterAccountRepository>()));
+
+  // Registering login use cases
+  sl.registerLazySingleton<RemoteLoginUsecase>(() => RemoteLoginUsecase(sl()));
+  sl.registerLazySingleton<RemoteLogoutUsecase>(
+      () => RemoteLogoutUsecase(sl()));
+
+  // Registering login cubit
+  sl.registerFactory<LoginCubit>(() => LoginCubit());
+  sl.registerFactory<NotificationCubit>(() => NotificationCubit());
+
+  // Registering remote register data source
+  sl.registerLazySingleton<RemoteRegisterDatasource>(
+      () => RemoteRegisterDatasourceImlp(sl()));
 
   // Registering register cubit
   sl.registerFactory<RegisterCubit>(() => RegisterCubit());

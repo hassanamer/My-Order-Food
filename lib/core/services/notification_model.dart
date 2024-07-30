@@ -1,37 +1,41 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 
 class NotificationModel {
+  final String id;
   final String userId;
   final String title;
   final String message;
   final DateTime timestamp;
-  final bool notificationNotSeenYet;
+  bool notificationSeen;
 
   NotificationModel({
+    required this.id,
     required this.userId,
     required this.title,
     required this.message,
     required this.timestamp,
-    required this.notificationNotSeenYet,
+    required this.notificationSeen,
   });
-
-  factory NotificationModel.fromMap(Map<String, dynamic> data) {
-    return NotificationModel(
-      userId: data['userId'],
-      title: data['title'],
-      message: data['message'],
-      notificationNotSeenYet: data['notificationNotSeenYet'],
-      timestamp: (data['timestamp'] as Timestamp).toDate(),
-    );
-  }
 
   Map<String, dynamic> toMap() {
     return {
+      'id': id,
       'userId': userId,
       'title': title,
       'message': message,
-      'notificationNotSeenYet': notificationNotSeenYet,
-      'timestamp': Timestamp.fromDate(timestamp),
+      'timestamp': timestamp,
+      'notificationSeen': notificationSeen,
     };
+  }
+
+  factory NotificationModel.fromMap(Map<String, dynamic> map) {
+    return NotificationModel(
+      id: map['id'] as String? ?? '',
+      userId: map['userId'] as String? ?? '',
+      title: map['title'] as String? ?? '',
+      message: map['message'] as String? ?? '',
+      timestamp: (map['timestamp'] as Timestamp?)?.toDate() ?? DateTime.now(),
+      notificationSeen: map['notificationSeen'] as bool? ?? false,
+    );
   }
 }

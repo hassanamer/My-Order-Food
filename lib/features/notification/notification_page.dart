@@ -1,5 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:order/core/widgets/app_bar_widget.dart';
 
+import '../../core/services/notification_cubit.dart';
 import '../../core/services/notification_model.dart';
 import '../../core/services/notification_service.dart';
 
@@ -18,14 +21,15 @@ class _NotificationPageState extends State<NotificationPage> {
   @override
   void initState() {
     super.initState();
-    _notificationsFuture = NotificationService.getUserNotifications();
+    _notificationsFuture = NotificationService.getCurrentUserNotifications();
+    context.read<NotificationCubit>().markAllNotificationsAsSeen();
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: const Text('Notifications'),
+      appBar: const AppBarWidget(
+        pageName: "Notifications",
       ),
       body: FutureBuilder<List<NotificationModel>>(
         future: _notificationsFuture,
