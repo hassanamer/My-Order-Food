@@ -79,8 +79,8 @@ class _LoginWidgetState extends State<LoginWidget> {
   @override
   Widget build(BuildContext context) {
     if (kDebugMode) {
-      // emailController.text = "hassanamer281@gmail.com";
-      // passwordController.text = "P@ssw0rd";
+      emailController.text = "hassanamer281@gmail.com";
+      passwordController.text = "P@ssw0rd";
     }
     return Form(
       key: _formKey,
@@ -116,9 +116,9 @@ class _LoginWidgetState extends State<LoginWidget> {
                 ),
               ),
               const SizedBox(height: 12),
-              CommonElevatedButton(
+              CommonElevatedButtonWidget(
                 text: "Log in",
-                onTap: () {
+                onPressed: () async {
                   final PushNotificationService pushNotificationService =
                       PushNotificationService(
                     _firebaseMessaging,

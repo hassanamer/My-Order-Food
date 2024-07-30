@@ -30,6 +30,7 @@ class _SettingsHeaderWidgetState extends State<SettingsHeaderWidget> {
           setState(() {
             userName = state.userName;
             email = state.email;
+            profileImageUrl = state.profileImageUrl;
           });
         }
       },

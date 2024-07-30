@@ -5,6 +5,7 @@ import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
 import 'package:order/core/bloc_observer/bloc_observer.dart';
 import 'package:order/core/services/my_firebase_notification.dart';
@@ -24,6 +25,7 @@ import 'package:order/features/restaurant/presentation/pages/menu_page/menu_page
 
 import 'core/services/awesome_notification_service.dart';
 import 'core/services/notification_cubit.dart';
+import 'core/widgets/welcome_splash_widget.dart';
 import 'features/event/presentation/cubit/order_cubit.dart';
 import 'features/login/presentation/pages/login_page.dart';
 import 'features/register/presentation/pages/profile_page.dart';
@@ -119,39 +121,48 @@ class _MyAppState extends State<MyApp> {
 
   @override
   Widget build(BuildContext context) {
-    return MultiBlocProvider(
-      providers: [
-        BlocProvider(create: (_) => di.sl<LoginCubit>()),
-        BlocProvider(create: (_) => di.sl<RegisterCubit>()),
-        BlocProvider(create: (_) => di.sl<OrderCubit>()..getAllOrders()),
-        BlocProvider(
-            create: (_) => di.sl<RestaurantCubit>()..getAllRestaurants()),
-        BlocProvider(create: (_) => di.sl<MenuCubit>()..getAllMenu()),
-        BlocProvider(create: (_) => di.sl<CartCubit>()..getAllCartItems()),
-        BlocProvider(create: (_) => di.sl<ProfileCubit>()),
-        BlocProvider(create: (_) => di.sl<ProfileCubit>()..fetchUserProfile()),
-        BlocProvider(create: (_) => di.sl<NotificationCubit>()),
-        // Add your NotificationCubit here
-      ],
-      child: GetMaterialApp(
-        title: 'Food App',
-        theme: appTheme,
-        debugShowCheckedModeBanner: false,
-        navigatorKey: navigatorKey,
-        routes: {
-          'login': (context) => const LoginPage(),
-          'register': (context) => const RegisterPage(),
-          'home': (context) => const OrderFoodHomePage(),
-          'restaurant': (context) => const RestaurantPage(),
-          'menu': (context) => const MenuPage(),
-          'allrestaurant': (context) => const AllRestaurantPage(),
-          'cart': (context) => const CartPage(),
-          'settings': (context) => const SettingsPage(),
-          'profile': (context) => const ProfilePage(),
-          'notifications': (context) => NotificationPage(),
-        },
-        initialRoute: 'login',
-      ),
+    return ScreenUtilInit(
+      designSize: const Size(375, 812), // Set the design size of your UI
+      minTextAdapt: true,
+      splitScreenMode: true,
+      builder: (context, child) {
+        return MultiBlocProvider(
+          providers: [
+            BlocProvider(create: (_) => di.sl<LoginCubit>()),
+            BlocProvider(create: (_) => di.sl<RegisterCubit>()),
+            BlocProvider(create: (_) => di.sl<OrderCubit>()..getAllOrders()),
+            BlocProvider(
+                create: (_) => di.sl<RestaurantCubit>()..getAllRestaurants()),
+            BlocProvider(create: (_) => di.sl<MenuCubit>()..getAllMenu()),
+            BlocProvider(create: (_) => di.sl<CartCubit>()..getAllCartItems()),
+            BlocProvider(create: (_) => di.sl<ProfileCubit>()),
+            BlocProvider(
+                create: (_) => di.sl<ProfileCubit>()..fetchUserProfile()),
+            BlocProvider(create: (_) => di.sl<NotificationCubit>()),
+            // Add your NotificationCubit here
+          ],
+          child: GetMaterialApp(
+            title: 'Food App',
+            theme: appTheme,
+            debugShowCheckedModeBanner: false,
+            navigatorKey: navigatorKey,
+            routes: {
+              'splash': (context) => const WelcomeSplashWidget(),
+              'login': (context) => const LoginPage(),
+              'register': (context) => const RegisterPage(),
+              'home': (context) => const OrderFoodHomePage(),
+              'restaurant': (context) => const RestaurantPage(),
+              'menu': (context) => const MenuPage(),
+              'allrestaurant': (context) => const AllRestaurantPage(),
+              'cart': (context) => const CartPage(),
+              'settings': (context) => const SettingsPage(),
+              'profile': (context) => const ProfilePage(),
+              'notifications': (context) => NotificationPage(),
+            },
+            initialRoute: 'splash',
+          ),
+        );
+      },
     );
   }
 }

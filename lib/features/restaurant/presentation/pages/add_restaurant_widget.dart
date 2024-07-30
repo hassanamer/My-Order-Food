@@ -1,6 +1,8 @@
 import 'dart:io'; // Import IO for File type
+
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:image_picker/image_picker.dart'; // Import ImagePicker
 import 'package:order/core/widgets/common_elevated_button_widget.dart';
 import 'package:order/features/restaurant/data/model/restaurant_model.dart';
 import 'package:order/features/restaurant/presentation/cubit/restaurant_cubit.dart';
@@ -8,7 +10,6 @@ import 'package:order/features/restaurant/presentation/pages/widget/add_menu_but
 import 'package:order/features/restaurant/presentation/pages/widget/header_container_add_restaurant_widget.dart';
 import 'package:order/features/restaurant/presentation/pages/widget/hotline_restaurant_textfield_widget.dart';
 import 'package:order/features/restaurant/presentation/pages/widget/restaurant_textfield_widget.dart';
-import 'package:image_picker/image_picker.dart'; // Import ImagePicker
 
 import 'menu_page/menu_page.dart';
 
@@ -24,11 +25,11 @@ class _RestaurantWidgetState extends State<RestaurantWidget> {
   File? _restaurantImage; // Variable to hold selected image file
 
   final TextEditingController controllerRestaurantname =
-  TextEditingController();
+      TextEditingController();
   final TextEditingController _controllerRestaurantDescription =
-  TextEditingController();
+      TextEditingController();
   final TextEditingController controllerRestaurantHotline =
-  TextEditingController();
+      TextEditingController();
   late final GlobalKey<FormState> keyForm;
 
   @override
@@ -39,7 +40,8 @@ class _RestaurantWidgetState extends State<RestaurantWidget> {
 
   // Function to pick an image from gallery
   Future<void> pickImage() async {
-    final pickedFile = await ImagePicker().pickImage(source: ImageSource.gallery);
+    final pickedFile =
+        await ImagePicker().pickImage(source: ImageSource.gallery);
     if (pickedFile != null) {
       setState(() {
         _restaurantImage = File(pickedFile.path);
@@ -86,45 +88,47 @@ class _RestaurantWidgetState extends State<RestaurantWidget> {
         ),
         sizedBox,
         divider,
-        CommonElevatedButton(
+        CommonElevatedButtonWidget(
           text: 'Upload restaurant picture',
-          onTap: () async {
+          onPressed: () async {
             await pickImage(); // Call function to pick image
             // Optionally, you can upload the image to Firebase Storage here
           },
         ),
         isPressed == false
-            ? CommonElevatedButton(
-          text: "Add restaurant",
-          onTap: () {
-            setState(() {
-              if (keyForm.currentState!.validate()) {
-                isPressed = true;
-                ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
-                    backgroundColor: Colors.green,
-                    content: Text("Restaurant added successfully")));
-                context.read<RestaurantCubit>().addRestaurant(
-                  RestaurantModel(
-                    restaurantName: controllerRestaurantname.text,
-                    restaurantDescription:
-                    _controllerRestaurantDescription.text,
-                    hotlineNum: controllerRestaurantHotline.text,
-                  ),
-                );
-              }
-            });
-          },
-        )
+            ? CommonElevatedButtonWidget(
+                text: "Add restaurant",
+                onPressed: () {
+                  setState(() {
+                    if (keyForm.currentState!.validate()) {
+                      isPressed = true;
+                      ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
+                          backgroundColor: Colors.green,
+                          content: Text("Restaurant added successfully")));
+                      context.read<RestaurantCubit>().addRestaurant(
+                            RestaurantModel(
+                              restaurantName: controllerRestaurantname.text,
+                              restaurantDescription:
+                                  _controllerRestaurantDescription.text,
+                              hotlineNum: controllerRestaurantHotline.text,
+                            ),
+                          );
+                    }
+                  });
+                },
+              )
             : AddMenuButtonWidget(
-          onTap: () {
-            setState(() {
-              isPressed = false;
-              Navigator.of(context).push(MaterialPageRoute(
-                builder: (context) => MenuPage(restaurantImage: _restaurantImage), // Pass image to MenuPage
-              ));
-            });
-          },
-        )
+                onTap: () {
+                  setState(() {
+                    isPressed = false;
+                    Navigator.of(context).push(MaterialPageRoute(
+                      builder: (context) => MenuPage(
+                          restaurantImage:
+                              _restaurantImage), // Pass image to MenuPage
+                    ));
+                  });
+                },
+              )
       ]),
     );
   }

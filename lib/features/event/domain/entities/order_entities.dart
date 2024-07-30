@@ -1,10 +1,12 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
+
 import '../../data/models/order_model.dart';
 
 class OrderEntity {
   final String id;
   final String? userId;
   final String? title;
-  final String? createdAt;
+  final DateTime createdAt;
   String status;
   late final List<OrderItem>? items;
 
@@ -13,7 +15,7 @@ class OrderEntity {
     this.userId,
     this.title,
     this.items,
-    this.createdAt,
+    required this.createdAt,
     required this.status,
   });
 
@@ -22,7 +24,7 @@ class OrderEntity {
       id: map["id"],
       userId: map['userId'] ?? '',
       title: map['title'] ?? '',
-      createdAt: map['createdAt'],
+      createdAt: (map['createdAt'] as Timestamp).toDate(),
       status: map['status'] ?? "",
       items: (map['items'] as List<dynamic>?)
           ?.map((item) => OrderItem.fromMap(item))

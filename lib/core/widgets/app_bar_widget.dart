@@ -32,10 +32,6 @@ class AppBarWidget extends StatefulWidget implements PreferredSizeWidget {
 }
 
 class _AppBarWidgetState extends State<AppBarWidget> {
-  bool _isSearching = false;
-  TextEditingController _searchController = TextEditingController();
-  static bool hasNotificationNotSeen = false;
-
   @override
   void initState() {
     super.initState();
@@ -43,26 +39,7 @@ class _AppBarWidgetState extends State<AppBarWidget> {
 
   @override
   void dispose() {
-    _searchController.dispose();
     super.dispose();
-  }
-
-  void _startSearch() {
-    setState(() {
-      _isSearching = true;
-    });
-  }
-
-  void _stopSearch() {
-    setState(() {
-      _isSearching = false;
-      _searchController.clear();
-    });
-  }
-
-  void _performSearch(String query, BuildContext context) {
-    if (query.isEmpty) {
-    } else {}
   }
 
   void _goToNotifications() {
@@ -94,78 +71,55 @@ class _AppBarWidgetState extends State<AppBarWidget> {
                 icon: const Icon(Icons.arrow_back),
                 onPressed: () => Navigator.of(context).pop(),
               ),
-      title: _isSearching
-          ? TextField(
-              controller: _searchController,
-              decoration: InputDecoration(
-                hintText: 'Search...',
-                hintStyle: TextStyle(color: Colors.white),
-                border: InputBorder.none,
-              ),
-              style: TextStyle(color: Colors.white),
-              autofocus: true,
-              onChanged: (query) => _performSearch(query, context),
-            )
-          : widget.titleWidget ??
-              Text(
-                widget.pageName!,
-                style: TextStyles.font22BlackBold.copyWith(color: Colors.white),
-              ),
-      actions: _isSearching
-          ? [
-              IconButton(
-                icon: const Icon(Icons.cancel),
-                onPressed: _stopSearch,
-              ),
-            ]
-          : widget.actions ??
-              [
-                IconButton(
-                  icon: const Icon(Icons.search),
-                  onPressed: _startSearch,
-                ),
-                BlocBuilder<NotificationCubit, NotificationState>(
-                  builder: (context, state) {
-                    bool hasUnseenNotifications = false;
+      title: widget.titleWidget ??
+          Text(
+            widget.pageName!,
+            style: TextStyles.font22BlackBold.copyWith(color: Colors.white),
+          ),
+      actions: widget.actions ??
+          [
+            BlocBuilder<NotificationCubit, NotificationState>(
+              builder: (context, state) {
+                bool hasUnseenNotifications = false;
 
-                    if (state is NotificationLoaded) {
-                      hasUnseenNotifications = state.unseenNotifications;
-                    }
-                    return Stack(
-                      children: [
-                        IconButton(
-                          icon: const Icon(Icons.notifications),
-                          onPressed: _goToNotifications,
-                        ),
-                        if (hasUnseenNotifications)
-                          Positioned(
-                            right: 0,
-                            child: Container(
-                              padding: const EdgeInsets.all(2),
-                              decoration: BoxDecoration(
-                                color: Colors.red,
-                                shape: BoxShape.circle,
-                              ),
-                              constraints: BoxConstraints(
-                                minWidth: 16,
-                                minHeight: 16,
-                              ),
-                              child: Center(
-                                child: Text(
-                                  '!',
-                                  style: TextStyle(
-                                    color: Colors.white,
-                                    fontSize: 12,
-                                  ),
-                                ),
+                if (state is NotificationLoaded) {
+                  hasUnseenNotifications = state.unseenNotifications;
+                }
+                return Stack(
+                  children: [
+                    IconButton(
+                      icon: const Icon(Icons.notifications),
+                      onPressed: _goToNotifications,
+                    ),
+                    if (hasUnseenNotifications)
+                      Positioned(
+                        right: 0,
+                        child: Container(
+                          padding: const EdgeInsets.all(2),
+                          decoration: BoxDecoration(
+                            color: Colors.red,
+                            shape: BoxShape.circle,
+                          ),
+                          constraints: BoxConstraints(
+                            minWidth: 16,
+                            minHeight: 16,
+                          ),
+                          child: Center(
+                            child: Text(
+                              '!',
+                              style: TextStyle(
+                                color: Colors.white,
+                                fontSize: 12,
                               ),
                             ),
                           ),
-                      ],
-                    );
-                  },
-                ),
-              ],
+                        ),
+                      ),
+                  ],
+                );
+              },
+            ),
+          ],
     );
   }
 }

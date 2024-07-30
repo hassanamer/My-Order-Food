@@ -32,14 +32,13 @@ class _CreateOrderWidgetState extends State<CreateOrderWidget> {
   int itemCount = 0;
 
   late String userId = FirebaseAuth.instance.currentUser?.uid ?? '';
-  List<OrderItem> itemList = []; // List to store items and their quantities
+  List<OrderItem> itemList = [];
   Random random = Random();
 
   @override
   void initState() {
     if (widget.isUpdateEvent) {
       titleController.text = widget.eventEntity!.title!;
-      // Load existing items and quantities into the list
       widget.eventEntity!.items?.forEach((item) {
         itemList.add(OrderItem(
             itemName: item.itemName,
@@ -171,6 +170,7 @@ class _CreateOrderWidgetState extends State<CreateOrderWidget> {
           title: titleController.text,
           items: itemList,
           userId: userId,
+          createdAt: DateTime.now(),
           status: "Active");
 
       if (widget.isUpdateEvent) {

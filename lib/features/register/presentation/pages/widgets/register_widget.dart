@@ -43,6 +43,7 @@ class _RegisterWidgetState extends State<RegisterWidget> {
 
   @override
   void initState() {
+    super.initState();
     controllerUsername = TextEditingController();
     controllerPassword = TextEditingController();
     controllerName = TextEditingController();
@@ -50,7 +51,6 @@ class _RegisterWidgetState extends State<RegisterWidget> {
     controllerGender = TextEditingController();
     controllerPhone = TextEditingController();
     _keyform = GlobalKey<FormState>();
-    super.initState();
   }
 
   @override
@@ -389,20 +389,20 @@ class _RegisterWidgetState extends State<RegisterWidget> {
                 },
               ),
               sizedBox,
-              CommonElevatedButton(
+              CommonElevatedButtonWidget(
                 text: "Sign up",
-                onTap: () async {
+                onPressed: () async {
                   if (_keyform.currentState!.validate()) {
                     context.read<RegisterCubit>().registerAccountFromRemote(
                           context,
                           registerAccountEntity: RegisterAccountEntity(
-                            gender: controllerGender.text.trim(),
-                            name: controllerName.text,
-                            phoneNumber: controllerPhone.text,
-                            username: controllerUsername.text,
-                            hasCar: hasCar,
-                            deliveryPreference: deliveryPreference,
-                          ),
+                              gender: controllerGender.text.trim(),
+                              name: controllerName.text,
+                              phoneNumber: controllerPhone.text,
+                              username: controllerUsername.text,
+                              hasCar: hasCar,
+                              deliveryPreference: deliveryPreference,
+                              profileImageUrl: profileImageUrl),
                           email: controllerEmail.text.trim(),
                           password: controllerPassword.text,
                         );

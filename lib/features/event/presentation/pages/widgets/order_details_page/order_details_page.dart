@@ -1,6 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:order/core/services/push_notification_service.dart';
 import 'package:order/core/widgets/app_bar_widget.dart';
 import 'package:order/features/cart/presentation/pages/view_order_page.dart';
@@ -12,6 +13,7 @@ import 'package:order/injection_container.dart';
 
 import '../../../../../../core/services/awesome_notification_service.dart';
 import '../../../../../../core/services/notification_service.dart';
+import '../../../../../../core/widgets/common_elevated_button_widget.dart';
 import '../../../../../register/data/models/register_account_model.dart';
 
 class OrderDetailsPage extends StatefulWidget {
@@ -176,7 +178,9 @@ class _OrderDetailsPageState extends State<OrderDetailsPage> {
                 children: [
                   SizedBox(
                     width: double.infinity,
-                    child: ElevatedButton(
+                    child: CommonElevatedButtonWidget(
+                      text: 'Place Your Order...',
+                      width: 100.w,
                       onPressed: () async {
                         setState(() {
                           widget.orderEntity.status = 'Placed';
@@ -200,37 +204,6 @@ class _OrderDetailsPageState extends State<OrderDetailsPage> {
                           ),
                         );
                       },
-                      style: ButtonStyle(
-                        backgroundColor:
-                            MaterialStateProperty.resolveWith<Color>(
-                          (Set<MaterialState> states) {
-                            if (states.contains(MaterialState.disabled)) {
-                              return Colors.grey;
-                            }
-                            return Colors.blue;
-                          },
-                        ),
-                        shape:
-                            MaterialStateProperty.all<RoundedRectangleBorder>(
-                          RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(15),
-                          ),
-                        ),
-                        elevation: MaterialStateProperty.all<double>(5),
-                        shadowColor: MaterialStateProperty.all<Color>(
-                          Colors.grey.withOpacity(0.5),
-                        ),
-                        padding: MaterialStateProperty.all<EdgeInsetsGeometry>(
-                          const EdgeInsets.all(15),
-                        ),
-                        textStyle: MaterialStateProperty.all<TextStyle>(
-                          const TextStyle(fontSize: 18),
-                        ),
-                      ),
-                      child: const Text(
-                        'Place Your Order...',
-                        style: TextStyle(color: Colors.white),
-                      ),
                     ),
                   ),
                   const SizedBox(height: 20),
@@ -270,40 +243,9 @@ class _OrderDetailsPageState extends State<OrderDetailsPage> {
                       const SizedBox(width: 10),
                       SizedBox(
                         width: 100,
-                        child: ElevatedButton(
+                        child: CommonElevatedButtonWidget(
+                          text: 'Add',
                           onPressed: () => _addItem(),
-                          style: ButtonStyle(
-                            backgroundColor:
-                                MaterialStateProperty.resolveWith<Color>(
-                              (Set<MaterialState> states) {
-                                if (states.contains(MaterialState.disabled)) {
-                                  return Colors.grey;
-                                }
-                                return Colors.blue;
-                              },
-                            ),
-                            shape: MaterialStateProperty.all<
-                                RoundedRectangleBorder>(
-                              RoundedRectangleBorder(
-                                borderRadius: BorderRadius.circular(15),
-                              ),
-                            ),
-                            elevation: MaterialStateProperty.all<double>(5),
-                            shadowColor: MaterialStateProperty.all<Color>(
-                              Colors.grey.withOpacity(0.5),
-                            ),
-                            padding:
-                                MaterialStateProperty.all<EdgeInsetsGeometry>(
-                              const EdgeInsets.all(15),
-                            ),
-                            textStyle: MaterialStateProperty.all<TextStyle>(
-                              const TextStyle(fontSize: 18),
-                            ),
-                          ),
-                          child: const Text(
-                            'Add',
-                            style: TextStyle(color: Colors.white),
-                          ),
                         ),
                       ),
                     ],

@@ -9,6 +9,12 @@ class TextStyles {
     fontFamily: 'Roboto',
     color: Colors.black,
   );
+  static const TextStyle font20WhiteBold = TextStyle(
+    fontSize: 20,
+    fontWeight: FontWeightHelper.bold,
+    fontFamily: 'Roboto',
+    color: Colors.white,
+  );
 
   static const TextStyle font32BlueBold = TextStyle(
     fontSize: 32,

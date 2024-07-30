@@ -8,7 +8,7 @@ class OrderModel extends OrderEntity {
     String? title,
     List<OrderItem>? items,
     int? itemCount,
-    String? createdAt,
+    required DateTime createdAt,
     required String status,
   }) : super(
           userId: userId,

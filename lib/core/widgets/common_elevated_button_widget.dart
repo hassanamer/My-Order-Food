@@ -1,32 +1,56 @@
 import 'package:flutter/material.dart';
-import 'package:order/core/theming/styles.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 
-class CommonElevatedButton extends StatelessWidget {
-  final VoidCallback onTap;
+class CommonElevatedButtonWidget extends StatelessWidget {
   final String text;
+  final VoidCallback onPressed;
+  final Color color;
+  final double fontSize;
+  final double borderRadius;
+  final double elevation;
+  final EdgeInsetsGeometry padding;
+  final double width;
+  final double height;
 
-  const CommonElevatedButton({
+  CommonElevatedButtonWidget({
     Key? key,
-    required this.onTap,
     required this.text,
+    required this.onPressed,
+    this.color = Colors.blue,
+    this.fontSize = 18.0,
+    this.borderRadius = 15.0,
+    this.elevation = 5.0,
+    this.padding = const EdgeInsets.all(15),
+    this.width = 381,
+    this.height = 55,
   }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      padding: const EdgeInsets.all(10.0),
+    return SizedBox(
+      width: width.w,
+      height: height.h,
       child: ElevatedButton(
-        style: ElevatedButton.styleFrom(
-          side: BorderSide.none,
-          minimumSize: const Size(337, 50),
-          shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(12),
+        onPressed: onPressed,
+        style: ButtonStyle(
+          backgroundColor: WidgetStateProperty.all<Color>(color),
+          shape: WidgetStateProperty.all<RoundedRectangleBorder>(
+            RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(borderRadius),
+            ),
+          ),
+          elevation: WidgetStateProperty.all<double>(elevation),
+          shadowColor: WidgetStateProperty.all<Color>(
+            Colors.grey.withOpacity(0.5),
+          ),
+          padding: WidgetStateProperty.all<EdgeInsetsGeometry>(padding),
+          textStyle: WidgetStateProperty.all<TextStyle>(
+            TextStyle(fontSize: fontSize),
           ),
         ),
-        onPressed: onTap,
         child: Text(
           text,
-          style: TextStyles.font18BlueSemiBold,
+          style: const TextStyle(color: Colors.white),
         ),
       ),
     );

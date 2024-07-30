@@ -1,12 +1,15 @@
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_staggered_animations/flutter_staggered_animations.dart';
 import 'package:intl/intl.dart';
 import 'package:order/core/services/notification_service.dart';
+import 'package:order/core/theming/styles.dart';
 import 'package:order/core/widgets/app_bar_widget.dart';
 import 'package:order/features/event/domain/entities/order_entities.dart';
 
 import '../../../../../../core/services/push_notification_service.dart';
+import '../../../../../../core/widgets/common_elevated_button_widget.dart';
 import '../../../../../../injection_container.dart';
 import '../../../../../register/data/models/register_account_model.dart';
 import '../../../../domain/remote_usecases/add_order_usecase.dart';
@@ -18,8 +21,6 @@ class OrderSummaryPage extends StatefulWidget {
 
   final String orderId;
   final OrderEntity orderEntity;
-  late AddOrderUsecase addOrderUsecase;
-  late GetUserUsecase getUserUsecase;
 
   OrderSummaryPage({
     Key? key,
@@ -38,15 +39,16 @@ class _OrderSummaryPageState extends State<OrderSummaryPage> {
   Map<String, RegisterAccountModel> userMap = {};
   Map<String, double> userTotalPrices = {};
   Map<String, List<OrderItem>> itemsGroupedByUser = {};
+  late AddOrderUsecase addOrderUsecase;
+  late GetUserUsecase getUserUsecase;
 
   @override
   void initState() {
     super.initState();
-    widget.addOrderUsecase = sl();
-    widget.getUserUsecase = sl();
-    // _initializePriceControllers();
+    addOrderUsecase = sl();
+    getUserUsecase = sl();
     _intializeItemsGroupedByUser();
-    widget.getUserUsecase
+    getUserUsecase
         .getUsers(itemsGroupedByUser.keys.toList())
         .then((value) => setState(() {
               userMap = value;
@@ -69,12 +71,10 @@ class _OrderSummaryPageState extends State<OrderSummaryPage> {
     setState(() {
       isLoading = true;
     });
-
-    await widget.addOrderUsecase.update(widget.orderEntity);
+    await addOrderUsecase.update(widget.orderEntity);
     setState(() {
       isLoading = false;
     });
-    // Send notification to the user with their total price
     PushNotificationService.sendNotificationToUser(
         userId, "Your Total Price Is  ${totalPrice?.toStringAsFixed(2) ?? ""}");
     NotificationService.saveNotification(
@@ -95,14 +95,12 @@ class _OrderSummaryPageState extends State<OrderSummaryPage> {
   @override
   Widget build(BuildContext context) {
     List<OrderItem> items = widget.orderEntity.items ?? [];
-    String createdAt = widget.orderEntity.createdAt != null
-        ? DateFormat('yyyy-MM-dd hh:mm a')
-            .format((widget.orderEntity.createdAt as Timestamp).toDate())
-        : 'Unknown';
+    String createdAt =
+        DateFormat('yyyy-MM-dd hh:mm a').format(widget.orderEntity.createdAt);
 
     return Scaffold(
       appBar: AppBarWidget(
-        pageName: "Order #${widget.orderId} Summary",
+        pageName: "Order ${widget.orderEntity.title} Summary",
       ),
       body: Padding(
         padding: const EdgeInsets.all(16.0),
@@ -121,47 +119,21 @@ class _OrderSummaryPageState extends State<OrderSummaryPage> {
                     items: userItems,
                     updateOrder: _updateItemTotalPrice,
                     orderEntity: widget.orderEntity,
+                    createdAt: widget.orderEntity.createdAt, // Pass createdAt
                   );
                 },
               ),
             ),
             const SizedBox(height: 20),
             Center(
-              child: ElevatedButton(
+              child: CommonElevatedButtonWidget(
+                height: 60.h,
+                text: 'Order Arrived',
                 onPressed: () {
                   widget.orderEntity.status = 'Arrived';
                   widget.onCalculate!();
                   setState(() {});
                 },
-                style: ButtonStyle(
-                  backgroundColor: MaterialStateProperty.resolveWith<Color>(
-                    (Set<MaterialState> states) {
-                      if (states.contains(MaterialState.disabled)) {
-                        return Colors.grey;
-                      }
-                      return Colors.blue;
-                    },
-                  ),
-                  shape: MaterialStateProperty.all<RoundedRectangleBorder>(
-                    RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(15),
-                    ),
-                  ),
-                  elevation: MaterialStateProperty.all<double>(5),
-                  shadowColor: MaterialStateProperty.all<Color>(
-                    Colors.grey.withOpacity(0.5),
-                  ),
-                  padding: MaterialStateProperty.all<EdgeInsetsGeometry>(
-                    const EdgeInsets.all(15),
-                  ),
-                  textStyle: MaterialStateProperty.all<TextStyle>(
-                    const TextStyle(fontSize: 18),
-                  ),
-                ),
-                child: const Text(
-                  'Order Arrived',
-                  style: TextStyle(color: Colors.white),
-                ),
               ),
             ),
           ],
@@ -175,6 +147,7 @@ class UserItemsTile extends StatefulWidget {
   final RegisterAccountModel? user;
   final List<OrderItem> items;
   final OrderEntity orderEntity;
+  final DateTime createdAt; // Add this line
 
   final Function(String? userId, double? totalPrice) updateOrder;
 
@@ -182,9 +155,9 @@ class UserItemsTile extends StatefulWidget {
     Key? key,
     required this.user,
     required this.items,
-    // required this.itemTotalPrice,
     required this.updateOrder,
     required this.orderEntity,
+    required this.createdAt,
   }) : super(key: key);
 
   @override
@@ -283,13 +256,8 @@ class _UserItemsTileState extends State<UserItemsTile> {
                               child: Column(
                                 crossAxisAlignment: CrossAxisAlignment.stretch,
                                 children: [
-                                  Text(
-                                    '${widget.user?.name}',
-                                    style: const TextStyle(
-                                        fontWeight: FontWeight.bold,
-                                        fontSize: 22.0,
-                                        color: Colors.white),
-                                  ),
+                                  Text('${widget.user?.name}',
+                                      style: TextStyles.font20WhiteBold),
                                 ],
                               ),
                             ),
@@ -300,31 +268,21 @@ class _UserItemsTileState extends State<UserItemsTile> {
                     ...widget.items
                         .map((item) => Padding(
                               padding: const EdgeInsets.symmetric(
-                                  horizontal: 10.0, vertical: 5.0),
+                                  horizontal: 5.0, vertical: 5.0),
                               child: Row(
                                 mainAxisAlignment:
                                     MainAxisAlignment.spaceBetween,
                                 children: [
                                   Expanded(
-                                    child: Text(
-                                      item.itemName,
-                                      maxLines: 2,
-                                      overflow: TextOverflow.ellipsis,
-                                      style: const TextStyle(
-                                        fontSize: 22,
-                                        fontWeight: FontWeight.bold,
-                                        color: Colors.white,
-                                      ),
-                                    ),
+                                    child: Text(item.itemName,
+                                        maxLines: 2,
+                                        overflow: TextOverflow.ellipsis,
+                                        style: TextStyles.font18WhiteBold),
                                   ),
                                   Expanded(
                                     child: Text(
                                       '${item.quantity}x',
-                                      style: const TextStyle(
-                                        fontSize: 22,
-                                        fontWeight: FontWeight.bold,
-                                        color: Colors.white,
-                                      ),
+                                      style: TextStyles.font18WhiteBold,
                                     ),
                                   ),
                                   Expanded(
@@ -344,6 +302,10 @@ class _UserItemsTileState extends State<UserItemsTile> {
                                                           item.quantity;
                                                 });
                                               },
+                                              inputFormatters: [
+                                                LengthLimitingTextInputFormatter(
+                                                    4),
+                                              ],
                                               keyboardType:
                                                   TextInputType.number,
                                               decoration: const InputDecoration(
@@ -358,17 +320,14 @@ class _UserItemsTileState extends State<UserItemsTile> {
                                       ),
                                     ),
                                   ),
+                                  SizedBox(
+                                    width: 10.w,
+                                  ),
                                   ConstrainedBox(
                                     constraints:
                                         const BoxConstraints(minWidth: 60),
-                                    child: Text(
-                                      '${item.totalPrice ?? ""}',
-                                      style: const TextStyle(
-                                        fontSize: 22,
-                                        fontWeight: FontWeight.bold,
-                                        color: Colors.white,
-                                      ),
-                                    ),
+                                    child: Text('${item.totalPrice ?? ""}',
+                                        style: TextStyles.font18WhiteBold),
                                   ),
                                 ],
                               ),
@@ -376,51 +335,24 @@ class _UserItemsTileState extends State<UserItemsTile> {
                         .toList(),
                     const SizedBox(height: 10),
                     Center(
-                      child: ElevatedButton(
+                      child: CommonElevatedButtonWidget(
+                        width: 280.w,
+                        text: 'Calculate Total Price',
                         onPressed: () {
-                          setState(() {
-                            totalPrice = calculateTotalPrice();
-                            widget.updateOrder(widget.user?.userId, totalPrice);
-                            // Send notification to the user
-                            // PushNotificationService.sendNotificationToUser(
-                            //     widget.user?.userId,
-                            //     totalPrice?.toStringAsFixed(2));
-                            // NotificationService.saveNotification(
-                            //     "", "Thank You So Much For Your Help");
-                          });
-                        },
-                        style: ButtonStyle(
-                          backgroundColor:
-                              MaterialStateProperty.resolveWith<Color>(
-                            (Set<MaterialState> states) {
-                              if (states.contains(MaterialState.disabled)) {
-                                return Colors.grey;
-                              }
-                              return Colors.blue;
+                          setState(
+                            () {
+                              totalPrice = calculateTotalPrice();
+                              widget.updateOrder(
+                                  widget.user?.userId, totalPrice);
+                              PushNotificationService.sendNotificationToUser(
+                                  widget.user?.userId,
+                                  "Your Total Price Is ${totalPrice?.toStringAsFixed(2)}");
+                              NotificationService.saveNotification(
+                                  "Your Total Price Is",
+                                  '${totalPrice?.toStringAsFixed(2)}');
                             },
-                          ),
-                          shape:
-                              MaterialStateProperty.all<RoundedRectangleBorder>(
-                            RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(15),
-                            ),
-                          ),
-                          elevation: MaterialStateProperty.all<double>(5),
-                          shadowColor: MaterialStateProperty.all<Color>(
-                            Colors.grey.withOpacity(0.5),
-                          ),
-                          padding:
-                              MaterialStateProperty.all<EdgeInsetsGeometry>(
-                            const EdgeInsets.all(15),
-                          ),
-                          textStyle: MaterialStateProperty.all<TextStyle>(
-                            const TextStyle(fontSize: 18),
-                          ),
-                        ),
-                        child: const Text(
-                          'Calculate Total Price',
-                          style: TextStyle(color: Colors.white),
-                        ),
+                          );
+                        },
                       ),
                     ),
                     const SizedBox(
@@ -428,19 +360,17 @@ class _UserItemsTileState extends State<UserItemsTile> {
                     ),
                     Column(
                       children: [
-                        // Text(
-                        //   //$createdAt
-                        //   "Created At: ",
-                        //   style: TextStyle(color: Colors.white, fontSize: 16),
-                        // ),
+                        Text(
+                          "Created At: ${DateFormat('yyyy-MM-dd hh:mm a').format(widget.createdAt)}",
+                          style: TextStyle(color: Colors.white, fontSize: 16),
+                        ),
                         const SizedBox(height: 10),
                         Center(
                           child: Text(
+                            maxLines: 1,
+                            overflow: TextOverflow.ellipsis,
                             "Total (including VAT 14%): ${totalPrice?.toStringAsFixed(2) ?? ""} L.E",
-                            style: const TextStyle(
-                                color: Colors.white,
-                                fontSize: 18,
-                                fontWeight: FontWeight.bold),
+                            style: TextStyles.font18WhiteBold,
                           ),
                         ),
                         const SizedBox(
