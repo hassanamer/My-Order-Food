@@ -1,13 +1,14 @@
 import 'package:flutter/material.dart';
-import 'package:order/features/restaurant/presentation/pages/get_menu_pages/get_menu_page.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:order/features/restaurant/presentation/pages/get_menu_pages/menuu_pagee.dart';
 
 import '../../../../../../restaurant/data/model/restaurant_model.dart';
+import '../../../../../../restaurant/presentation/cubit/restaurant_cubit.dart';
 
 class RowImageTextRestaurantWidget extends StatefulWidget {
-  final List<RestaurantModel> restaurantModel;
+  List<RestaurantModel> restaurantModel = [];
 
-  const RowImageTextRestaurantWidget(
-      {super.key, required this.restaurantModel});
+  RowImageTextRestaurantWidget({super.key, required this.restaurantModel});
 
   @override
   State<RowImageTextRestaurantWidget> createState() =>
@@ -17,6 +18,12 @@ class RowImageTextRestaurantWidget extends StatefulWidget {
 class _RowImageTextRestaurantWidgetState
     extends State<RowImageTextRestaurantWidget> {
   @override
+  void initState() {
+    super.initState();
+    widget.restaurantModel[0].imageURL;
+  }
+
+  @override
   Widget build(BuildContext context) {
     return Flexible(
       child: ListView.builder(
@@ -25,9 +32,22 @@ class _RowImageTextRestaurantWidgetState
           scrollDirection: Axis.horizontal,
           itemCount: widget.restaurantModel.length,
           itemBuilder: (context, index) {
+            final restaurant = widget.restaurantModel[index];
             return InkWell(
-              onTap: () => Navigator.of(context).push(
-                  MaterialPageRoute(builder: (context) => const AllMenuPage())),
+              onTap: () => Navigator.of(context)
+                  .push(
+                MaterialPageRoute(
+                  builder: (context) => MenuuPagee(
+                    restaurantName: restaurant.restaurantName,
+                    restaurantImage: restaurant.imageURL,
+                  ),
+                ),
+              )
+                  .then((value) {
+                setState(() {
+                  context.read<RestaurantCubit>().getAllRestaurants();
+                });
+              }),
               child: Column(children: [
                 Container(
                   padding: const EdgeInsets.symmetric(horizontal: 12),
@@ -42,7 +62,7 @@ class _RowImageTextRestaurantWidgetState
                     height: 80,
                   ),
                 ),
-                Text(widget.restaurantModel[index].restaurantName),
+                Text(restaurant.restaurantName),
               ]),
             );
           }),

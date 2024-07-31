@@ -15,7 +15,7 @@ class EventDetailPageItemTile extends StatefulWidget {
   });
 
   final String userId;
-  final String? status;
+  final OrderStatusEnum? status;
   final List<OrderItem> items;
   final RegisterAccountModel? user;
   late OrderEntity? orderEntity;
@@ -26,8 +26,6 @@ class EventDetailPageItemTile extends StatefulWidget {
 }
 
 class _EventDetailPageItemTileState extends State<EventDetailPageItemTile> {
-  // Update
-
   @override
   void initState() {}
 
@@ -104,7 +102,7 @@ class _EventDetailPageItemTileState extends State<EventDetailPageItemTile> {
                     Padding(
                       padding: const EdgeInsets.all(10.0),
                       child: Text(
-                        'Status: ${widget.status}',
+                        'Status: ${widget.status?.name ?? 'Unknown'}',
                         style: const TextStyle(
                           fontSize: 16,
                           fontWeight: FontWeight.bold,

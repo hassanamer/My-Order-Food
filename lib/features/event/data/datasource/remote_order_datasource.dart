@@ -33,7 +33,8 @@ abstract class RemoteOrderDatasourceInterface
 
   Future<BaseResponse> updateOrder(OrderModel orderModel);
 
-  Future<BaseResponse> updateOrderStatus(String orderId, String newStatus);
+  Future<BaseResponse> updateOrderStatus(
+      String orderId, OrderStatusEnum newStatus);
 
   Future<BaseResponse> deleteOrders();
 }
@@ -115,13 +116,14 @@ class RemoteOrderDatasource extends RemoteOrderDatasourceInterface {
     return OrderEntity.fromMap(data);
   }
 
+  @override
   Future<BaseResponse> updateOrderStatus(
-      String orderId, String newStatus) async {
+      String orderId, OrderStatusEnum newStatus) async {
     try {
       await FirebaseFirestore.instance
           .collection('Order')
           .doc(orderId)
-          .update({'status': newStatus});
+          .update({'status': newStatus.index});
 
       return BaseResponse(
           status: true, message: "Order Status Updated Successfully");

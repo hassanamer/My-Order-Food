@@ -132,9 +132,6 @@ class _OrderDetailsPageState extends State<OrderDetailsPage> {
 
   @override
   Widget build(BuildContext context) {
-    // if (isLoading) {
-    //   return const Center(child: CircularProgressIndicator());
-    // }
     const divider = Divider(
       thickness: 1,
       height: 3,
@@ -173,7 +170,7 @@ class _OrderDetailsPageState extends State<OrderDetailsPage> {
             ),
             const SizedBox(height: 20),
             Visibility(
-              visible: widget.orderEntity.status == 'Active',
+              visible: widget.orderEntity.status == OrderStatusEnum.active,
               child: Column(
                 children: [
                   SizedBox(
@@ -183,7 +180,7 @@ class _OrderDetailsPageState extends State<OrderDetailsPage> {
                       width: 100.w,
                       onPressed: () async {
                         setState(() {
-                          widget.orderEntity.status = 'Placed';
+                          widget.orderEntity.status = OrderStatusEnum.placed;
                           updateOrderStatus();
                         });
                         await AwesomeNotificationService.showNotification(

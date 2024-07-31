@@ -1,9 +1,9 @@
+import 'dart:io';
+
 import 'package:order/features/event/domain/entities/order_entities.dart';
 import 'package:order/features/restaurant/data/datasource/restaurant_datasource.dart';
 import 'package:order/features/restaurant/data/model/restaurant_model.dart';
 import 'package:order/features/restaurant/domain/reporisatory/restaurant_reporisatory.dart';
-
-import '../model/menu_model.dart';
 
 class RestaurantReporisatoryImpl implements RestaurantReporisatory {
   final RestaurantDatasourceInterface restaurantDatasourceInterface;
@@ -16,23 +16,20 @@ class RestaurantReporisatoryImpl implements RestaurantReporisatory {
   }
 
   @override
-  Future<BaseResponse> uploadImage() async {
-    return await restaurantDatasourceInterface.uploadImage();
+  Future<BaseResponse> uploadImage(File imageFile) async {
+    return await restaurantDatasourceInterface.uploadImage(imageFile);
   }
 
   @override
-  Future<BaseResponse> addMenuItems(MenuModel menuModel) async {
-    return await restaurantDatasourceInterface.addMenuItems(menuModel);
+  Future<BaseResponse> updateResturantMenu(
+      RestaurantModel restaurantModel) async {
+    return await restaurantDatasourceInterface
+        .updateResturantMenu(restaurantModel);
   }
 
   @override
   Future<List<RestaurantModel>> getAllRestaurant() async {
     return await restaurantDatasourceInterface.getAllRestaurant();
-  }
-
-  @override
-  Future<List<MenuModel>> getAllMenu() async {
-    return await restaurantDatasourceInterface.getAllMenu();
   }
 
   @override

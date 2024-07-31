@@ -15,7 +15,7 @@ class AddOrderUsecase {
   }
 
   Future<BaseResponse> updateOrderStatus(
-      String orderId, String newStatus) async {
+      String orderId, OrderStatusEnum newStatus) async {
     return await orderRepository.remoteUpdateOrderStatus(orderId, newStatus);
   }
 

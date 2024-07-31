@@ -1,17 +1,21 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_staggered_animations/flutter_staggered_animations.dart';
 import 'package:order/features/restaurant/data/model/restaurant_model.dart';
 import 'package:order/features/restaurant/presentation/cubit/restaurant_cubit.dart';
-import 'package:order/features/restaurant/presentation/pages/get_menu_pages/get_menu_page.dart';
 
-import 'common_container_restaurant_widget.dart';
+import '../get_menu_pages/menuu_pagee.dart';
 
 class AllRestaurantWidget extends StatefulWidget {
   final List<RestaurantModel> restaurantModel;
+  final File? restaurantImage; // Image file variable
+
   const AllRestaurantWidget({
     Key? key,
     required this.restaurantModel,
+    this.restaurantImage,
   });
 
   @override
@@ -64,9 +68,22 @@ class _AllRestaurantWidgetState extends State<AllRestaurantWidget> {
                       child: InkWell(
                         borderRadius: BorderRadius.circular(15),
                         onTap: () {
-                          Navigator.of(context).push(MaterialPageRoute(
-                            builder: (context) => const AllMenuPage(),
-                          ));
+                          Navigator.of(context)
+                              .push(MaterialPageRoute(
+                            builder: (context) => MenuuPagee(
+                              restaurantImage:
+                                  widget.restaurantModel[index].imageURL,
+                              restaurantName:
+                                  widget.restaurantModel[index].restaurantName,
+                            ),
+                          ))
+                              .then((value) {
+                            setState(() {
+                              context
+                                  .read<RestaurantCubit>()
+                                  .getAllRestaurants();
+                            });
+                          });
                         },
                         child: Padding(
                           padding: const EdgeInsets.all(16.0),
@@ -75,10 +92,12 @@ class _AllRestaurantWidgetState extends State<AllRestaurantWidget> {
                             children: <Widget>[
                               Row(
                                 children: [
-                                  Icon(Icons.restaurant_menu, color: Colors.white),
+                                  Icon(Icons.restaurant_menu,
+                                      color: Colors.white),
                                   const SizedBox(width: 8),
                                   Text(
-                                    widget.restaurantModel[index].restaurantName,
+                                    widget
+                                        .restaurantModel[index].restaurantName,
                                     style: const TextStyle(
                                       fontSize: 18,
                                       fontWeight: FontWeight.bold,
@@ -90,10 +109,12 @@ class _AllRestaurantWidgetState extends State<AllRestaurantWidget> {
                               const SizedBox(height: 8),
                               Row(
                                 children: [
-                                  Icon(Icons.description, color: Colors.white70),
+                                  Icon(Icons.description,
+                                      color: Colors.white70),
                                   const SizedBox(width: 8),
                                   Text(
-                                    widget.restaurantModel[index].restaurantDescription,
+                                    widget.restaurantModel[index]
+                                        .restaurantDescription,
                                     style: const TextStyle(
                                       fontSize: 16,
                                       color: Colors.white70,

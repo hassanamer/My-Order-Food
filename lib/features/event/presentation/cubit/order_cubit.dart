@@ -23,24 +23,20 @@ class OrderCubit extends Cubit<OrderState> {
       emit(OrderLoadingState());
       getAllOrderUsecase = sl();
       final allOrders = await getAllOrderUsecase.call();
-      // final allUser = await getUserOrderUsecase.call(userId);
       emit(OrderLoadedState(orderEntity: allOrders));
     } catch (e) {
       emit(OrderErrorState(errorMessage: e.toString()));
     }
   }
 
-  Future<void> addOrder(OrderEntity eventEntity) async {
+  Future<void> addOrder(OrderEntity orderEntity) async {
     try {
       emit(OrderLoadingState());
       addOrderUsecase = sl();
       getUserOrderUsecase = sl();
-      final addedOrder = await addOrderUsecase.call(eventEntity);
+      final addedOrder = await addOrderUsecase.call(orderEntity);
       if (addedOrder.status) {
-        // Update allData with the new order added
         final allData = await getAllOrderUsecase.call();
-
-        // final allUser = await getUserOrderUsecase.call();
 
         emit(OrderSuccessState(addedOrder));
         emit(OrderLoadedState(orderEntity: allData));
@@ -52,11 +48,11 @@ class OrderCubit extends Cubit<OrderState> {
     }
   }
 
-  Future<void> updateOrder(OrderEntity eventEntity) async {
+  Future<void> updateOrder(OrderEntity orderEntity) async {
     try {
       emit(OrderLoadingState());
       updateOrderUsecase = sl();
-      final updatedOrder = await updateOrderUsecase.call(eventEntity);
+      final updatedOrder = await updateOrderUsecase.call(orderEntity);
       if (updatedOrder.status) {
         emit(OrderSuccessState(updatedOrder));
       } else {
@@ -70,10 +66,8 @@ class OrderCubit extends Cubit<OrderState> {
   Future<void> addOrUpdateItem(OrderEntity createOrderEntity, String itemName,
       int quantity, String userId) async {
     try {
-      // Ensure items list is initialized
       createOrderEntity.items ??= [];
 
-      // Update item quantity or add new item
       int index = createOrderEntity.items!
           .indexWhere((item) => item.itemName == itemName);
       if (index != -1) {
@@ -83,7 +77,6 @@ class OrderCubit extends Cubit<OrderState> {
             OrderItem(userId: userId, itemName: itemName, quantity: quantity));
       }
 
-      // Call update ticket function to persist changes
       await updateOrder(createOrderEntity);
     } catch (e) {
       emit(OrderErrorState(errorMessage: e.toString()));
@@ -93,13 +86,9 @@ class OrderCubit extends Cubit<OrderState> {
   Future<void> removeItem(
       OrderEntity createOrderEntity, String itemName) async {
     try {
-      // Ensure items list is initialized
       createOrderEntity.items ??= [];
-
-      // Remove item from items list
       createOrderEntity.items!.removeWhere((item) => item.itemName == itemName);
 
-      // Call update ticket function to persist changes
       await updateOrder(createOrderEntity);
     } catch (e) {
       emit(OrderErrorState(errorMessage: e.toString()));

@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:order/features/event/domain/entities/order_entities.dart';
 import 'package:order/features/restaurant/domain/reporisatory/restaurant_reporisatory.dart';
 
@@ -6,7 +8,7 @@ class UploadImageUsecase {
 
   UploadImageUsecase(this.restaurantReporisatory);
 
-  Future<BaseResponse> call() async {
-    return await restaurantReporisatory.uploadImage();
+  Future<BaseResponse> call(File imageFile) async {
+    return await restaurantReporisatory.uploadImage(imageFile);
   }
 }

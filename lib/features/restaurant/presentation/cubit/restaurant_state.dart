@@ -13,6 +13,7 @@ class RestaurantLoading extends RestaurantState {}
 
 class RestaurantLoadedState extends RestaurantState {
   final List<RestaurantModel> restaurantModel;
+
   RestaurantLoadedState({
     required this.restaurantModel,
   });
@@ -22,12 +23,14 @@ class ImageLoadedState extends RestaurantState {}
 
 class RestaurantError extends RestaurantState {
   String errorMessage;
+
   RestaurantError({required this.errorMessage});
 }
 
 class CreateRestaurantSuccessfully extends RestaurantState {
   RegisterAccountEntity registerAccountEntity;
   String message = "Addedd Suessfully";
+
   CreateRestaurantSuccessfully(
       {required this.registerAccountEntity, required this.message});
 }
@@ -38,4 +41,12 @@ class ImageSuccessState extends RestaurantState {
 
 class MenuSuccessState extends RestaurantState {
   MenuSuccessState(menuAdded);
+}
+
+// New state for updated menu image
+class MenuImageUpdatedState extends RestaurantState {
+  final String newImageUrl;
+  final RestaurantModel restaurantModel;
+
+  MenuImageUpdatedState(this.newImageUrl, this.restaurantModel);
 }

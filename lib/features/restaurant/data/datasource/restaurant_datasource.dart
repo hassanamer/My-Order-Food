@@ -3,11 +3,10 @@ import 'dart:io';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:image_picker/image_picker.dart';
-import 'package:order/features/event/domain/entities/order_entities.dart';
-import 'package:order/features/restaurant/data/model/restaurant_model.dart';
+import 'package:order/features/restaurant/data/model/menu_model.dart';
 
-import '../../../../core/services/awesome_notification_service.dart';
-import '../model/menu_model.dart';
+import '../../../event/domain/entities/order_entities.dart';
+import '../model/restaurant_model.dart';
 
 class FirebaseDatasourceProvider {
   static final _firebaseDatasourceProvider =
@@ -30,15 +29,15 @@ abstract class RestaurantDatasourceInterface
 
   Future<BaseResponse> addRestaurant(RestaurantModel restaurantModel);
 
-  Future<BaseResponse> uploadImage();
+  Future<BaseResponse> uploadImage(File imageFile);
 
   Future<BaseResponse> getUploadedImage();
 
-  Future<BaseResponse> addMenuItems(MenuModel menuModel);
-
   Future<List<RestaurantModel>> getAllRestaurant();
 
-  Future<List<MenuModel>> getAllMenu();
+  Future<void> updateMenu(MenuModel menuModel); // Add update menu method
+  Future<BaseResponse> updateResturantMenu(
+      RestaurantModel restaurantModel); // Add update menu method
 }
 
 class RestaurantDatasourceImpl extends RestaurantDatasourceInterface {
@@ -47,14 +46,15 @@ class RestaurantDatasourceImpl extends RestaurantDatasourceInterface {
   @override
   Future<BaseResponse> addRestaurant(RestaurantModel restaurantModel) async {
     try {
-      await firebaseFirestore.collection('Restaurants').doc().set({
+      await firebaseFirestore
+          .collection('Restaurants')
+          .doc(restaurantModel.restaurantName)
+          .set({
         "restaurantName": restaurantModel.restaurantName,
         "restaurantDescription": restaurantModel.restaurantDescription,
         "restaurantHotline": restaurantModel.hotlineNum,
+        "imageURL": restaurantModel.imageURL,
       });
-      await AwesomeNotificationService.showNotification(
-          title: "Restaurant added ${restaurantModel.restaurantName}",
-          body: restaurantModel.restaurantDescription);
       return BaseResponse(status: true, message: 'added Successfully');
     } catch (e) {
       return BaseResponse(status: false, message: e.toString());
@@ -62,20 +62,43 @@ class RestaurantDatasourceImpl extends RestaurantDatasourceInterface {
   }
 
   @override
-  Future<BaseResponse> uploadImage() async {
+  Future<BaseResponse> updateResturantMenu(
+      RestaurantModel restaurantModel) async {
     try {
-      //Select Image
-      XFile? pickedImage =
-          await ImagePicker().pickImage(source: ImageSource.gallery);
-      var file = File(pickedImage!.path);
+      await firebaseFirestore
+          .collection('Restaurants')
+          .doc(restaurantModel.restaurantName)
+          .update(restaurantModel.toMap());
+      return BaseResponse(status: true, message: "Menu Updated Successfully");
+    } catch (e) {
+      throw e;
+    }
+  }
 
-      //Upload to Firebase
-      var snapshot =
-          await firebaseStorage.ref().child('images/$file').putFile(file);
+  @override
+  Future<void> updateMenu(MenuModel menuModel) async {
+    try {
+      await firebaseFirestore
+          .collection('Menus')
+          .doc(menuModel.name)
+          .update(menuModel.toMap());
+    } catch (e) {
+      throw e;
+    }
+  }
 
-      await snapshot.ref.getDownloadURL();
+  @override
+  Future<BaseResponse> uploadImage(File imageFile) async {
+    try {
+      var snapshot = await firebaseStorage
+          .ref()
+          .child('images/${imageFile.path.split('/').last}')
+          .putFile(imageFile);
 
-      return BaseResponse(status: true, message: "Image added successfuly");
+      var downloadURL = await snapshot.ref.getDownloadURL();
+
+      return BaseResponse(
+          status: true, message: downloadURL); // Return the URL as the message
     } catch (e) {
       return BaseResponse(
           status: false, message: "You must choose an image..!");
@@ -83,44 +106,15 @@ class RestaurantDatasourceImpl extends RestaurantDatasourceInterface {
   }
 
   @override
-  Future<BaseResponse> addMenuItems(MenuModel menuModel) async {
-    try {
-      await firebaseFirestore.collection('Menus').doc().set({
-        "name": menuModel.name,
-        "description": menuModel.description,
-        "price": menuModel.price,
-      });
-
-      return BaseResponse(status: true, message: "Successfully added");
-    } catch (e) {
-      return BaseResponse(status: false, message: e.toString());
-    }
-  }
-
-  @override
   Future<List<RestaurantModel>> getAllRestaurant() async {
-    final retrive = firebaseFirestore.collection('Restaurants');
-    final querySnapshot = await retrive.get();
-    querySnapshot.docs.map((e) => e.data()).toList();
+    final retrieve = firebaseFirestore.collection('Restaurants');
+    final querySnapshot = await retrieve.get();
     List<RestaurantModel> restaurants = [];
     for (QueryDocumentSnapshot<Map<String, dynamic>> doc
         in querySnapshot.docs) {
       restaurants.add(RestaurantModel.fromSnapShot(doc));
     }
     return restaurants;
-  }
-
-  @override
-  Future<List<MenuModel>> getAllMenu() async {
-    final retrive = firebaseFirestore.collection('Menus');
-    final querySnapshot = await retrive.get();
-    querySnapshot.docs.map((e) => e.data()).toList();
-    List<MenuModel> menus = [];
-    for (QueryDocumentSnapshot<Map<String, dynamic>> doc
-        in querySnapshot.docs) {
-      menus.add(MenuModel.fromSnapShot(doc));
-    }
-    return menus;
   }
 
   @override
@@ -135,6 +129,21 @@ class RestaurantDatasourceImpl extends RestaurantDatasourceInterface {
       return BaseResponse(status: true, message: "Image retrive successfully");
     } catch (e) {
       return BaseResponse(status: false, message: e.toString());
+    }
+  }
+
+  Future<RestaurantModel?> getRestaurantByName(String restaurantName) async {
+    try {
+      final docSnapshot = await firebaseFirestore
+          .collection('Restaurants')
+          .doc(restaurantName)
+          .get();
+      if (docSnapshot.exists) {
+        return RestaurantModel.fromSnapShot(docSnapshot);
+      }
+      return null;
+    } catch (e) {
+      throw e;
     }
   }
 }

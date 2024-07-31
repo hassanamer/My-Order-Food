@@ -33,7 +33,7 @@ class OrderRepositoryImpl implements OrderRepository {
 
   @override
   Future<BaseResponse> remoteUpdateOrderStatus(
-      String orderId, String newStatus) async {
+      String orderId, OrderStatusEnum newStatus) async {
     return await remoteOrderDatasource.updateOrderStatus(orderId, newStatus);
   }
 

@@ -5,12 +5,14 @@ class MenuModel {
   String description;
   int price;
   int? quentity;
+  String? imageURL;
 
   MenuModel({
     required this.name,
     required this.description,
     required this.price,
     this.quentity,
+    this.imageURL,
   });
 
   factory MenuModel.fromSnapShot(
@@ -20,6 +22,7 @@ class MenuModel {
       description: queryDocumentSnapshot.data()['description'] ?? '',
       price: queryDocumentSnapshot.data()['price'] ?? '',
       quentity: queryDocumentSnapshot.data()['quentity'],
+      imageURL: queryDocumentSnapshot.data()['imageURL'],
     );
   }
 
@@ -28,6 +31,7 @@ class MenuModel {
       'name': name,
       'description': description,
       'price': price,
+      'imageURL': imageURL,
     };
   }
 
@@ -37,6 +41,7 @@ class MenuModel {
       description: map['description'],
       price: map['price'],
       quentity: map['quentity'],
+      imageURL: map['imageURL'],
     );
   }
 }

@@ -80,7 +80,7 @@ class _HomePageOrdersWidgetState extends State<HomePageOrdersWidget> {
                 itemBuilder: (context, index) {
                   return OrdersListTitleWidget(
                     title: widget.orderEntity[index].title ?? '',
-                    eventEntity: widget.orderEntity[index],
+                    orderEntity: widget.orderEntity[index],
                   );
                 },
                 separatorBuilder: (context, index) => divider),

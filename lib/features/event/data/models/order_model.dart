@@ -9,7 +9,7 @@ class OrderModel extends OrderEntity {
     List<OrderItem>? items,
     int? itemCount,
     required DateTime createdAt,
-    required String status,
+    required OrderStatusEnum status,
   }) : super(
           userId: userId,
           id: id,
@@ -26,7 +26,7 @@ class OrderModel extends OrderEntity {
       'title': title,
       "items": items?.map((item) => item.toMap()),
       "createdAt": createdAt,
-      "status": status,
+      "status": status.index,
     };
   }
 
@@ -37,7 +37,7 @@ class OrderModel extends OrderEntity {
         title: map['title'],
         itemCount: map['itemCount'],
         createdAt: map['createdAt'],
-        status: map['status'] ?? '',
+        status: OrderStatusEnum.values[map['status']],
         items: map['items']
             ?.map((item) => OrderItem.fromMap(item as Map<String, dynamic>))
             .toList());
@@ -51,19 +51,12 @@ class OrderModel extends OrderEntity {
         title: documentSnapshot.data()!['title'],
         itemCount: documentSnapshot.data()!['itemCount'],
         createdAt: documentSnapshot.data()!['createdAt'],
-        status: documentSnapshot.data()!['status'],
+        status: OrderStatusEnum.values[documentSnapshot.data()!['status']],
         items: documentSnapshot
             .data()!['items']
             ?.map<OrderItem>((item) => OrderItem.fromMap(item))
             .toList());
   }
-
-  // factory EventModel.fromSnapShot2(
-  //     DocumentSnapshot<Map<String, dynamic>> documentSnapshot) {
-  //   return EventModel(
-  //     comment: documentSnapshot.data()!['comment'],
-  //   );
-  // }
 
   factory OrderModel.fromEntity(OrderEntity orderEntity) => OrderModel(
         userId: orderEntity.userId,

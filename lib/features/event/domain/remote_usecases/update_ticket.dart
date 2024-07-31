@@ -2,11 +2,11 @@ import 'package:order/features/event/domain/entities/order_entities.dart';
 import 'package:order/features/event/domain/reporisatory/order_repository.dart';
 
 class UpdateOrderUsecase {
-  final OrderRepository ticketReporisatory;
+  final OrderRepository orderReporisatory;
 
-  UpdateOrderUsecase(this.ticketReporisatory);
+  UpdateOrderUsecase(this.orderReporisatory);
 
-  Future<BaseResponse> call(OrderEntity eventEntity) async {
-    return await ticketReporisatory.remoteUpdateOrder(eventEntity);
+  Future<BaseResponse> call(OrderEntity orderEntity) async {
+    return await orderReporisatory.remoteUpdateOrder(orderEntity);
   }
 }

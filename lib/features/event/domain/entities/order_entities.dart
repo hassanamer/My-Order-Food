@@ -7,7 +7,7 @@ class OrderEntity {
   final String? userId;
   final String? title;
   final DateTime createdAt;
-  String status;
+  OrderStatusEnum status;
   late final List<OrderItem>? items;
 
   OrderEntity({
@@ -25,11 +25,22 @@ class OrderEntity {
       userId: map['userId'] ?? '',
       title: map['title'] ?? '',
       createdAt: (map['createdAt'] as Timestamp).toDate(),
-      status: map['status'] ?? "",
+      status: OrderStatusEnum.values[map['status'] ?? 0],
       items: (map['items'] as List<dynamic>?)
           ?.map((item) => OrderItem.fromMap(item))
           .toList(),
     );
+  }
+
+  Map<String, dynamic> toMap() {
+    return {
+      'id': id,
+      'userId': userId,
+      'title': title,
+      'createdAt': Timestamp.fromDate(createdAt),
+      'status': status.index,
+      'items': items?.map((item) => item.toMap()).toList(),
+    };
   }
 
   toOrderModel() {
@@ -85,6 +96,25 @@ class OrderItem {
       price: map['price'],
       totalPrice: map['totalPrice'],
     );
+  }
+}
+
+enum OrderStatusEnum {
+  active,
+  placed,
+  arrived;
+
+  String get name {
+    switch (this) {
+      case OrderStatusEnum.active:
+        return 'Active';
+      case OrderStatusEnum.placed:
+        return 'Placed';
+      case OrderStatusEnum.arrived:
+        return 'Arrived';
+      default:
+        return '';
+    }
   }
 }
 

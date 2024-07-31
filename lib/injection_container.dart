@@ -30,13 +30,10 @@ import 'package:order/features/register/presentation/cubit/register_cubit.dart';
 import 'package:order/features/restaurant/data/datasource/restaurant_datasource.dart';
 import 'package:order/features/restaurant/data/reporisatory/restaurant_reporisatory_impl.dart';
 import 'package:order/features/restaurant/domain/reporisatory/restaurant_reporisatory.dart';
-import 'package:order/features/restaurant/domain/usecase/add_menu_items_usecase.dart';
 import 'package:order/features/restaurant/domain/usecase/add_restaurant_usecase.dart';
-import 'package:order/features/restaurant/domain/usecase/get_all_menu.dart';
 import 'package:order/features/restaurant/domain/usecase/get_all_restaurant_usecase.dart';
 import 'package:order/features/restaurant/domain/usecase/get_uploaded_iamge_usecase.dart';
 import 'package:order/features/restaurant/domain/usecase/upload_image_usecase.dart';
-import 'package:order/features/restaurant/presentation/cubit/menu_cubit.dart';
 import 'package:order/features/restaurant/presentation/cubit/restaurant_cubit.dart';
 
 import 'features/cart/domain/usecase/view_orders_usecase.dart';
@@ -101,6 +98,7 @@ void init() {
 
   sl.registerLazySingleton<UpdateOrderUsecase>(
       () => UpdateOrderUsecase(sl<OrderRepository>()));
+
   sl.registerLazySingleton<DeleteOrderUsecase>(
       () => DeleteOrderUsecase(sl<OrderRepository>()));
   sl.registerLazySingleton<GetAllOrderUsecase>(
@@ -124,16 +122,12 @@ void init() {
       () => UploadImageUsecase(sl<RestaurantReporisatory>()));
   sl.registerLazySingleton<GetUploadedImageUsecase>(
       () => GetUploadedImageUsecase(sl<RestaurantReporisatory>()));
-  sl.registerLazySingleton<AddMenuItemsUsecase>(
-      () => AddMenuItemsUsecase(sl<RestaurantReporisatory>()));
+
   sl.registerLazySingleton<GetAllRestaurantUsecase>(
       () => GetAllRestaurantUsecase(sl<RestaurantReporisatory>()));
-  sl.registerLazySingleton<GetAllMenuUsecase>(
-      () => GetAllMenuUsecase(sl<RestaurantReporisatory>()));
 
   // Registering restaurant cubits
   sl.registerFactory(() => RestaurantCubit());
-  sl.registerFactory(() => MenuCubit());
 
   // Registering cart data source
   sl.registerLazySingleton<CartDatasourceInterface>(() => CartDatasourceImpl());

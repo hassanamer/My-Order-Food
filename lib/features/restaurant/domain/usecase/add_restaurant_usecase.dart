@@ -12,4 +12,10 @@ class AddRestaurantUsecase {
   ) async {
     return await restaurantReporisatory.addRestaurant(restaurantModel);
   }
+
+  Future<BaseResponse> updateResturantMenu(
+    RestaurantModel restaurantModel,
+  ) async {
+    return await restaurantReporisatory.updateResturantMenu(restaurantModel);
+  }
 }

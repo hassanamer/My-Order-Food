@@ -42,6 +42,11 @@ class _OrderSummaryPageState extends State<OrderSummaryPage> {
   late AddOrderUsecase addOrderUsecase;
   late GetUserUsecase getUserUsecase;
 
+  updateOrderStatus() {
+    addOrderUsecase.updateOrderStatus(
+        widget.orderEntity.id, widget.orderEntity.status);
+  }
+
   @override
   void initState() {
     super.initState();
@@ -130,9 +135,10 @@ class _OrderSummaryPageState extends State<OrderSummaryPage> {
                 height: 60.h,
                 text: 'Order Arrived',
                 onPressed: () {
-                  widget.orderEntity.status = 'Arrived';
-                  widget.onCalculate!();
-                  setState(() {});
+                  setState(() {
+                    widget.orderEntity.status = OrderStatusEnum.arrived;
+                    updateOrderStatus();
+                  });
                 },
               ),
             ),

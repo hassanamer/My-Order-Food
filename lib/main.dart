@@ -11,13 +11,11 @@ import 'package:order/core/bloc_observer/bloc_observer.dart';
 import 'package:order/core/services/my_firebase_notification.dart';
 import 'package:order/core/theme_app.dart';
 import 'package:order/features/cart/presentation/cubit/cart_cubit.dart';
-import 'package:order/features/cart/presentation/pages/cart_page.dart';
 import 'package:order/features/event/presentation/pages/order_food_home_page.dart';
 import 'package:order/features/event/presentation/pages/settings_page.dart';
 import 'package:order/features/login/presentation/cubit/login_cubit.dart';
 import 'package:order/features/notification/notification_page.dart';
 import 'package:order/features/register/presentation/cubit/register_cubit.dart';
-import 'package:order/features/restaurant/presentation/cubit/menu_cubit.dart';
 import 'package:order/features/restaurant/presentation/cubit/restaurant_cubit.dart';
 import 'package:order/features/restaurant/presentation/pages/add_restaurant_page.dart';
 import 'package:order/features/restaurant/presentation/pages/get_all_restaurants_page/all_restaurants_page.dart';
@@ -133,7 +131,6 @@ class _MyAppState extends State<MyApp> {
             BlocProvider(create: (_) => di.sl<OrderCubit>()..getAllOrders()),
             BlocProvider(
                 create: (_) => di.sl<RestaurantCubit>()..getAllRestaurants()),
-            BlocProvider(create: (_) => di.sl<MenuCubit>()..getAllMenu()),
             BlocProvider(create: (_) => di.sl<CartCubit>()..getAllCartItems()),
             BlocProvider(create: (_) => di.sl<ProfileCubit>()),
             BlocProvider(
@@ -154,7 +151,7 @@ class _MyAppState extends State<MyApp> {
               'restaurant': (context) => const RestaurantPage(),
               'menu': (context) => const MenuPage(),
               'allrestaurant': (context) => const AllRestaurantPage(),
-              'cart': (context) => const CartPage(),
+              // 'cart': (context) => const CartPage(),
               'settings': (context) => const SettingsPage(),
               'profile': (context) => const ProfilePage(),
               'notifications': (context) => NotificationPage(),

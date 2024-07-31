@@ -171,7 +171,7 @@ class _CreateOrderWidgetState extends State<CreateOrderWidget> {
           items: itemList,
           userId: userId,
           createdAt: DateTime.now(),
-          status: "Active");
+          status: OrderStatusEnum.active);
 
       if (widget.isUpdateEvent) {
         BlocProvider.of<OrderCubit>(context).updateOrder(createOrderEntity);

@@ -8,11 +8,11 @@ import '../../order_details_page/order_details_page.dart';
 class OrdersListTitleWidget extends StatelessWidget {
   const OrdersListTitleWidget({
     Key? key,
-    required this.eventEntity,
+    required this.orderEntity,
     required this.title,
   }) : super(key: key);
 
-  final OrderEntity eventEntity;
+  final OrderEntity orderEntity;
   final String title;
 
   @override
@@ -45,20 +45,36 @@ class OrdersListTitleWidget extends StatelessWidget {
               child: InkWell(
                 borderRadius: BorderRadius.circular(15),
                 onTap: () {
-                  Get.to(() => OrderDetailsPage(orderEntity: eventEntity));
+                  Get.to(() => OrderDetailsPage(orderEntity: orderEntity));
                 },
                 child: ListTile(
                   trailing: const Icon(
                     Icons.arrow_circle_right,
                     color: Colors.white,
                   ),
-                  title: Text(
-                    title,
-                    style: const TextStyle(
-                      fontSize: 18,
-                      fontWeight: FontWeight.bold,
-                      color: Colors.white,
-                    ),
+                  title: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Text(
+                        title,
+                        style: const TextStyle(
+                          fontSize: 18,
+                          fontWeight: FontWeight.bold,
+                          color: Colors.white,
+                        ),
+                      ),
+                      TextButton(
+                        onPressed: () {},
+                        child: const Text(
+                          "Active",
+                          style: TextStyle(
+                            fontSize: 18,
+                            fontWeight: FontWeight.bold,
+                            color: Colors.white,
+                          ),
+                        ),
+                      )
+                    ],
                   ),
                   contentPadding: const EdgeInsets.symmetric(horizontal: 20),
                 ),
