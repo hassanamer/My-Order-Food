@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 
+import '../../../../../../core/theming/styles.dart';
 import '../../../../../register/user/pages/user_profile_screen.dart';
 import '../../../../../register/user/profile_cubit.dart';
 
@@ -41,7 +43,7 @@ class _SettingsHeaderWidgetState extends State<SettingsHeaderWidget> {
                 MaterialPageRoute(builder: (context) => UserProfileScreen()));
           },
           child: Container(
-            padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 15),
+            padding: const EdgeInsets.symmetric(horizontal: 5, vertical: 15),
             decoration: const BoxDecoration(
               boxShadow: [
                 BoxShadow(
@@ -50,16 +52,12 @@ class _SettingsHeaderWidgetState extends State<SettingsHeaderWidget> {
               color: Color.fromRGBO(255, 255, 255, 1),
             ),
             child: Row(
+              mainAxisAlignment: MainAxisAlignment.start,
               children: [
-                CircleAvatar(
-                  backgroundColor: const Color.fromRGBO(72, 129, 255, 0.06),
-                  radius: 50,
-                  backgroundImage: profileImageUrl.isNotEmpty
-                      ? NetworkImage(profileImageUrl)
-                      : null,
-                  child: profileImageUrl.isEmpty
-                      ? Icon(Icons.add_a_photo, size: 50, color: Colors.white)
-                      : null,
+                GradientCircleAvatar(
+                  profileImageUrl: profileImageUrl,
+                  width: 140.w,
+                  height: 140.h,
                 ),
                 const SizedBox(width: 12),
                 Expanded(
@@ -67,13 +65,13 @@ class _SettingsHeaderWidgetState extends State<SettingsHeaderWidget> {
                     crossAxisAlignment: CrossAxisAlignment.stretch,
                     children: [
                       Text(
-                        email,
-                        maxLines: 1,
-                        style: const TextStyle(color: Colors.grey),
+                        userName,
+                        style: TextStyles.font18DarkBlueBold,
                       ),
                       Text(
-                        userName,
-                        style: const TextStyle(color: Colors.black),
+                        email,
+                        maxLines: 1,
+                        style: TextStyles.font14DarkBlueBold,
                       ),
                     ],
                   ),

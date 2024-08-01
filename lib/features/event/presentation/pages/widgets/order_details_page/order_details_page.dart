@@ -2,6 +2,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:intl/intl.dart';
 import 'package:order/core/services/push_notification_service.dart';
 import 'package:order/core/widgets/app_bar_widget.dart';
 import 'package:order/features/cart/presentation/pages/view_order_page.dart';
@@ -31,7 +32,7 @@ class OrderDetailsPage extends StatefulWidget {
 class _OrderDetailsPageState extends State<OrderDetailsPage> {
   late GetUserUsecase getUserOrderUsecase;
   late AddOrderUsecase addOrderUsecase;
-
+  late String createdAt;
   User? currentUser = FirebaseAuth.instance.currentUser;
 
   void onCalculatePressed() {
@@ -69,6 +70,9 @@ class _OrderDetailsPageState extends State<OrderDetailsPage> {
     getUserOrderUsecase = sl();
     itemsList = widget.orderEntity.items ?? [];
     updateOrdersAndUsers();
+    createdAt = widget.orderEntity.createdAt != null
+        ? DateFormat('yyyy-MM-dd hh:mm a').format(widget.orderEntity.createdAt)
+        : 'Unknown';
   }
 
   refreshOrder() async {
@@ -91,9 +95,13 @@ class _OrderDetailsPageState extends State<OrderDetailsPage> {
     RegisterAccountModel? receiver;
 
     for (var user in usersInOrder) {
-      if (placer == null && user.deliveryPreference == "Place the order") {
+      if (placer == null &&
+          user.deliveryPreference == "Place the order" &&
+          user.hasCar == "No") {
         placer = user;
-      } else if (receiver == null && user.hasCar == "Yes") {
+      } else if (receiver == null &&
+          user.hasCar == "Yes" &&
+          user.deliveryPreference == "Receive it at the gate") {
         receiver = user;
       }
 
@@ -146,9 +154,9 @@ class _OrderDetailsPageState extends State<OrderDetailsPage> {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            const Text(
-              'Items',
-              style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+            Text(
+              "Created At : $createdAt",
+              style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
             ),
             const SizedBox(height: 10),
             Expanded(

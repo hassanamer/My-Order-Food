@@ -13,7 +13,8 @@ class LoginHeaderWidget extends StatelessWidget {
       children: [
         const Text(
           'Login',
-          style: TextStyles.font18DarkBlueBold,),
+          style: TextStyles.font18DarkBlueBold,
+        ),
         const SizedBox(height: 8),
         Center(
           child: Column(

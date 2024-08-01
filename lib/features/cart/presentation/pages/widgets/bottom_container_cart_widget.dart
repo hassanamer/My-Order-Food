@@ -1,12 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:order/features/cart/presentation/cubit/cart_cubit.dart';
+import 'package:order/features/restaurant/presentation/pages/get_menu_pages/menuu_pagee.dart';
 
-import '../../../../restaurant/presentation/pages/get_menu_pages/get_menu_page.dart';
 import 'cart_alert_dialog_widget.dart';
 
 class BottomContainerCartWidget extends StatelessWidget {
   final double total;
+
   const BottomContainerCartWidget({
     Key? key,
     required this.total,
@@ -39,7 +40,7 @@ class BottomContainerCartWidget extends StatelessWidget {
                 width: 120,
                 child: OutlinedButton(
                   onPressed: () => Navigator.of(context).push(MaterialPageRoute(
-                    builder: (context) => const AllMenuPage(),
+                    builder: (context) => MenuuPagee(),
                   )),
                   style: OutlinedButton.styleFrom(
                       shape: RoundedRectangleBorder(

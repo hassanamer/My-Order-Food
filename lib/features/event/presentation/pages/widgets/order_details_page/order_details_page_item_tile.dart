@@ -15,7 +15,7 @@ class EventDetailPageItemTile extends StatefulWidget {
   });
 
   final String userId;
-  final OrderStatusEnum? status;
+  final OrderStatusEnum status;
   final List<OrderItem> items;
   final RegisterAccountModel? user;
   late OrderEntity? orderEntity;
@@ -62,16 +62,37 @@ class _EventDetailPageItemTileState extends State<EventDetailPageItemTile> {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Padding(
-                      padding: const EdgeInsets.all(10.0),
-                      child: Text(
-                        'User: ${widget.user?.name ?? ''} ',
-                        style: const TextStyle(
-                          fontSize: 18,
-                          fontWeight: FontWeight.bold,
-                          color: Colors.white,
+                    Row(
+                      children: [
+                        Padding(
+                          padding: const EdgeInsets.all(8.0),
+                          child: CircleAvatar(
+                            backgroundColor:
+                                const Color.fromRGBO(72, 129, 255, 0.06),
+                            radius: 50,
+                            backgroundImage:
+                                '${widget.user?.profileImageUrl}'.isNotEmpty
+                                    ? NetworkImage(
+                                        '${widget.user?.profileImageUrl}')
+                                    : null,
+                            child: '${widget.user?.profileImageUrl}'.isEmpty
+                                ? const Icon(Icons.add_a_photo,
+                                    size: 50, color: Colors.white)
+                                : null,
+                          ),
                         ),
-                      ),
+                        Padding(
+                          padding: const EdgeInsets.all(5.0),
+                          child: Text(
+                            '${widget.user?.name?.toUpperCase() ?? ''} ',
+                            style: const TextStyle(
+                              fontSize: 18,
+                              fontWeight: FontWeight.bold,
+                              color: Colors.white,
+                            ),
+                          ),
+                        ),
+                      ],
                     ),
                     ...widget.items
                         .map((item) => Padding(
@@ -89,7 +110,7 @@ class _EventDetailPageItemTileState extends State<EventDetailPageItemTile> {
                                     ),
                                   ),
                                   Text(
-                                    'Qty: ${item.quantity}',
+                                    'x ${item.quantity}',
                                     style: const TextStyle(
                                       fontSize: 16,
                                       color: Colors.white,
@@ -100,13 +121,28 @@ class _EventDetailPageItemTileState extends State<EventDetailPageItemTile> {
                             ))
                         .toList(),
                     Padding(
-                      padding: const EdgeInsets.all(10.0),
-                      child: Text(
-                        'Status: ${widget.status?.name ?? 'Unknown'}',
-                        style: const TextStyle(
-                          fontSize: 16,
-                          fontWeight: FontWeight.bold,
-                          color: Colors.white,
+                      padding: const EdgeInsets.all(8.0),
+                      child: RichText(
+                        text: TextSpan(
+                          children: [
+                            const TextSpan(
+                              text: 'Status : ',
+                              style: TextStyle(
+                                fontSize: 18,
+                                fontWeight: FontWeight.bold,
+                                color: Colors.black,
+                              ),
+                            ),
+                            TextSpan(
+                              text: '${widget.status?.name ?? 'Unknown'}',
+                              style: TextStyle(
+                                fontSize: 16,
+                                fontWeight: FontWeight.bold,
+                                color: OrderStatusEnum.getStatusColor(
+                                    widget.status),
+                              ),
+                            ),
+                          ],
                         ),
                       ),
                     ),

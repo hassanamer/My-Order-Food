@@ -8,6 +8,7 @@ import '../services/notification_cubit.dart';
 
 class AppBarWidget extends StatefulWidget implements PreferredSizeWidget {
   final String? pageName;
+  final String? pageDescreption;
   final Widget? titleWidget;
   final bool hideBackButton;
   final List<Widget>? actions;
@@ -16,6 +17,7 @@ class AppBarWidget extends StatefulWidget implements PreferredSizeWidget {
   const AppBarWidget({
     Key? key,
     this.pageName,
+    this.pageDescreption,
     this.titleWidget,
     this.hideBackButton = true,
     this.actions,
@@ -71,11 +73,19 @@ class _AppBarWidgetState extends State<AppBarWidget> {
                 icon: const Icon(Icons.arrow_back),
                 onPressed: () => Navigator.of(context).pop(),
               ),
-      title: widget.titleWidget ??
+      title: Column(
+        children: [
+          widget.titleWidget ??
+              Text(
+                widget.pageName!,
+                style: TextStyles.font22WhiteBold.copyWith(color: Colors.white),
+              ),
           Text(
-            widget.pageName!,
-            style: TextStyles.font22BlackBold.copyWith(color: Colors.white),
+            widget.pageDescreption ?? '',
+            style: TextStyles.font14DarkBlueMedium,
           ),
+        ],
+      ),
       actions: widget.actions ??
           [
             BlocBuilder<NotificationCubit, NotificationState>(

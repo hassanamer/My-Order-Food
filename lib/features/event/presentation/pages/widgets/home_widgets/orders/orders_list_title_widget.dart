@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_staggered_animations/flutter_staggered_animations.dart';
 import 'package:get/get.dart';
+import 'package:order/features/event/presentation/pages/widgets/order_status/enums.dart';
 
 import '../../../../../domain/entities/order_entities.dart';
 import '../../order_details_page/order_details_page.dart';
@@ -64,13 +65,33 @@ class OrdersListTitleWidget extends StatelessWidget {
                         ),
                       ),
                       TextButton(
-                        onPressed: () {},
-                        child: const Text(
-                          "Active",
-                          style: TextStyle(
-                            fontSize: 18,
-                            fontWeight: FontWeight.bold,
-                            color: Colors.white,
+                        onPressed: () {
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder: (context) => Enums(
+                                orderEntity: orderEntity,
+                              ),
+                            ),
+                          );
+                        },
+                        child: Container(
+                          padding: const EdgeInsets.symmetric(
+                            horizontal: 8,
+                            vertical: 4,
+                          ),
+                          decoration: BoxDecoration(
+                              color: Color(0xFFFFFFFF).withOpacity(0.2),
+                              borderRadius:
+                                  const BorderRadius.all(Radius.circular(4))),
+                          child: Text(
+                            "${orderEntity.status.name}".toUpperCase(),
+                            style: Theme.of(context)
+                                .textTheme
+                                .labelLarge!
+                                .copyWith(
+                                    color: OrderStatusEnum.getStatusColor(
+                                        orderEntity.status)),
                           ),
                         ),
                       )

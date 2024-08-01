@@ -16,7 +16,7 @@ class Account {
   int? receivedOrderCount;
 
   Account({
-    this.userId,
+    required this.userId,
     this.username,
     this.password,
     this.name,

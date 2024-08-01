@@ -5,12 +5,18 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:order/core/theming/styles.dart';
+import 'package:order/core/widgets/app_bar_widget.dart';
 
+import '../../../../core/widgets/common_elevated_button_widget.dart';
 import '../../../../core/widgets/loading_widget.dart';
 import '../profile_cubit.dart';
 
 class UserProfileScreen extends StatefulWidget {
+  const UserProfileScreen({super.key});
+
   @override
   State<UserProfileScreen> createState() => _UserProfileScreenState();
 }
@@ -36,12 +42,8 @@ class _UserProfileScreenState extends State<UserProfileScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Colors.white,
-      appBar: AppBar(
-        title: Text('Profile', style: TextStyle(color: Colors.black)),
-        backgroundColor: Colors.transparent,
-        elevation: 0,
-        centerTitle: true,
-        iconTheme: IconThemeData(color: Colors.black),
+      appBar: const AppBarWidget(
+        pageName: 'Profile',
       ),
       body: BlocConsumer<ProfileCubit, ProfileState>(
         listener: (context, state) {
@@ -63,39 +65,31 @@ class _UserProfileScreenState extends State<UserProfileScreen> {
                   crossAxisAlignment: CrossAxisAlignment.center,
                   children: [
                     GestureDetector(
-                      onTap: _isEditing ? _pickImage : null,
-                      child: CircleAvatar(
-                        radius: 60,
-                        backgroundImage: profileImageUrl.isNotEmpty
-                            ? NetworkImage(profileImageUrl)
-                            : null,
-                        child: profileImageUrl.isEmpty
-                            ? Icon(Icons.add_a_photo,
-                                size: 50, color: Colors.white)
-                            : null,
-                      ),
-                    ),
-                    SizedBox(height: 20),
+                        onTap: _isEditing ? _pickImage : null,
+                        child: GradientCircleAvatar(
+                          profileImageUrl: profileImageUrl,
+                          width: 140.w,
+                          height: 140.h,
+                        )),
+                    const SizedBox(height: 30),
                     _isEditing
-                        ? TextFormField(
-                            initialValue: userName,
-                            onChanged: (value) => userName = value,
-                            decoration: InputDecoration(labelText: 'Name'),
-                            validator: (value) =>
-                                value!.isEmpty ? 'Name cannot be empty' : null,
-                          )
-                        : Text(
-                            userName,
-                            style: TextStyle(
-                                fontSize: 24, fontWeight: FontWeight.bold),
-                          ),
-                    SizedBox(height: 10),
-                    _buildProfileInfoItem('Email', email, _isEditing, true),
-                    _buildProfileInfoItem(
-                        'Phone', phoneNumber, _isEditing, true),
-                    _buildProfileInfoItem('Gender', gender, _isEditing, true),
-                    SizedBox(height: 20),
-                    ElevatedButton(
+                        ? _buildProfileInfoItem('', userName, _isEditing, true)
+                        : GradientTile(value: userName),
+                    const SizedBox(height: 5),
+                    _buildProfileInfoItem('', email, _isEditing, true),
+                    _buildProfileInfoItem('', phoneNumber, _isEditing, true),
+                    _isEditing
+                        ? _buildProfileInfoItem('', gender, _isEditing, true)
+                        : GradientTile(value: gender),
+                    const SizedBox(height: 30),
+                    const Divider(
+                      thickness: 1,
+                      indent: 30,
+                      endIndent: 30,
+                    ),
+                    const SizedBox(height: 30),
+                    CommonElevatedButtonWidget(
+                      text: _isEditing ? 'Done' : 'Edit Profile',
                       onPressed: () {
                         _editProfile();
                         context.read<ProfileCubit>().updateProfile(
@@ -105,13 +99,6 @@ class _UserProfileScreenState extends State<UserProfileScreen> {
                               profileImageUrl: profileImageUrl,
                             );
                       },
-                      child: Text(_isEditing ? 'Done' : 'Edit Profile'),
-                      style: ElevatedButton.styleFrom(
-                        backgroundColor: Colors.blue,
-                        padding:
-                            EdgeInsets.symmetric(horizontal: 50, vertical: 15),
-                        textStyle: TextStyle(fontSize: 18),
-                      ),
                     ),
                   ],
                 ),
@@ -151,7 +138,6 @@ class _UserProfileScreenState extends State<UserProfileScreen> {
         await storageRef.putFile(_imageFile!);
         String downloadUrl = await storageRef.getDownloadURL();
 
-        // Update Firestore with the new profile image URL
         await FirebaseFirestore.instance
             .collection('Users')
             .doc(currentUser.uid)
@@ -190,6 +176,22 @@ class _UserProfileScreenState extends State<UserProfileScreen> {
     }
   }
 
+  IconData getIconForLabel(String label, String value) {
+    switch (label) {
+      case 'Phone':
+        return Icons.phone;
+      case 'Username':
+        return Icons.person;
+      case 'Email':
+        return Icons.mail;
+      case 'Gender':
+        return value == 'Male' ? Icons.male : Icons.female;
+      // Add cases for other labels if needed
+      default:
+        return Icons.text_fields; // Default icon
+    }
+  }
+
   Widget _buildProfileInfoItem(
       String label, String value, bool isEditing, bool isEditable) {
     return Padding(
@@ -198,19 +200,23 @@ class _UserProfileScreenState extends State<UserProfileScreen> {
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
           Text(
-            '$label: ',
-            style: TextStyle(fontSize: 16, color: Colors.grey),
+            '$label ',
+            style: const TextStyle(fontSize: 16, color: Colors.grey),
           ),
           isEditing && isEditable
               ? Expanded(
                   child: TextFormField(
+                    style: const TextStyle(fontSize: 20),
+                    decoration: InputDecoration(
+                      border: const UnderlineInputBorder(),
+                      labelText: label,
+                      prefixIcon: Icon(getIconForLabel(label, value)),
+                    ),
                     initialValue: value,
                     onChanged: (newValue) {
                       setState(() {
                         if (label == 'Phone') {
                           phoneNumber = newValue;
-                        } else if (label == 'Gender') {
-                          gender = newValue;
                         }
                       });
                     },
@@ -218,11 +224,91 @@ class _UserProfileScreenState extends State<UserProfileScreen> {
                         newValue!.isEmpty ? '$label cannot be empty' : null,
                   ),
                 )
-              : Text(
-                  value,
-                  style: TextStyle(fontSize: 16),
-                ),
+              : GradientTile(value: value)
         ],
+      ),
+    );
+  }
+}
+
+class GradientTile extends StatelessWidget {
+  final String value;
+  final Color gradientStartColor;
+  final Color gradientEndColor;
+  final double fontSize;
+  final double borderRadius;
+
+  const GradientTile({
+    super.key,
+    required this.value,
+    this.gradientStartColor = Colors.blue,
+    this.gradientEndColor = Colors.blueAccent,
+    this.fontSize = 20.0,
+    this.borderRadius = 15.0,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      width: 320.w,
+      height: 55.h,
+      margin: const EdgeInsets.all(8.0),
+      decoration: BoxDecoration(
+        gradient: LinearGradient(
+          colors: [gradientStartColor, gradientEndColor],
+          begin: Alignment.topLeft,
+          end: Alignment.bottomRight,
+        ),
+        borderRadius: BorderRadius.circular(borderRadius),
+      ),
+      alignment: Alignment.center,
+      child: Padding(
+        padding: const EdgeInsets.all(15.0),
+        child: Text(
+          value.toUpperCase(),
+          style: TextStyles.font20WhiteBold,
+        ),
+      ),
+    );
+  }
+}
+
+class GradientCircleAvatar extends StatelessWidget {
+  final String? profileImageUrl;
+  double width;
+  double height;
+
+  GradientCircleAvatar(
+      {super.key,
+      required this.profileImageUrl,
+      required this.width,
+      required this.height});
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      width: width,
+      // Adjust size as needed
+      height: height,
+      // Adjust size as needed
+      decoration: BoxDecoration(
+        gradient: LinearGradient(
+          colors: [Colors.blue.shade400, Colors.blue.shade900],
+          begin: Alignment.topLeft,
+          end: Alignment.bottomRight,
+        ),
+        shape: BoxShape.circle,
+      ),
+      child: Center(
+        child: CircleAvatar(
+          radius: 60,
+          backgroundImage: profileImageUrl!.isNotEmpty
+              ? NetworkImage(profileImageUrl!)
+              : null,
+          child: profileImageUrl!.isEmpty
+              ? const Icon(Icons.add_a_photo, size: 50, color: Colors.white)
+              : null,
+        ),
       ),
     );
   }

@@ -2,7 +2,7 @@ import '../../domain/entities/account_entites.dart';
 
 class User extends Account {
   User({
-    String? userId,
+    required String userId,
     required String username,
     required String password,
     final String? name,

@@ -1,3 +1,4 @@
+import 'package:animate_do/animate_do.dart';
 import 'package:flutter/material.dart';
 
 class TopImage extends StatelessWidget {
@@ -7,11 +8,20 @@ class TopImage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Image.asset(
-      'assets/images/login.png',
-      height: 205,
-      width: double.infinity,
-      fit: BoxFit.fill,
+    return Container(
+      child: FadeInUp(
+          duration: Duration(seconds: 1),
+          child: Container(
+            height: 205,
+            width: double.infinity,
+            decoration: BoxDecoration(
+              image: DecorationImage(
+                image: AssetImage(
+                  'assets/images/login.png',
+                ),
+              ),
+            ),
+          )),
     );
   }
 }

@@ -170,6 +170,7 @@ class _CreateOrderWidgetState extends State<CreateOrderWidget> {
           title: titleController.text,
           items: itemList,
           userId: userId,
+          userTotalPrices: {},
           createdAt: DateTime.now(),
           status: OrderStatusEnum.active);
 

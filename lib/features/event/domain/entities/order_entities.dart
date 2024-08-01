@@ -1,4 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:flutter/material.dart';
 
 import '../../data/models/order_model.dart';
 
@@ -9,6 +10,7 @@ class OrderEntity {
   final DateTime createdAt;
   OrderStatusEnum status;
   late final List<OrderItem>? items;
+  Map<String, double> userTotalPrices = {};
 
   OrderEntity({
     required this.id,
@@ -17,6 +19,7 @@ class OrderEntity {
     this.items,
     required this.createdAt,
     required this.status,
+    required this.userTotalPrices,
   });
 
   factory OrderEntity.fromMap(Map<String, dynamic> map) {
@@ -24,6 +27,8 @@ class OrderEntity {
       id: map["id"],
       userId: map['userId'] ?? '',
       title: map['title'] ?? '',
+      userTotalPrices: (map['userTotalPrices'] as Map<String, dynamic>)
+          .map((key, value) => MapEntry(key, value)),
       createdAt: (map['createdAt'] as Timestamp).toDate(),
       status: OrderStatusEnum.values[map['status'] ?? 0],
       items: (map['items'] as List<dynamic>?)
@@ -40,6 +45,7 @@ class OrderEntity {
       'createdAt': Timestamp.fromDate(createdAt),
       'status': status.index,
       'items': items?.map((item) => item.toMap()).toList(),
+      'userTotalPrices': userTotalPrices,
     };
   }
 
@@ -51,6 +57,7 @@ class OrderEntity {
       items: items,
       createdAt: createdAt,
       status: status,
+      userTotalPrices: userTotalPrices,
     );
   }
 }
@@ -60,14 +67,14 @@ class OrderItem {
   String itemName;
   int quantity;
   double? price;
-  double? totalPrice;
+  double? itemsTotalPrice;
 
   OrderItem({
     required this.userId,
     required this.itemName,
     this.quantity = 0,
     this.price,
-    this.totalPrice,
+    this.itemsTotalPrice,
   });
 
   Map<String, dynamic> toMap() {
@@ -76,15 +83,7 @@ class OrderItem {
       'price': price,
       'itemName': itemName,
       'quantity': quantity,
-      'totalPrice': totalPrice,
-    };
-  }
-
-  Map<String, dynamic> withoutPriceToMap() {
-    return {
-      'itemName': itemName,
-      'quantity': quantity,
-      'userId': userId,
+      'itemsTotalPrice': itemsTotalPrice,
     };
   }
 
@@ -94,15 +93,39 @@ class OrderItem {
       quantity: map['quantity']?.toInt() ?? 0,
       userId: map['userId'] ?? '',
       price: map['price'],
-      totalPrice: map['totalPrice'],
+      itemsTotalPrice: map['itemsTotalPrice'],
     );
   }
 }
 
 enum OrderStatusEnum {
-  active,
-  placed,
-  arrived;
+  active(
+      title: 'Active',
+      color: Colors.green,
+      icon: Icons.hourglass_top_outlined,
+      descreption: 'This Order Is Active'),
+  placed(
+      title: 'Placed',
+      color: Colors.blue,
+      icon: Icons.local_shipping_outlined,
+      descreption: 'This order is on it\'s way to you.'),
+  arrived(
+      title: 'Arrived',
+      color: Colors.red,
+      icon: Icons.task_alt_outlined,
+      descreption: 'Thank you for ordered with us.');
+
+  final String title;
+  final String descreption;
+  final IconData icon;
+  final Color color;
+
+  const OrderStatusEnum({
+    required this.title,
+    required this.descreption,
+    required this.icon,
+    required this.color,
+  });
 
   String get name {
     switch (this) {
@@ -114,6 +137,19 @@ enum OrderStatusEnum {
         return 'Arrived';
       default:
         return '';
+    }
+  }
+
+  static Color getStatusColor(OrderStatusEnum status) {
+    switch (status) {
+      case OrderStatusEnum.active:
+        return Colors.green;
+      case OrderStatusEnum.placed:
+        return Colors.yellow;
+      case OrderStatusEnum.arrived:
+        return Colors.red;
+      default:
+        return Colors.white;
     }
   }
 }

@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:order/core/theming/styles.dart';
 
 class CommonElevatedButtonWidget extends StatelessWidget {
   final String text;
@@ -50,7 +51,7 @@ class CommonElevatedButtonWidget extends StatelessWidget {
         ),
         child: Text(
           text,
-          style: const TextStyle(color: Colors.white),
+          style: TextStyles.font20WhiteBold,
         ),
       ),
     );

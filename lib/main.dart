@@ -13,6 +13,7 @@ import 'package:order/core/theme_app.dart';
 import 'package:order/features/cart/presentation/cubit/cart_cubit.dart';
 import 'package:order/features/event/presentation/pages/order_food_home_page.dart';
 import 'package:order/features/event/presentation/pages/settings_page.dart';
+import 'package:order/features/event/presentation/pages/widgets/onboarding_page.dart';
 import 'package:order/features/login/presentation/cubit/login_cubit.dart';
 import 'package:order/features/notification/notification_page.dart';
 import 'package:order/features/register/presentation/cubit/register_cubit.dart';
@@ -20,6 +21,7 @@ import 'package:order/features/restaurant/presentation/cubit/restaurant_cubit.da
 import 'package:order/features/restaurant/presentation/pages/add_restaurant_page.dart';
 import 'package:order/features/restaurant/presentation/pages/get_all_restaurants_page/all_restaurants_page.dart';
 import 'package:order/features/restaurant/presentation/pages/menu_page/menu_page.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 import 'core/services/awesome_notification_service.dart';
 import 'core/services/notification_cubit.dart';
@@ -45,6 +47,8 @@ Future _firebaseBackgroundMessage(RemoteMessage message) async {
   }
 }
 
+int? isviewed;
+
 void main() async {
   di.init();
   runZonedGuarded(() async {
@@ -52,6 +56,9 @@ void main() async {
     await Firebase.initializeApp(
       options: DefaultFirebaseOptions.currentPlatform,
     );
+
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    isviewed = prefs.getInt('onBoard');
 
     await PushNotification.init();
     await PushNotification.localNotificationInit();
@@ -145,6 +152,7 @@ class _MyAppState extends State<MyApp> {
             navigatorKey: navigatorKey,
             routes: {
               'splash': (context) => const WelcomeSplashWidget(),
+              'onboarding': (context) => OnBoard(),
               'login': (context) => const LoginPage(),
               'register': (context) => const RegisterPage(),
               'home': (context) => const OrderFoodHomePage(),
@@ -156,7 +164,7 @@ class _MyAppState extends State<MyApp> {
               'profile': (context) => const ProfilePage(),
               'notifications': (context) => NotificationPage(),
             },
-            initialRoute: 'splash',
+            initialRoute: isviewed != 0 ? 'onboarding' : 'splash',
           ),
         );
       },
