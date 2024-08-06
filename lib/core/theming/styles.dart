@@ -126,6 +126,13 @@ class TextStyles {
     fontFamily: 'Roboto',
   );
 
+  static const TextStyle font14WhiteMedium = TextStyle(
+    fontSize: 14,
+    fontWeight: FontWeightHelper.medium,
+    color: ColorsManager.darkBlue,
+    fontFamily: 'Roboto',
+  );
+
   static const TextStyle font14DarkBlueBold = TextStyle(
     fontSize: 14,
     fontWeight: FontWeightHelper.bold,

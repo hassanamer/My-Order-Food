@@ -8,18 +8,22 @@ class OrderEntity {
   final String? userId;
   final String? title;
   final DateTime createdAt;
+  double? deliveryFees;
   OrderStatusEnum status;
+  double vat = 0;
   late final List<OrderItem>? items;
-  Map<String, double> userTotalPrices = {};
+  Map<String, double> itemsTotalPricePerUser = {};
 
   OrderEntity({
     required this.id,
     this.userId,
     this.title,
     this.items,
+    required this.vat,
+    required this.deliveryFees,
     required this.createdAt,
     required this.status,
-    required this.userTotalPrices,
+    required this.itemsTotalPricePerUser,
   });
 
   factory OrderEntity.fromMap(Map<String, dynamic> map) {
@@ -27,8 +31,11 @@ class OrderEntity {
       id: map["id"],
       userId: map['userId'] ?? '',
       title: map['title'] ?? '',
-      userTotalPrices: (map['userTotalPrices'] as Map<String, dynamic>)
-          .map((key, value) => MapEntry(key, value)),
+      deliveryFees: map['deliveryFees'] ?? 0.0,
+      vat: map['vat'] ?? 0,
+      itemsTotalPricePerUser:
+          (map['itemsTotalPricePerUser'] as Map<String, dynamic>)
+              .map((key, value) => MapEntry(key, value)),
       createdAt: (map['createdAt'] as Timestamp).toDate(),
       status: OrderStatusEnum.values[map['status'] ?? 0],
       items: (map['items'] as List<dynamic>?)
@@ -44,8 +51,10 @@ class OrderEntity {
       'title': title,
       'createdAt': Timestamp.fromDate(createdAt),
       'status': status.index,
+      'vat': vat,
       'items': items?.map((item) => item.toMap()).toList(),
-      'userTotalPrices': userTotalPrices,
+      'itemsTotalPricePerUser': itemsTotalPricePerUser,
+      'deliveryFees': deliveryFees,
     };
   }
 
@@ -56,8 +65,10 @@ class OrderEntity {
       title: title,
       items: items,
       createdAt: createdAt,
+      vat: vat,
       status: status,
-      userTotalPrices: userTotalPrices,
+      itemsTotalPricePerUser: itemsTotalPricePerUser,
+      deliveryFees: deliveryFees,
     );
   }
 }
@@ -67,14 +78,14 @@ class OrderItem {
   String itemName;
   int quantity;
   double? price;
-  double? itemsTotalPrice;
+  double? itemTotalPrice;
 
   OrderItem({
     required this.userId,
     required this.itemName,
     this.quantity = 0,
     this.price,
-    this.itemsTotalPrice,
+    this.itemTotalPrice,
   });
 
   Map<String, dynamic> toMap() {
@@ -83,7 +94,7 @@ class OrderItem {
       'price': price,
       'itemName': itemName,
       'quantity': quantity,
-      'itemsTotalPrice': itemsTotalPrice,
+      'itemTotalPrice': itemTotalPrice,
     };
   }
 
@@ -93,7 +104,7 @@ class OrderItem {
       quantity: map['quantity']?.toInt() ?? 0,
       userId: map['userId'] ?? '',
       price: map['price'],
-      itemsTotalPrice: map['itemsTotalPrice'],
+      itemTotalPrice: map['itemTotalPrice'],
     );
   }
 }
@@ -101,7 +112,7 @@ class OrderItem {
 enum OrderStatusEnum {
   active(
       title: 'Active',
-      color: Colors.green,
+      color: Colors.yellow,
       icon: Icons.hourglass_top_outlined,
       descreption: 'This Order Is Active'),
   placed(
@@ -111,9 +122,15 @@ enum OrderStatusEnum {
       descreption: 'This order is on it\'s way to you.'),
   arrived(
       title: 'Arrived',
-      color: Colors.red,
+      color: Colors.green,
       icon: Icons.task_alt_outlined,
-      descreption: 'Thank you for ordered with us.');
+      descreption: 'Thank you for ordered with us.'),
+  cancelled(
+      title: 'Cancelled',
+      color: Colors.red,
+      icon: Icons.cancel_outlined,
+      descreption:
+          'No One Joined This Order SO Unforgettably \n It Was Cancelled.');
 
   final String title;
   final String descreption;
@@ -135,6 +152,8 @@ enum OrderStatusEnum {
         return 'Placed';
       case OrderStatusEnum.arrived:
         return 'Arrived';
+      case OrderStatusEnum.cancelled:
+        return 'Cancelled';
       default:
         return '';
     }
@@ -143,10 +162,12 @@ enum OrderStatusEnum {
   static Color getStatusColor(OrderStatusEnum status) {
     switch (status) {
       case OrderStatusEnum.active:
-        return Colors.green;
-      case OrderStatusEnum.placed:
         return Colors.yellow;
+      case OrderStatusEnum.placed:
+        return Colors.blue;
       case OrderStatusEnum.arrived:
+        return Colors.green;
+      case OrderStatusEnum.cancelled:
         return Colors.red;
       default:
         return Colors.white;

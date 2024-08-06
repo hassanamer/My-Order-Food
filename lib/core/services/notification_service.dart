@@ -6,14 +6,11 @@ import 'notification_model.dart';
 class NotificationService {
   static final FirebaseFirestore _firestore = FirebaseFirestore.instance;
 
-  static Future<void> saveNotification(String title, String message) async {
-    User? user = FirebaseAuth.instance.currentUser;
-    if (user == null) {
-      throw Exception("User not logged in");
+  static Future<void> saveNotification(
+      String title, String message, String? userId) async {
+    if (userId == null) {
+      return;
     }
-
-    String userId = user.uid;
-
     NotificationModel notification = NotificationModel(
       id: '',
       userId: userId,
@@ -39,9 +36,7 @@ class NotificationService {
     if (user == null) {
       return [];
     }
-
     String userId = user.uid;
-
     try {
       QuerySnapshot snapshot = await _firestore
           .collection('notifications')

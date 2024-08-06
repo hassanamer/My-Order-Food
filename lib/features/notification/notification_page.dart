@@ -7,21 +7,19 @@ import '../../core/services/notification_model.dart';
 import '../../core/services/notification_service.dart';
 
 class NotificationPage extends StatefulWidget {
-  const NotificationPage({
-    Key? key,
-  }) : super(key: key);
+  const NotificationPage({Key? key}) : super(key: key);
 
   @override
   _NotificationPageState createState() => _NotificationPageState();
 }
 
 class _NotificationPageState extends State<NotificationPage> {
-  late Future<List<NotificationModel>> _notificationsFuture;
+  late Stream<List<NotificationModel>> _notificationsStream;
 
   @override
   void initState() {
     super.initState();
-    _notificationsFuture = NotificationService.getCurrentUserNotifications();
+    _notificationsStream = NotificationService.currentUserNotificationsStream();
     context.read<NotificationCubit>().markAllNotificationsAsSeen();
   }
 
@@ -30,9 +28,10 @@ class _NotificationPageState extends State<NotificationPage> {
     return Scaffold(
       appBar: const AppBarWidget(
         pageName: "Notifications",
+        hideNotificationIcon: true,
       ),
-      body: FutureBuilder<List<NotificationModel>>(
-        future: _notificationsFuture,
+      body: StreamBuilder<List<NotificationModel>>(
+        stream: _notificationsStream,
         builder: (context, snapshot) {
           if (snapshot.connectionState == ConnectionState.waiting) {
             return const Center(child: CircularProgressIndicator());

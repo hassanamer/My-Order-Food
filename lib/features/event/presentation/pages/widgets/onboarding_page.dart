@@ -33,7 +33,7 @@ class _OnBoardState extends State<OnBoard> {
       button: Colors.white,
     ),
     OnboardModel(
-      onboardingImage: 'assets/images/download2.gif',
+      onboardingImage: 'assets/images/download1.gif',
       text: "Enjoy and Save Time",
       desc:
           "With everyone playing a part, food ordering becomes a breeze. Save time, reduce hassle, and enjoy delicious meals without the wait. Let’s get started!",
@@ -176,21 +176,19 @@ class _OnBoardState extends State<OnBoard> {
                       padding:
                           EdgeInsets.symmetric(horizontal: 30.0, vertical: 10),
                       decoration: BoxDecoration(
-                          color: index % 2 == 0 ? kblue : kwhite,
+                          color: kblue,
                           borderRadius: BorderRadius.circular(15.0)),
                       child: Row(mainAxisSize: MainAxisSize.min, children: [
                         Text(
                           "Next",
-                          style: TextStyle(
-                              fontSize: 16.0,
-                              color: index % 2 == 0 ? kwhite : kblue),
+                          style: TextStyle(fontSize: 16.0, color: kwhite),
                         ),
                         SizedBox(
                           width: 15.0,
                         ),
                         Icon(
                           Icons.arrow_forward_sharp,
-                          color: index % 2 == 0 ? kwhite : kblue,
+                          color: kwhite,
                         )
                       ]),
                     ),

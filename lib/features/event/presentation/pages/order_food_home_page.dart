@@ -2,7 +2,6 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:order/core/widgets/app_bar_widget.dart';
-import 'package:order/core/widgets/loading_widget.dart';
 import 'package:order/features/event/presentation/cubit/order_cubit.dart';
 import 'package:order/features/event/presentation/cubit/order_state.dart';
 import 'package:order/features/event/presentation/pages/widgets/home_widgets/home/home_page_app_bar_title_widget.dart';
@@ -54,40 +53,37 @@ class _OrderFoodHomePageState extends State<OrderFoodHomePage> {
   }
 
   Widget _buildBody() {
-    return Padding(
-      padding: const EdgeInsets.all(10),
-      child: BlocConsumer<OrderCubit, OrderState>(
-        listener: (context, state) {
-          if (state is OrderSuccessState) {
-            context.read<OrderCubit>().getAllOrders();
+    return BlocConsumer<OrderCubit, OrderState>(
+      listener: (context, state) {
+        if (state is OrderSuccessState) {
+          context.read<OrderCubit>().getAllOrders();
+        }
+        if (state is OrderErrorState) {
+          if (kDebugMode) {
+            print(state.errorMessage);
           }
-          if (state is OrderErrorState) {
-            if (kDebugMode) {
-              print(state.errorMessage);
-            }
+        }
+        if (state is OrderLoadedState) {
+          print(state.orderEntity);
+        }
+      },
+      builder: (context, state) {
+        if (state is OrderLoadedState) {
+          if (state.orderEntity.isEmpty) {
+            return const OrdersEmptyListWidget();
+          } else {
+            return HomePageOrdersWidget(
+              orderEntity: state.orderEntity,
+              // UserEntity: state.UserEntity,
+            );
           }
-          if (state is OrderLoadedState) {
-            print(state.orderEntity);
+        } else if (state is OrderErrorState) {
+          if (kDebugMode) {
+            print(state.errorMessage);
           }
-        },
-        builder: (context, state) {
-          if (state is OrderLoadedState) {
-            if (state.orderEntity.isEmpty) {
-              return const OrdersEmptyListWidget();
-            } else {
-              return HomePageOrdersWidget(
-                orderEntity: state.orderEntity,
-                // UserEntity: state.UserEntity,
-              );
-            }
-          } else if (state is OrderErrorState) {
-            if (kDebugMode) {
-              print(state.errorMessage);
-            }
-          }
-          return const LoadingWidget();
-        },
-      ),
+        }
+        return Container();
+      },
     );
   }
 }

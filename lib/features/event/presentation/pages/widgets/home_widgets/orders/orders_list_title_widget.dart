@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_staggered_animations/flutter_staggered_animations.dart';
-import 'package:get/get.dart';
 import 'package:order/features/event/presentation/pages/widgets/order_status/enums.dart';
 
 import '../../../../../domain/entities/order_entities.dart';
@@ -46,7 +45,9 @@ class OrdersListTitleWidget extends StatelessWidget {
               child: InkWell(
                 borderRadius: BorderRadius.circular(15),
                 onTap: () {
-                  Get.to(() => OrderDetailsPage(orderEntity: orderEntity));
+                  Navigator.of(context).push(MaterialPageRoute(
+                      builder: (context) =>
+                          OrderDetailsPage(orderEntity: orderEntity)));
                 },
                 child: ListTile(
                   trailing: const Icon(

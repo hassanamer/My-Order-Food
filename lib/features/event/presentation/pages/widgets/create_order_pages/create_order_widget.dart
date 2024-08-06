@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'dart:math';
 
 import 'package:firebase_auth/firebase_auth.dart';
@@ -7,15 +8,16 @@ import 'package:fluttertoast/fluttertoast.dart';
 import 'package:order/core/theming/colors.dart';
 import 'package:order/features/event/domain/entities/order_entities.dart';
 import 'package:order/features/event/presentation/cubit/order_cubit.dart';
-import 'package:order/features/event/presentation/pages/widgets/create_order_pages/text_form_field_widget.dart';
 
+import '../../../../../../injection_container.dart';
+import '../../../../domain/remote_usecases/add_order_usecase.dart';
 import 'create_order_button.dart';
 
 class CreateOrderWidget extends StatefulWidget {
-  final OrderEntity? eventEntity;
+  OrderEntity? eventEntity;
   final bool isUpdateEvent;
 
-  const CreateOrderWidget({
+  CreateOrderWidget({
     Key? key,
     required this.eventEntity,
     required this.isUpdateEvent,
@@ -29,7 +31,18 @@ class _CreateOrderWidgetState extends State<CreateOrderWidget> {
   final _formKey = GlobalKey<FormState>();
   TextEditingController titleController = TextEditingController();
   TextEditingController itemController = TextEditingController();
+  double vat = 0;
   int itemCount = 0;
+  Timer? _cancelTimer;
+  late AddOrderUsecase addOrderUsecase;
+  double keyboardHeight = 0;
+  bool _hasStartedTyping = false;
+
+  void _handleChange(String value) {
+    setState(() {
+      _hasStartedTyping = true;
+    });
+  }
 
   late String userId = FirebaseAuth.instance.currentUser?.uid ?? '';
   List<OrderItem> itemList = [];
@@ -37,16 +50,19 @@ class _CreateOrderWidgetState extends State<CreateOrderWidget> {
 
   @override
   void initState() {
+    super.initState();
+    addOrderUsecase = sl();
     if (widget.isUpdateEvent) {
       titleController.text = widget.eventEntity!.title!;
       widget.eventEntity!.items?.forEach((item) {
         itemList.add(OrderItem(
-            itemName: item.itemName,
-            quantity: item.quantity,
-            userId: item.userId));
+          itemName: item.itemName,
+          quantity: item.quantity,
+          userId: item.userId,
+        ));
       });
     }
-    super.initState();
+    // _startCancellationTimer(); // Start timer only when creating a new order
   }
 
   @override
@@ -55,10 +71,36 @@ class _CreateOrderWidgetState extends State<CreateOrderWidget> {
       key: _formKey,
       child: Column(
         children: [
-          TextFormFieldWidget(
-            name: "Title",
-            multiLines: false,
+          TextFormField(
+            // onChanged: _handleChange,
             controller: titleController,
+            decoration: const InputDecoration(
+              labelText: "Title",
+              border: OutlineInputBorder(),
+            ),
+            validator: (value) {
+              if (value == null || value.isEmpty) {
+                return "";
+              }
+              return null;
+            },
+            onTap: () {
+              setState(() {
+                keyboardHeight = 300;
+              });
+            },
+            onEditingComplete: () {
+              setState(() {
+                keyboardHeight = 0;
+                FocusScope.of(context).unfocus();
+              });
+            },
+            onTapOutside: (event) {
+              setState(() {
+                keyboardHeight = 0;
+                FocusScope.of(context).unfocus();
+              });
+            },
           ),
           const SizedBox(height: 20),
           ListView.builder(
@@ -110,6 +152,26 @@ class _CreateOrderWidgetState extends State<CreateOrderWidget> {
                     }
                     return null;
                   },
+                  onChanged: (value) {
+                    _formKey.currentState?.validate();
+                  },
+                  onTap: () {
+                    setState(() {
+                      keyboardHeight = 300;
+                    });
+                  },
+                  onEditingComplete: () {
+                    setState(() {
+                      keyboardHeight = 0;
+                      FocusScope.of(context).unfocus();
+                    });
+                  },
+                  onTapOutside: (event) {
+                    setState(() {
+                      keyboardHeight = 0;
+                      FocusScope.of(context).unfocus();
+                    });
+                  },
                 ),
               ),
               IconButton(
@@ -150,7 +212,6 @@ class _CreateOrderWidgetState extends State<CreateOrderWidget> {
   void validateFormThenUpdateOrAddEvent() {
     final isValid = _formKey.currentState!.validate();
 
-    // Check if the items list is empty
     if (itemList.isEmpty) {
       Fluttertoast.showToast(
         msg: "Please Enter Your Items",
@@ -159,7 +220,6 @@ class _CreateOrderWidgetState extends State<CreateOrderWidget> {
       return;
     }
 
-    // Check if any item's quantity is zero
     bool allItemsHaveQuantity = itemList.every((item) => item.quantity > 0);
 
     if (isValid && allItemsHaveQuantity) {
@@ -170,7 +230,9 @@ class _CreateOrderWidgetState extends State<CreateOrderWidget> {
           title: titleController.text,
           items: itemList,
           userId: userId,
-          userTotalPrices: {},
+          vat: vat,
+          deliveryFees: 0.0,
+          itemsTotalPricePerUser: {},
           createdAt: DateTime.now(),
           status: OrderStatusEnum.active);
 
@@ -178,6 +240,8 @@ class _CreateOrderWidgetState extends State<CreateOrderWidget> {
         BlocProvider.of<OrderCubit>(context).updateOrder(createOrderEntity);
       } else {
         BlocProvider.of<OrderCubit>(context).addOrder(createOrderEntity);
+        widget.eventEntity = createOrderEntity;
+        // _startCancellationTimer();
       }
     } else if (!allItemsHaveQuantity) {
       Fluttertoast.showToast(
@@ -186,4 +250,35 @@ class _CreateOrderWidgetState extends State<CreateOrderWidget> {
       );
     }
   }
+
+// void _startCancellationTimer() {
+//   _cancelTimer?.cancel();
+//   Future.delayed(const Duration(seconds: 30), () async {
+//     if (widget.eventEntity != null &&
+//         widget.eventEntity!.status != OrderStatusEnum.placed) {
+//       await _cancelOrder();
+//     }
+//   });
+// }
+//
+// Future<void> _cancelOrder() async {
+//   if (widget.eventEntity == null) return;
+//   setState(() {
+//     widget.eventEntity!.status = OrderStatusEnum.cancelled;
+//   });
+//   await addOrderUsecase.updateOrderStatus(
+//     widget.eventEntity!.id,
+//     OrderStatusEnum.cancelled,
+//   );
+//   Fluttertoast.showToast(
+//     msg: "Order has been cancelled due to inactivity",
+//     backgroundColor: ColorsManager.mainBlue,
+//   );
+// }
+//
+// @override
+// void dispose() {
+//   _cancelTimer?.cancel();
+//   super.dispose();
+// }
 }

@@ -1,4 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:order/core/widgets/app_bar_widget.dart';
@@ -12,6 +13,8 @@ class ViewOrderPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final String currentUserId = FirebaseAuth.instance.currentUser?.uid ?? '';
+
     return Scaffold(
       appBar: const AppBarWidget(
         pageName: "Your Orders",
@@ -28,11 +31,26 @@ class ViewOrderPage extends StatelessWidget {
           if (!snapshot.hasData || snapshot.data!.docs.isEmpty) {
             return const Center(child: Text('No orders available'));
           }
+          final filteredOrders = snapshot.data!.docs.where((doc) {
+            var orderMap = doc.data() as Map<String, dynamic>;
+            var orderEntity = OrderEntity.fromMap(orderMap);
+
+            bool isCreator = orderEntity.userId == currentUserId;
+            bool isParticipant = orderEntity.items
+                    ?.any((item) => item.userId == currentUserId) ??
+                false;
+
+            return isCreator || isParticipant;
+          }).toList();
+
+          if (filteredOrders.isEmpty) {
+            return const Center(child: Text('No orders available'));
+          }
           return ListView.builder(
-            itemCount: snapshot.data!.docs.length,
+            itemCount: filteredOrders.length,
             itemBuilder: (context, index) {
               var orderMap =
-                  snapshot.data!.docs[index].data() as Map<String, dynamic>;
+                  filteredOrders[index].data() as Map<String, dynamic>;
               var orderEntity = OrderEntity.fromMap(orderMap);
               var orderId = orderEntity.id;
               var createdAt = orderEntity.createdAt != null

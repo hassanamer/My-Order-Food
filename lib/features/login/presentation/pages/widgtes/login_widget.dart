@@ -97,6 +97,9 @@ class _LoginWidgetState extends State<LoginWidget> {
                 obscureText: false,
                 prefixIcon: const Icon(Icons.email),
                 controllerEmail: emailController,
+                onChanged: () {
+                  _formKey.currentState?.validate();
+                },
               ),
               const SizedBox(height: 12),
               LoginTextFieldWidget(

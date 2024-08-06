@@ -22,7 +22,7 @@ class CommonElevatedButtonWidget extends StatelessWidget {
     this.borderRadius = 15.0,
     this.elevation = 5.0,
     this.padding = const EdgeInsets.all(15),
-    this.width = 381,
+    this.width = 300,
     this.height = 55,
   }) : super(key: key);
 

@@ -9,6 +9,7 @@ class LoginTextFieldWidget extends StatelessWidget {
     this.suffixIcon,
     required this.hintText,
     required this.obscureText,
+    this.onChanged,
   }) : super(key: key);
 
   final TextEditingController controllerEmail;
@@ -16,6 +17,7 @@ class LoginTextFieldWidget extends StatelessWidget {
   final Widget? suffixIcon;
   final String hintText;
   final bool obscureText;
+  final VoidCallback? onChanged;
 
   @override
   Widget build(BuildContext context) {

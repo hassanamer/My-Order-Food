@@ -7,16 +7,20 @@ class OrderModel extends OrderEntity {
     required String id,
     String? title,
     List<OrderItem>? items,
+    double? deliveryFees,
     int? itemCount,
-    required Map<String, double> userTotalPrices,
+    required double vat,
+    required Map<String, double> itemsTotalPricePerUser,
     required DateTime createdAt,
     required OrderStatusEnum status,
   }) : super(
           userId: userId,
           id: id,
           title: title,
+          deliveryFees: deliveryFees,
           items: items,
-          userTotalPrices: userTotalPrices,
+          vat: vat,
+          itemsTotalPricePerUser: itemsTotalPricePerUser,
           createdAt: createdAt,
           status: status,
         );
@@ -28,7 +32,9 @@ class OrderModel extends OrderEntity {
       'title': title,
       "items": items?.map((item) => item.toMap()),
       "createdAt": createdAt,
-      "userTotalPrices": userTotalPrices,
+      "vat": vat,
+      "itemsTotalPricePerUser": itemsTotalPricePerUser,
+      "deliveryFees": deliveryFees,
       "status": status.index,
     };
   }
@@ -40,12 +46,15 @@ class OrderModel extends OrderEntity {
       title: map['title'],
       itemCount: map['itemCount'],
       createdAt: map['createdAt'],
+      vat: map['vat'],
+      deliveryFees: map['deliveryFees'],
       status: OrderStatusEnum.values[map['status']],
       items: map['items']
           ?.map((item) => OrderItem.fromMap(item as Map<String, dynamic>))
           .toList(),
-      userTotalPrices: (map['userTotalPrices'] as Map<String, dynamic>)
-          .map((key, value) => MapEntry(key, value)),
+      itemsTotalPricePerUser:
+          (map['itemsTotalPricePerUser'] as Map<String, dynamic>)
+              .map((key, value) => MapEntry(key, value)),
     );
   }
 
@@ -56,15 +65,17 @@ class OrderModel extends OrderEntity {
       id: documentSnapshot.data()!['id'],
       title: documentSnapshot.data()!['title'],
       itemCount: documentSnapshot.data()!['itemCount'],
+      deliveryFees: documentSnapshot.data()!['deliveryFees'],
+      vat: documentSnapshot.data()!['vat'],
       createdAt: documentSnapshot.data()!['createdAt'],
       status: OrderStatusEnum.values[documentSnapshot.data()!['status']],
       items: documentSnapshot
           .data()!['items']
           ?.map<OrderItem>((item) => OrderItem.fromMap(item))
           .toList(),
-      userTotalPrices:
-          (documentSnapshot.data()!['userTotalPrices'] as Map<String, dynamic>)
-              .map((key, value) => MapEntry(key, value)),
+      itemsTotalPricePerUser: (documentSnapshot
+              .data()!['itemsTotalPricePerUser'] as Map<String, dynamic>)
+          .map((key, value) => MapEntry(key, value)),
     );
   }
 
@@ -73,8 +84,10 @@ class OrderModel extends OrderEntity {
         id: orderEntity.id,
         title: orderEntity.title,
         items: orderEntity.items,
+        vat: orderEntity.vat,
+        deliveryFees: orderEntity.deliveryFees,
         createdAt: orderEntity.createdAt,
         status: orderEntity.status,
-        userTotalPrices: orderEntity.userTotalPrices,
+        itemsTotalPricePerUser: orderEntity.itemsTotalPricePerUser,
       );
 }

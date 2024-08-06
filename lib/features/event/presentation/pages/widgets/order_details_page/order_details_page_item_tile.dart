@@ -1,3 +1,4 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_staggered_animations/flutter_staggered_animations.dart';
 import 'package:order/features/register/data/models/register_account_model.dart';
@@ -12,13 +13,15 @@ class EventDetailPageItemTile extends StatefulWidget {
     required this.user,
     required this.status,
     this.orderEntity,
+    required this.onDeleteItem,
   });
 
   final String userId;
   final OrderStatusEnum status;
   final List<OrderItem> items;
   final RegisterAccountModel? user;
-  late OrderEntity? orderEntity;
+  OrderEntity? orderEntity;
+  final Function(OrderItem item) onDeleteItem;
 
   @override
   State<EventDetailPageItemTile> createState() =>
@@ -26,8 +29,32 @@ class EventDetailPageItemTile extends StatefulWidget {
 }
 
 class _EventDetailPageItemTileState extends State<EventDetailPageItemTile> {
+  final FirebaseFirestore _firestore = FirebaseFirestore.instance;
+
   @override
   void initState() {}
+
+  Future<void> _updateItemQuantity(OrderItem item) async {
+    try {
+      String orderId = widget.orderEntity?.id ?? '';
+      DocumentSnapshot orderDoc =
+          await _firestore.collection('Order').doc(orderId).get();
+      List<dynamic> items = orderDoc.get('items');
+      List<Map<String, dynamic>> mappedItems =
+          items.cast<Map<String, dynamic>>();
+      int itemIndex = mappedItems.indexWhere(
+          (i) => i['itemName'] == item.itemName && i['userId'] == item.userId);
+      if (itemIndex != -1) {
+        mappedItems[itemIndex]['quantity'] = item.quantity;
+
+        await _firestore.collection('Order').doc(orderId).update({
+          'items': mappedItems,
+        });
+      }
+    } catch (e) {
+      print("Failed to update item quantity: $e");
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -95,30 +122,74 @@ class _EventDetailPageItemTileState extends State<EventDetailPageItemTile> {
                       ],
                     ),
                     ...widget.items
-                        .map((item) => Padding(
-                              padding: const EdgeInsets.symmetric(
-                                  horizontal: 10.0, vertical: 5.0),
-                              child: Row(
-                                mainAxisAlignment:
-                                    MainAxisAlignment.spaceBetween,
-                                children: [
-                                  Text(
+                        .map(
+                          (item) => Padding(
+                            padding: const EdgeInsets.symmetric(
+                                horizontal: 10.0, vertical: 5.0),
+                            child: Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                              children: [
+                                Expanded(
+                                  flex: 4,
+                                  child: Text(
                                     item.itemName,
                                     style: const TextStyle(
                                       fontSize: 16,
                                       color: Colors.white,
                                     ),
                                   ),
-                                  Text(
-                                    'x ${item.quantity}',
-                                    style: const TextStyle(
-                                      fontSize: 16,
-                                      color: Colors.white,
+                                ),
+                                Expanded(
+                                  flex: 1,
+                                  child: IconButton(
+                                    icon: const Icon(Icons.remove,
+                                        color: Colors.white),
+                                    onPressed: () async {
+                                      setState(() {
+                                        if (item.quantity > 1) {
+                                          item.quantity--;
+                                        }
+                                      });
+                                      await _updateItemQuantity(item);
+                                    },
+                                  ),
+                                ),
+                                Expanded(
+                                  flex: 1,
+                                  child: Center(
+                                    child: Text(
+                                      'x ${item.quantity}',
+                                      style: const TextStyle(
+                                        fontSize: 16,
+                                        color: Colors.white,
+                                      ),
                                     ),
                                   ),
-                                ],
-                              ),
-                            ))
+                                ),
+                                Expanded(
+                                  flex: 1,
+                                  child: IconButton(
+                                    icon: const Icon(Icons.add,
+                                        color: Colors.white),
+                                    onPressed: () async {
+                                      setState(() {
+                                        item.quantity++;
+                                      });
+                                      await _updateItemQuantity(item);
+                                    },
+                                  ),
+                                ),
+                                Expanded(
+                                  flex: 1,
+                                  child: IconButton(
+                                    icon: Icon(Icons.delete, color: Colors.red),
+                                    onPressed: () => widget.onDeleteItem(item),
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ),
+                        )
                         .toList(),
                     Padding(
                       padding: const EdgeInsets.all(8.0),

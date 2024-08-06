@@ -20,7 +20,6 @@ class _RowImageTextRestaurantWidgetState
   @override
   void initState() {
     super.initState();
-    widget.restaurantModel[0].imageURL;
   }
 
   @override

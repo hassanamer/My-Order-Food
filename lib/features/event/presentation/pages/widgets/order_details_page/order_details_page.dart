@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
@@ -12,7 +14,6 @@ import 'package:order/features/event/domain/remote_usecases/remote_get_user_orde
 import 'package:order/features/event/presentation/pages/widgets/order_details_page/order_details_page_item_tile.dart';
 import 'package:order/injection_container.dart';
 
-import '../../../../../../core/services/awesome_notification_service.dart';
 import '../../../../../../core/services/notification_service.dart';
 import '../../../../../../core/widgets/common_elevated_button_widget.dart';
 import '../../../../../register/data/models/register_account_model.dart';
@@ -34,11 +35,8 @@ class _OrderDetailsPageState extends State<OrderDetailsPage> {
   late AddOrderUsecase addOrderUsecase;
   late String createdAt;
   User? currentUser = FirebaseAuth.instance.currentUser;
-
-  void onCalculatePressed() {
-    refreshOrder();
-  }
-
+  bool _hasItemsBeenAdded = false;
+  double keyboardHeight = 0;
   List<OrderItem> itemsList = [];
   TextEditingController itemController = TextEditingController();
   int itemCount = 0;
@@ -46,6 +44,17 @@ class _OrderDetailsPageState extends State<OrderDetailsPage> {
   Map<String, List<OrderItem>> itemsGroupedByUser = {};
   Map<String, RegisterAccountModel> userMap = {};
   bool isLoading = true;
+  RegisterAccountModel? placer;
+  RegisterAccountModel? receiver;
+  bool isCreator = false;
+
+  void onCalculatePressed() {
+    refreshOrder();
+  }
+
+  void _handleItemAdded() {
+    _hasItemsBeenAdded = true;
+  }
 
   updateOrdersAndUsers() {
     userMap = {};
@@ -73,6 +82,8 @@ class _OrderDetailsPageState extends State<OrderDetailsPage> {
     createdAt = widget.orderEntity.createdAt != null
         ? DateFormat('yyyy-MM-dd hh:mm a').format(widget.orderEntity.createdAt)
         : 'Unknown';
+
+    isCreator = currentUser?.uid == widget.orderEntity.userId;
   }
 
   refreshOrder() async {
@@ -91,16 +102,15 @@ class _OrderDetailsPageState extends State<OrderDetailsPage> {
     usersInOrder
         .sort((a, b) => a.placedOrderCount!.compareTo(b.placedOrderCount!));
 
-    RegisterAccountModel? placer;
-    RegisterAccountModel? receiver;
+    placer = null;
+    receiver = null;
 
     for (var user in usersInOrder) {
       if (placer == null &&
           user.deliveryPreference == "Place the order" &&
           user.hasCar == "No") {
         placer = user;
-      } else if (receiver == null &&
-          user.hasCar == "Yes" &&
+      } else if (receiver == null && user.hasCar == "Yes" ||
           user.deliveryPreference == "Receive it at the gate") {
         receiver = user;
       }
@@ -111,31 +121,44 @@ class _OrderDetailsPageState extends State<OrderDetailsPage> {
     }
 
     if (placer != null) {
-      await placer.incrementPlacedOrderCount();
+      await placer!.incrementPlacedOrderCount();
       await _firestore
           .collection('Users')
-          .doc(placer.userId)
-          .update(placer.toMap());
-      PushNotificationService.sendNotificationToUser(placer.userId,
+          .doc(placer!.userId)
+          .update(placer!.toMap());
+      PushNotificationService.sendNotificationToUser(placer!.userId,
           "You're Choosed To Place The Order, Thank You So Much For Your Help");
       NotificationService.saveNotification("You're Choosed To Place The Order",
-          "Thank You So Much For Your Help");
+          "Thank You So Much For Your Help", placer!.userId);
     }
 
     if (receiver != null) {
-      await receiver.incrementReceivedOrderCount();
+      await receiver!.incrementReceivedOrderCount();
       await _firestore
           .collection('Users')
-          .doc(receiver.userId)
-          .update(receiver.toMap());
-      PushNotificationService.sendNotificationToUser(receiver.userId,
+          .doc(receiver!.userId)
+          .update(receiver!.toMap());
+      PushNotificationService.sendNotificationToUser(receiver!.userId,
           "You're Choosed To Rcieve The Order At The Gate, Thank You So Much For Your Help");
       NotificationService.saveNotification(
           "You're Choosed To Rcieve The Order At The Gate",
-          "Thank You So Much For Your Help");
+          "Thank You So Much For Your Help",
+          receiver!.userId);
     }
 
     setState(() {});
+  }
+
+  Future<void> _deleteItem(OrderItem item) async {
+    setState(() {
+      itemsList.remove(item);
+      itemsGroupedByUser[item.userId]?.remove(item);
+      if (itemsGroupedByUser[item.userId]?.isEmpty ?? false) {
+        itemsGroupedByUser.remove(item.userId);
+      }
+    });
+
+    await addOrderUsecase.update(widget.orderEntity);
   }
 
   @override
@@ -144,7 +167,9 @@ class _OrderDetailsPageState extends State<OrderDetailsPage> {
       thickness: 1,
       height: 3,
     );
-
+    bool isCurrentUserPlacerOrReceiver = currentUser != null &&
+        (currentUser!.uid == placer?.userId ||
+            currentUser!.uid == receiver?.userId);
     return Scaffold(
       appBar: AppBarWidget(
         pageName: widget.orderEntity.title ?? '',
@@ -168,36 +193,45 @@ class _OrderDetailsPageState extends State<OrderDetailsPage> {
                   List<OrderItem> userItems = itemsGroupedByUser[userId]!;
                   return EventDetailPageItemTile(
                     userId: userId,
+                    orderEntity: widget.orderEntity,
                     items: userItems,
                     user: userMap[userId],
                     status: widget.orderEntity.status,
+                    onDeleteItem: (item) => _deleteItem(item),
                   );
                 },
                 separatorBuilder: (context, index) => divider,
               ),
             ),
             const SizedBox(height: 20),
-            Visibility(
-              visible: widget.orderEntity.status == OrderStatusEnum.active,
-              child: Column(
-                children: [
-                  SizedBox(
-                    width: double.infinity,
+            Column(
+              children: [
+                SizedBox(
+                  width: double.infinity,
+                  child: Visibility(
+                    visible:
+                        widget.orderEntity.status == OrderStatusEnum.active &&
+                            (isCreator || isCurrentUserPlacerOrReceiver),
                     child: CommonElevatedButtonWidget(
                       text: 'Place Your Order...',
                       width: 100.w,
                       onPressed: () async {
                         setState(() {
-                          widget.orderEntity.status = OrderStatusEnum.placed;
+                          for (var userId in itemsGroupedByUser.keys) {
+                            PushNotificationService.sendNotificationToUser(
+                              userId,
+                              "The Order You're Joined Is Placed Successfully",
+                            );
+                            NotificationService.saveNotification(
+                                "The Order You're Joined Is Placed Successfully",
+                                "We Will Wait it together",
+                                userId);
+                          }
+                          widget.orderEntity.status = OrderStatusEnum.arrived;
                           updateOrderStatus();
                         });
-                        await AwesomeNotificationService.showNotification(
-                            title: "Order Placed Successfully",
-                            body:
-                                'Order That You\'re Joined Is Placed successfully, When It Arrive You Will Notified');
-                        NotificationService.saveNotification(
-                            "Order Placed Successfully",
-                            "Order That You\'re Joined Is Placed successfully, When It Arrive You Will Notified");
+                        widget.orderEntity.status = OrderStatusEnum.placed;
+                        updateOrderStatus();
                         await Future.delayed(Duration(seconds: 10));
                         await assignUsersAndNotify();
                         await Navigator.push(
@@ -211,8 +245,11 @@ class _OrderDetailsPageState extends State<OrderDetailsPage> {
                       },
                     ),
                   ),
-                  const SizedBox(height: 20),
-                  Row(
+                ),
+                const SizedBox(height: 20),
+                Visibility(
+                  visible: widget.orderEntity.status == OrderStatusEnum.active,
+                  child: Row(
                     children: [
                       Expanded(
                         child: TextField(
@@ -220,6 +257,23 @@ class _OrderDetailsPageState extends State<OrderDetailsPage> {
                           decoration: const InputDecoration(
                             hintText: 'Enter item',
                           ),
+                          onTap: () {
+                            setState(() {
+                              keyboardHeight = 300;
+                            });
+                          },
+                          onTapOutside: (value) {
+                            setState(() {
+                              keyboardHeight = 0;
+                              FocusScope.of(context).unfocus();
+                            });
+                          },
+                          onEditingComplete: () {
+                            setState(() {
+                              keyboardHeight = 0;
+                              FocusScope.of(context).unfocus();
+                            });
+                          },
                         ),
                       ),
                       const SizedBox(width: 10),
@@ -255,9 +309,12 @@ class _OrderDetailsPageState extends State<OrderDetailsPage> {
                       ),
                     ],
                   ),
-                ],
-              ),
-            )
+                ),
+                SizedBox(
+                  height: keyboardHeight,
+                ),
+              ],
+            ),
           ],
         ),
       ),
@@ -272,18 +329,14 @@ class _OrderDetailsPageState extends State<OrderDetailsPage> {
         quantity: itemCount,
         userId: currentUser!.uid,
       );
-      // Optimistically update the UI
       setState(() {
         itemsList.add(orderItem);
         itemController.clear();
         itemCount = 0;
+        _handleItemAdded();
         updateOrdersAndUsers();
       });
       addOrderUsecase.update(widget.orderEntity);
     }
-  }
-
-  Future<void> _updateOrder() async {
-    addOrderUsecase.update(widget.orderEntity);
   }
 }

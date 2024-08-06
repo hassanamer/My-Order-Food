@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:intl/intl.dart';
 import 'package:order/features/event/domain/entities/order_entities.dart';
 import 'package:order/features/event/presentation/cubit/order_cubit.dart';
 import 'package:order/features/event/presentation/pages/widgets/home_widgets/orders/orders_list_title_widget.dart';
@@ -11,8 +12,6 @@ import '../restaurants/get_restaurant_row_widget.dart';
 class HomePageOrdersWidget extends StatefulWidget {
   final List<OrderEntity> orderEntity;
 
-  // final List<RegisterAccountEntity> UserEntity;
-
   const HomePageOrdersWidget({Key? key, required this.orderEntity})
       : super(key: key);
 
@@ -21,7 +20,7 @@ class HomePageOrdersWidget extends StatefulWidget {
 }
 
 class _HomePageOrdersWidgetState extends State<HomePageOrdersWidget> {
-  // final List<CreateOrderEntity> filter1 = [];
+  final GlobalKey<NavigatorState> navigatorKey = GlobalKey<NavigatorState>();
 
   Future<void> _refresh() async {
     setState(() {
@@ -32,30 +31,20 @@ class _HomePageOrdersWidgetState extends State<HomePageOrdersWidget> {
     );
   }
 
-  // @override
-  // void initState() {
-  //   for (var event in widget.eventEntity) {
-  //     for (var User in widget.UserEntity) {
-  //       if (event.userId == User.idUser) {
-  //         CreateOrderEntity eventEntity = CreateOrderEntity(
-  //           userId: User.name,
-  //           items: event.items,
-  //           title: event.title,
-  //           id: event.id,
-  //         );
-  //         filter1.add(eventEntity);
-  //       }
-  //     }
-  //   }
-  //   super.initState();
-  // }
-
   @override
   Widget build(BuildContext context) {
     const divider = Divider(
       thickness: 1,
       height: 3,
     );
+
+    DateTime today = DateTime.now();
+    String formattedToday = DateFormat('yyyy-MM-dd').format(today);
+
+    List<OrderEntity> todayOrders = widget.orderEntity.where((order) {
+      String orderDate = DateFormat('yyyy-MM-dd').format(order.createdAt);
+      return orderDate == formattedToday;
+    }).toList();
 
     return RefreshIndicator(
       onRefresh: _refresh,
@@ -64,8 +53,8 @@ class _HomePageOrdersWidgetState extends State<HomePageOrdersWidget> {
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
           CustomRowHomePage(
-              firstText: 'Resturant',
-              secondText: 'SeeMore',
+              firstText: 'Restaurant',
+              secondText: 'See More',
               press: () {
                 Navigator.of(context).push(MaterialPageRoute(
                     builder: (context) => const AllRestaurantPage()));
@@ -76,11 +65,11 @@ class _HomePageOrdersWidgetState extends State<HomePageOrdersWidget> {
             flex: 4,
             child: ListView.separated(
                 shrinkWrap: true,
-                itemCount: widget.orderEntity.length,
+                itemCount: todayOrders.length,
                 itemBuilder: (context, index) {
                   return OrdersListTitleWidget(
-                    title: widget.orderEntity[index].title ?? '',
-                    orderEntity: widget.orderEntity[index],
+                    title: todayOrders[index].title ?? '',
+                    orderEntity: todayOrders[index],
                   );
                 },
                 separatorBuilder: (context, index) => divider),

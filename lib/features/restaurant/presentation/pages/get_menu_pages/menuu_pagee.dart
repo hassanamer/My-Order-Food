@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:order/core/widgets/loading_widget.dart';
 
 import '../../../../../core/widgets/app_bar_widget.dart';
 import '../../../../../core/widgets/common_elevated_button_widget.dart';
@@ -68,7 +69,15 @@ class _MenuuPageeState extends State<MenuuPagee> {
                       height: 10.h,
                     ),
                     if (state is RestaurantLoading)
-                      CircularProgressIndicator()
+                      Positioned(
+                        top: 0,
+                        left: 0,
+                        right: 0,
+                        bottom: 0,
+                        child: Container(
+                            color: Colors.white.withOpacity(0.5),
+                            child: LoadingWidget()),
+                      )
                     else
                       CommonElevatedButtonWidget(
                         text: 'Update The Menu',

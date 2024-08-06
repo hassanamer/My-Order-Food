@@ -65,23 +65,24 @@ class _UserProfileScreenState extends State<UserProfileScreen> {
                   crossAxisAlignment: CrossAxisAlignment.center,
                   children: [
                     GestureDetector(
-                        onTap: _isEditing ? _pickImage : null,
-                        child: GradientCircleAvatar(
-                          profileImageUrl: profileImageUrl,
-                          width: 140.w,
-                          height: 140.h,
-                        )),
-                    const SizedBox(height: 30),
-                    _isEditing
-                        ? _buildProfileInfoItem('', userName, _isEditing, true)
-                        : GradientTile(value: userName),
+                      onTap: _isEditing ? _pickImage : null,
+                      child: GradientCircleAvatar(
+                        profileImageUrl: profileImageUrl,
+                        width: 140.w,
+                        height: 140.h,
+                      ),
+                    ),
+                    const SizedBox(height: 20),
+                    _buildProfileInfoItem(
+                        'Username', userName, _isEditing, true),
                     const SizedBox(height: 5),
-                    _buildProfileInfoItem('', email, _isEditing, true),
-                    _buildProfileInfoItem('', phoneNumber, _isEditing, true),
-                    _isEditing
-                        ? _buildProfileInfoItem('', gender, _isEditing, true)
-                        : GradientTile(value: gender),
-                    const SizedBox(height: 30),
+                    _buildProfileInfoItem('Email', email, _isEditing, true),
+                    const SizedBox(height: 5),
+                    _buildProfileInfoItem(
+                        'Phone', phoneNumber, _isEditing, true),
+                    const SizedBox(height: 5),
+                    _buildProfileInfoItem('Gender', gender, _isEditing, true),
+                    const SizedBox(height: 5),
                     const Divider(
                       thickness: 1,
                       indent: 30,
@@ -91,13 +92,17 @@ class _UserProfileScreenState extends State<UserProfileScreen> {
                     CommonElevatedButtonWidget(
                       text: _isEditing ? 'Done' : 'Edit Profile',
                       onPressed: () {
+                        if (_isEditing &&
+                            _formKey.currentState?.validate() == true) {
+                          _formKey.currentState?.save();
+                          context.read<ProfileCubit>().updateProfile(
+                                userName: userName,
+                                phoneNumber: phoneNumber,
+                                gender: gender,
+                                profileImageUrl: profileImageUrl,
+                              );
+                        }
                         _editProfile();
-                        context.read<ProfileCubit>().updateProfile(
-                              userName: userName,
-                              phoneNumber: phoneNumber,
-                              gender: gender,
-                              profileImageUrl: profileImageUrl,
-                            );
                       },
                     ),
                   ],
@@ -106,7 +111,14 @@ class _UserProfileScreenState extends State<UserProfileScreen> {
             );
           }
 
-          return const LoadingWidget();
+          return Positioned(
+            top: 0,
+            left: 0,
+            right: 0,
+            bottom: 0,
+            child: Container(
+                color: Colors.white.withOpacity(0.5), child: LoadingWidget()),
+          );
         },
       ),
     );
@@ -199,10 +211,6 @@ class _UserProfileScreenState extends State<UserProfileScreen> {
       child: Row(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
-          Text(
-            '$label ',
-            style: const TextStyle(fontSize: 16, color: Colors.grey),
-          ),
           isEditing && isEditable
               ? Expanded(
                   child: TextFormField(
@@ -217,11 +225,28 @@ class _UserProfileScreenState extends State<UserProfileScreen> {
                       setState(() {
                         if (label == 'Phone') {
                           phoneNumber = newValue;
+                        } else if (label == 'Username') {
+                          userName = newValue;
+                        } else if (label == 'Email') {
+                          email = newValue;
+                        } else if (label == 'Gender') {
+                          gender = newValue;
                         }
                       });
                     },
                     validator: (newValue) =>
                         newValue!.isEmpty ? '$label cannot be empty' : null,
+                    onSaved: (newValue) {
+                      if (label == 'Phone') {
+                        phoneNumber = newValue!;
+                      } else if (label == 'Username') {
+                        userName = newValue!;
+                      } else if (label == 'Email') {
+                        email = newValue!;
+                      } else if (label == 'Gender') {
+                        gender = newValue!;
+                      }
+                    },
                   ),
                 )
               : GradientTile(value: value)
@@ -266,7 +291,7 @@ class GradientTile extends StatelessWidget {
         padding: const EdgeInsets.all(15.0),
         child: Text(
           value.toUpperCase(),
-          style: TextStyles.font20WhiteBold,
+          style: TextStyles.font18WhiteBold,
         ),
       ),
     );
@@ -301,7 +326,8 @@ class GradientCircleAvatar extends StatelessWidget {
       ),
       child: Center(
         child: CircleAvatar(
-          radius: 60,
+          radius: 65,
+          backgroundColor: Colors.white,
           backgroundImage: profileImageUrl!.isNotEmpty
               ? NetworkImage(profileImageUrl!)
               : null,

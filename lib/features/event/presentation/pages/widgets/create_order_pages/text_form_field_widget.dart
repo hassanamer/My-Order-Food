@@ -5,6 +5,9 @@ class TextFormFieldWidget extends StatelessWidget {
   final bool multiLines;
   final TextEditingController controller;
   final FormFieldValidator<String>? validator;
+  final VoidCallback? onTap;
+  final VoidCallback? onEditingComplete;
+  final Function(PointerDownEvent)? onTapOutside;
 
   const TextFormFieldWidget({
     Key? key,
@@ -12,18 +15,36 @@ class TextFormFieldWidget extends StatelessWidget {
     required this.multiLines,
     required this.controller,
     this.validator,
+    this.onTap,
+    this.onEditingComplete,
+    this.onTapOutside,
   }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
-    return TextFormField(
-      controller: controller,
-      maxLines: multiLines ? null : 1,
-      decoration: InputDecoration(
-        labelText: name,
-        border: OutlineInputBorder(),
+    return GestureDetector(
+      onTap: onTap,
+      child: FocusScope(
+        child: Focus(
+          onFocusChange: (hasFocus) {
+            if (!hasFocus) {
+              if (onTapOutside != null) {
+                onTapOutside!(PointerDownEvent());
+              }
+            }
+          },
+          child: TextFormField(
+            controller: controller,
+            maxLines: multiLines ? null : 1,
+            decoration: InputDecoration(
+              labelText: name,
+              border: OutlineInputBorder(),
+            ),
+            validator: validator,
+            onEditingComplete: onEditingComplete,
+          ),
+        ),
       ),
-      validator: validator,
     );
   }
 }

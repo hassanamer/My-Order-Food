@@ -20,7 +20,7 @@ class _GetRestaurantRowWidgetState extends State<GetRestaurantRowWidget> {
     return BlocConsumer<RestaurantCubit, RestaurantState>(
       listener: (context, state) {
         if (state is RestaurantLoading) {
-          const LoadingWidget();
+          LoadingWidget();
         }
         if (state is RestaurantError) {
           if (kDebugMode) {
@@ -33,7 +33,14 @@ class _GetRestaurantRowWidgetState extends State<GetRestaurantRowWidget> {
           return RowImageTextRestaurantWidget(
               restaurantModel: state.restaurantModel);
         }
-        return const LoadingWidget();
+        return Positioned(
+          top: 0,
+          left: 0,
+          right: 0,
+          bottom: 0,
+          child: Container(
+              color: Colors.white.withOpacity(0.5), child: LoadingWidget()),
+        );
       },
     );
   }

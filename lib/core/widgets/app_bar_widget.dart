@@ -11,6 +11,7 @@ class AppBarWidget extends StatefulWidget implements PreferredSizeWidget {
   final String? pageDescreption;
   final Widget? titleWidget;
   final bool hideBackButton;
+  final bool hideNotificationIcon;
   final List<Widget>? actions;
   final Widget? leading;
 
@@ -22,6 +23,7 @@ class AppBarWidget extends StatefulWidget implements PreferredSizeWidget {
     this.hideBackButton = true,
     this.actions,
     this.leading,
+    this.hideNotificationIcon = false,
   })  : assert(pageName != null || titleWidget != null,
             'Either pageName or titleWidget must be provided'),
         super(key: key);
@@ -45,12 +47,8 @@ class _AppBarWidgetState extends State<AppBarWidget> {
   }
 
   void _goToNotifications() {
-    Navigator.push(
-      context,
-      MaterialPageRoute(
-        builder: (context) => NotificationPage(),
-      ),
-    );
+    Navigator.of(context)
+        .push(MaterialPageRoute(builder: (context) => NotificationPage()));
   }
 
   @override
@@ -86,50 +84,52 @@ class _AppBarWidgetState extends State<AppBarWidget> {
           ),
         ],
       ),
-      actions: widget.actions ??
-          [
-            BlocBuilder<NotificationCubit, NotificationState>(
-              builder: (context, state) {
-                bool hasUnseenNotifications = false;
+      actions: widget.hideNotificationIcon
+          ? null
+          : widget.actions ??
+              [
+                BlocBuilder<NotificationCubit, NotificationState>(
+                  builder: (context, state) {
+                    bool hasUnseenNotifications = false;
 
-                if (state is NotificationLoaded) {
-                  hasUnseenNotifications = state.unseenNotifications;
-                }
-                return Stack(
-                  children: [
-                    IconButton(
-                      icon: const Icon(Icons.notifications),
-                      onPressed: _goToNotifications,
-                    ),
-                    if (hasUnseenNotifications)
-                      Positioned(
-                        right: 0,
-                        child: Container(
-                          padding: const EdgeInsets.all(2),
-                          decoration: BoxDecoration(
-                            color: Colors.red,
-                            shape: BoxShape.circle,
-                          ),
-                          constraints: BoxConstraints(
-                            minWidth: 16,
-                            minHeight: 16,
-                          ),
-                          child: Center(
-                            child: Text(
-                              '!',
-                              style: TextStyle(
-                                color: Colors.white,
-                                fontSize: 12,
+                    if (state is NotificationLoaded) {
+                      hasUnseenNotifications = state.unseenNotifications;
+                    }
+                    return Stack(
+                      children: [
+                        IconButton(
+                          icon: const Icon(Icons.notifications),
+                          onPressed: _goToNotifications,
+                        ),
+                        if (hasUnseenNotifications)
+                          Positioned(
+                            right: 0,
+                            child: Container(
+                              padding: const EdgeInsets.all(2),
+                              decoration: BoxDecoration(
+                                color: Colors.red,
+                                shape: BoxShape.circle,
+                              ),
+                              constraints: BoxConstraints(
+                                minWidth: 16,
+                                minHeight: 16,
+                              ),
+                              child: Center(
+                                child: Text(
+                                  '!',
+                                  style: TextStyle(
+                                    color: Colors.white,
+                                    fontSize: 12,
+                                  ),
+                                ),
                               ),
                             ),
                           ),
-                        ),
-                      ),
-                  ],
-                );
-              },
-            ),
-          ],
+                      ],
+                    );
+                  },
+                ),
+              ],
     );
   }
 }
