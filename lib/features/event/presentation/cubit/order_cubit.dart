@@ -1,3 +1,4 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:order/features/event/domain/entities/order_entities.dart';
 import 'package:order/features/event/domain/remote_usecases/add_order_usecase.dart';
@@ -93,6 +94,21 @@ class OrderCubit extends Cubit<OrderState> {
     } catch (e) {
       emit(OrderErrorState(errorMessage: e.toString()));
     }
+  }
+
+  Stream<List<OrderEntity>> getOrdersStream() {
+    return FirebaseFirestore.instance.collection('Order').snapshots().map(
+        (snapshot) => snapshot.docs
+            .map((doc) => OrderEntity.fromMap(doc.data()))
+            .toList());
+  }
+
+  Stream<OrderEntity> getOrderStream(String orderId) {
+    return FirebaseFirestore.instance
+        .collection('Order')
+        .doc(orderId)
+        .snapshots()
+        .map((doc) => OrderEntity.fromMap(doc.data()!));
   }
 
   Future<void> deleteOrder() async {

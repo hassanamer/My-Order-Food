@@ -9,6 +9,7 @@ class TopImage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
+      width: double.infinity,
       child: FadeInUp(
           duration: Duration(seconds: 1),
           child: Container(

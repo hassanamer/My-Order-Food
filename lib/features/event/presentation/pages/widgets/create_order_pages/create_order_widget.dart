@@ -79,10 +79,13 @@ class _CreateOrderWidgetState extends State<CreateOrderWidget> {
               border: OutlineInputBorder(),
             ),
             validator: (value) {
-              if (value == null || value.isEmpty) {
-                return "";
+              if (itemList.isEmpty && value!.isEmpty) {
+                return "Title field can't be empty";
               }
               return null;
+            },
+            onChanged: (value) {
+              _formKey.currentState?.validate();
             },
             onTap: () {
               setState(() {
@@ -132,6 +135,13 @@ class _CreateOrderWidgetState extends State<CreateOrderWidget> {
                       });
                     },
                   ),
+                  IconButton(
+                      icon: const Icon(Icons.delete, color: Colors.red),
+                      onPressed: () async {
+                        setState(() {
+                          itemList.removeAt(index);
+                        });
+                      })
                 ],
               );
             },
@@ -204,6 +214,9 @@ class _CreateOrderWidgetState extends State<CreateOrderWidget> {
               validateFormThenUpdateOrAddEvent();
             },
           ),
+          SizedBox(
+            height: keyboardHeight,
+          )
         ],
       ),
     );

@@ -49,32 +49,12 @@ class CreateOrderPage extends StatelessWidget {
           },
           builder: (context, state) {
             if (state is OrderLoadingState) {
-              return Positioned(
-                top: 0,
-                left: 0,
-                right: 0,
-                bottom: 0,
-                child: Container(
-                  color: Colors.white.withOpacity(0.5),
-                  child: Positioned(
-                    top: 0,
-                    left: 0,
-                    right: 0,
-                    bottom: 0,
-                    child: Container(
+              return Stack(
+                children: [
+                  Container(
                       color: Colors.white.withOpacity(0.5),
-                      child: Positioned(
-                        top: 0,
-                        left: 0,
-                        right: 0,
-                        bottom: 0,
-                        child: Container(
-                            color: Colors.white.withOpacity(0.5),
-                            child: LoadingWidget()),
-                      ),
-                    ),
-                  ),
-                ),
+                      child: LoadingWidget()),
+                ],
               );
             }
             return SingleChildScrollView(

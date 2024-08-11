@@ -191,32 +191,6 @@ class _EventDetailPageItemTileState extends State<EventDetailPageItemTile> {
                           ),
                         )
                         .toList(),
-                    Padding(
-                      padding: const EdgeInsets.all(8.0),
-                      child: RichText(
-                        text: TextSpan(
-                          children: [
-                            const TextSpan(
-                              text: 'Status : ',
-                              style: TextStyle(
-                                fontSize: 18,
-                                fontWeight: FontWeight.bold,
-                                color: Colors.black,
-                              ),
-                            ),
-                            TextSpan(
-                              text: '${widget.status?.name ?? 'Unknown'}',
-                              style: TextStyle(
-                                fontSize: 16,
-                                fontWeight: FontWeight.bold,
-                                color: OrderStatusEnum.getStatusColor(
-                                    widget.status),
-                              ),
-                            ),
-                          ],
-                        ),
-                      ),
-                    ),
                   ],
                 ),
               ),

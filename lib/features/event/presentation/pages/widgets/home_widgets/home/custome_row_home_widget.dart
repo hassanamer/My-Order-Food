@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:order/core/theme_app.dart';
 
 class CustomRowHomePage extends StatelessWidget {
   final String firstText;
@@ -15,29 +14,69 @@ class CustomRowHomePage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Row(
-      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-      children: [
-        Text(
-          firstText,
-          style: TextStyle(
-            color: Theme.of(context).textTheme.displayLarge!.color,
-            fontSize: 20,
-            fontWeight: FontWeight.bold,
-          ),
+    return Container(
+      padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
+      decoration: BoxDecoration(
+        gradient: const LinearGradient(
+          colors: [Colors.blueAccent, Colors.lightBlue],
+          begin: Alignment.topLeft,
+          end: Alignment.bottomRight,
         ),
-        GestureDetector(
-          onTap: press as void Function()?,
-          child: Text(
-            secondText,
-            style: const TextStyle(
-              color: primaryColor,
-              fontSize: 14,
-              fontWeight: FontWeight.bold,
+        borderRadius: BorderRadius.circular(12),
+        boxShadow: const [
+          BoxShadow(
+            color: Colors.black26,
+            offset: Offset(2, 2),
+            blurRadius: 4,
+          ),
+        ],
+      ),
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        children: [
+          Expanded(
+            child: Center(
+              child: Text(
+                firstText,
+                style: const TextStyle(
+                  color: Colors.white,
+                  fontSize: 24,
+                  fontWeight: FontWeight.bold,
+                ),
+              ),
             ),
           ),
-        ),
-      ],
+          GestureDetector(
+            onTap: press as void Function()?,
+            child: Container(
+              padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 8),
+              decoration: BoxDecoration(
+                gradient: const LinearGradient(
+                  colors: [Colors.blueAccent, Colors.lightBlue],
+                  begin: Alignment.topLeft,
+                  end: Alignment.bottomRight,
+                ),
+                borderRadius: BorderRadius.circular(12),
+                boxShadow: const [
+                  BoxShadow(
+                    color: Colors.black26,
+                    offset: Offset(2, 2),
+                    blurRadius: 4,
+                  ),
+                ],
+              ),
+              child: Text(
+                secondText,
+                style: const TextStyle(
+                  color: Colors.white,
+                  fontSize: 16,
+                  fontWeight: FontWeight.bold,
+                ),
+              ),
+            ),
+          ),
+        ],
+      ),
     );
   }
 }

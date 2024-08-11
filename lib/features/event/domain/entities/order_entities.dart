@@ -13,12 +13,16 @@ class OrderEntity {
   double vat = 0;
   late final List<OrderItem>? items;
   Map<String, double> itemsTotalPricePerUser = {};
+  String? placerUid;
+  String? receiverUid;
 
   OrderEntity({
     required this.id,
     this.userId,
     this.title,
     this.items,
+    this.placerUid,
+    this.receiverUid,
     required this.vat,
     required this.deliveryFees,
     required this.createdAt,
@@ -31,6 +35,8 @@ class OrderEntity {
       id: map["id"],
       userId: map['userId'] ?? '',
       title: map['title'] ?? '',
+      receiverUid: map['receiverUid'] ?? '',
+      placerUid: map['placerUid'] ?? '',
       deliveryFees: map['deliveryFees'] ?? 0.0,
       vat: map['vat'] ?? 0,
       itemsTotalPricePerUser:
@@ -49,6 +55,8 @@ class OrderEntity {
       'id': id,
       'userId': userId,
       'title': title,
+      'placerUid': placerUid,
+      'receiverUid': receiverUid,
       'createdAt': Timestamp.fromDate(createdAt),
       'status': status.index,
       'vat': vat,
@@ -66,6 +74,8 @@ class OrderEntity {
       items: items,
       createdAt: createdAt,
       vat: vat,
+      receiverUid: receiverUid,
+      placerUid: placerUid,
       status: status,
       itemsTotalPricePerUser: itemsTotalPricePerUser,
       deliveryFees: deliveryFees,
@@ -122,7 +132,7 @@ enum OrderStatusEnum {
       descreption: 'This order is on it\'s way to you.'),
   arrived(
       title: 'Arrived',
-      color: Colors.green,
+      color: Colors.white,
       icon: Icons.task_alt_outlined,
       descreption: 'Thank you for ordered with us.'),
   cancelled(
@@ -162,11 +172,11 @@ enum OrderStatusEnum {
   static Color getStatusColor(OrderStatusEnum status) {
     switch (status) {
       case OrderStatusEnum.active:
-        return Colors.yellow;
+        return Colors.white;
       case OrderStatusEnum.placed:
-        return Colors.blue;
+        return Colors.white;
       case OrderStatusEnum.arrived:
-        return Colors.green;
+        return Colors.white;
       case OrderStatusEnum.cancelled:
         return Colors.red;
       default:

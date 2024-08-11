@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:order/features/restaurant/presentation/pages/get_menu_pages/menuu_pagee.dart';
 
+import '../../../../../../../core/theming/styles.dart';
 import '../../../../../../restaurant/data/model/restaurant_model.dart';
 import '../../../../../../restaurant/presentation/cubit/restaurant_cubit.dart';
 
@@ -61,7 +62,29 @@ class _RowImageTextRestaurantWidgetState
                     height: 80,
                   ),
                 ),
-                Text(restaurant.restaurantName),
+                Container(
+                  padding:
+                      const EdgeInsets.symmetric(horizontal: 10, vertical: 9),
+                  decoration: BoxDecoration(
+                    gradient: const LinearGradient(
+                      colors: [Colors.blueAccent, Colors.lightBlue],
+                      begin: Alignment.topLeft,
+                      end: Alignment.bottomRight,
+                    ),
+                    borderRadius: BorderRadius.circular(12),
+                    boxShadow: const [
+                      BoxShadow(
+                        color: Colors.black26,
+                        offset: Offset(2, 2),
+                        blurRadius: 4,
+                      ),
+                    ],
+                  ),
+                  child: Text(
+                    restaurant.restaurantName,
+                    style: TextStyles.font16WhiteSemiBold,
+                  ),
+                ),
               ]),
             );
           }),

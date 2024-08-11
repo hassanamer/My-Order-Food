@@ -1,10 +1,10 @@
 import 'package:firebase_messaging/firebase_messaging.dart';
-import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import '../../../../../core/services/push_notification_service.dart';
+import '../../../../../core/theming/gradient_background.dart';
 import '../../../../../core/widgets/botton_auth_row_widget.dart';
 import '../../../../../core/widgets/common_elevated_button_widget.dart';
 import '../../../../register/presentation/pages/register_page.dart';
@@ -45,11 +45,6 @@ class _LoginWidgetState extends State<LoginWidget> {
       if (_rememberMe) {
         emailController.text = (prefs.getString('email') ?? '');
         passwordController.text = (prefs.getString('password') ?? '');
-        // Navigator.of(context).pushReplacement(
-        //   MaterialPageRoute(
-        //     builder: (context) => const OrderFoodHomePage(),
-        //   ),
-        // );
       }
     });
   }
@@ -78,89 +73,106 @@ class _LoginWidgetState extends State<LoginWidget> {
 
   @override
   Widget build(BuildContext context) {
-    if (kDebugMode) {
-      emailController.text = "hassanamer281@gmail.com";
-      passwordController.text = "P@ssw0rd";
-    }
-    return Form(
-      key: _formKey,
-      child: Padding(
-        padding: const EdgeInsets.symmetric(horizontal: 15, vertical: 15),
-        child: SingleChildScrollView(
-          child: Column(
-            children: [
-              const TopImage(),
-              const LoginHeaderWidget(),
-              const SizedBox(height: 15),
-              LoginTextFieldWidget(
-                hintText: "Email",
-                obscureText: false,
-                prefixIcon: const Icon(Icons.email),
-                controllerEmail: emailController,
-                onChanged: () {
-                  _formKey.currentState?.validate();
-                },
-              ),
-              const SizedBox(height: 12),
-              LoginTextFieldWidget(
-                obscureText: passwordVisible,
-                controllerEmail: passwordController,
-                hintText: "Password",
-                prefixIcon: const Icon(Icons.lock),
-                suffixIcon: IconButton(
-                  onPressed: () {
-                    setState(() {
-                      passwordVisible = !passwordVisible;
-                    });
-                  },
-                  icon: Icon(passwordVisible
-                      ? Icons.visibility_off
-                      : Icons.visibility),
+    // if (kDebugMode) {
+    //   emailController.text = "hassanamer281@gmail.com";
+    //   passwordController.text = "P@ssw0rd";
+    // }
+    return GradientBackground(
+      child: Center(
+        child: Column(
+          children: [
+            const TopImage(),
+            Padding(
+              padding: const EdgeInsets.symmetric(vertical: 50.0),
+              child: Form(
+                key: _formKey,
+                child: Padding(
+                  padding:
+                      const EdgeInsets.symmetric(horizontal: 15, vertical: 15),
+                  child: SingleChildScrollView(
+                    child: Column(
+                      children: [
+                        const LoginHeaderWidget(),
+                        const SizedBox(height: 15),
+                        LoginTextFieldWidget(
+                          hintText: "Email",
+                          obscureText: false,
+                          prefixIcon: const Icon(Icons.email),
+                          controllerEmail: emailController,
+                          onChanged: () {
+                            _formKey.currentState?.validate();
+                          },
+                        ),
+                        const SizedBox(height: 12),
+                        LoginTextFieldWidget(
+                          obscureText: passwordVisible,
+                          controllerEmail: passwordController,
+                          hintText: "Password",
+                          prefixIcon: const Icon(Icons.lock),
+                          suffixIcon: IconButton(
+                            onPressed: () {
+                              setState(() {
+                                passwordVisible = !passwordVisible;
+                              });
+                            },
+                            icon: Icon(
+                              passwordVisible
+                                  ? Icons.visibility_off
+                                  : Icons.visibility,
+                            ),
+                          ),
+                        ),
+                        const SizedBox(height: 12),
+                        CommonElevatedButtonWidget(
+                          text: "Log in",
+                          onPressed: () async {
+                            final PushNotificationService
+                                pushNotificationService =
+                                PushNotificationService(
+                              _firebaseMessaging,
+                            );
+                            pushNotificationService.updateUserFcmToken();
+                            pushNotificationService.initialise();
+                            setState(() {
+                              if (_formKey.currentState!.validate()) {
+                                context.read<LoginCubit>().remoteLogin(
+                                      emailController.text.trim(),
+                                      passwordController.text,
+                                      context,
+                                    );
+                              }
+                            });
+                          },
+                        ),
+                        Row(
+                          children: [
+                            Checkbox(
+                              activeColor: Colors.blue,
+                              value: _rememberMe,
+                              onChanged: (newValue) {
+                                setState(() => _rememberMe = newValue!);
+                                _handleRememberMe(newValue ?? false);
+                              },
+                            ),
+                            const Text('Remember Me'),
+                          ],
+                        ),
+                        BottomAuthRowWidget(
+                          text: "Don't have an account ?",
+                          value: "Sign up",
+                          onTap: () => Navigator.of(context).push(
+                            MaterialPageRoute(
+                              builder: (context) => const RegisterPage(),
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
                 ),
               ),
-              const SizedBox(height: 12),
-              CommonElevatedButtonWidget(
-                text: "Log in",
-                onPressed: () async {
-                  final PushNotificationService pushNotificationService =
-                      PushNotificationService(
-                    _firebaseMessaging,
-                  );
-                  pushNotificationService.updateUserFcmToken();
-                  pushNotificationService.initialise();
-                  setState(() {
-                    if (_formKey.currentState!.validate()) {
-                      context.read<LoginCubit>().remoteLogin(
-                          emailController.text.trim(),
-                          passwordController.text,
-                          context);
-                    }
-                  });
-                },
-              ),
-              Row(
-                children: [
-                  Checkbox(
-                    value: _rememberMe,
-                    onChanged: (newValue) {
-                      setState(() => _rememberMe = newValue!);
-                      _handleRememberMe(newValue ?? false);
-                    },
-                  ),
-                  const Text('Remember Me'),
-                ],
-              ),
-              BottomAuthRowWidget(
-                text: "Don't have an account",
-                value: "Sign up",
-                onTap: () => Navigator.of(context).push(
-                  MaterialPageRoute(
-                    builder: (context) => const RegisterPage(),
-                  ),
-                ),
-              ),
-            ],
-          ),
+            ),
+          ],
         ),
       ),
     );

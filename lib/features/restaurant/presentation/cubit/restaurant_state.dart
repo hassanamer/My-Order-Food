@@ -43,7 +43,6 @@ class MenuSuccessState extends RestaurantState {
   MenuSuccessState(menuAdded);
 }
 
-// New state for updated menu image
 class MenuImageUpdatedState extends RestaurantState {
   final String newImageUrl;
   final RestaurantModel restaurantModel;

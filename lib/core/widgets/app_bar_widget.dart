@@ -103,7 +103,7 @@ class _AppBarWidgetState extends State<AppBarWidget> {
                         ),
                         if (hasUnseenNotifications)
                           Positioned(
-                            right: 0,
+                            right: 7,
                             child: Container(
                               padding: const EdgeInsets.all(2),
                               decoration: BoxDecoration(

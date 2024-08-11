@@ -3,6 +3,7 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_staggered_animations/flutter_staggered_animations.dart';
+import 'package:order/core/theming/styles.dart';
 import 'package:order/features/restaurant/data/model/restaurant_model.dart';
 import 'package:order/features/restaurant/presentation/cubit/restaurant_cubit.dart';
 
@@ -129,10 +130,7 @@ class _AllRestaurantWidgetState extends State<AllRestaurantWidget> {
                                   const SizedBox(width: 8),
                                   Text(
                                     widget.restaurantModel[index].hotlineNum,
-                                    style: const TextStyle(
-                                      fontSize: 15,
-                                      color: Colors.white70,
-                                    ),
+                                    style: TextStyles.font18WhiteBold,
                                   ),
                                 ],
                               ),

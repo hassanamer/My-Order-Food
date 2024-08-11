@@ -32,7 +32,7 @@ class _OrdersEmptyListWidgetState extends State<OrdersEmptyListWidget> {
         children: [
           const GetRestaurantRowWidget(),
           Flexible(
-            flex: 2,
+            flex: 3,
             child: ListView(
               children: [
                 Column(

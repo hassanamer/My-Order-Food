@@ -21,17 +21,19 @@ class UserItemsTile extends StatefulWidget {
   final double userDeliveryFee;
   final double vat;
   final Function() updateOrder;
+  bool isCurrentUserPlacerOrReceiver;
 
-  const UserItemsTile({
-    Key? key,
+  UserItemsTile({
+    super.key,
     required this.user,
     required this.items,
+    required this.isCurrentUserPlacerOrReceiver,
     required this.updateOrder,
     required this.orderEntity,
     required this.createdAt,
     required this.userDeliveryFee,
     required this.vat,
-  }) : super(key: key);
+  });
 
   @override
   _UserItemsTileState createState() => _UserItemsTileState();
@@ -198,39 +200,45 @@ class _UserItemsTileState extends State<UserItemsTile> {
                               mainAxisAlignment: MainAxisAlignment.spaceAround,
                               children: [
                                 Expanded(
-                                  child: GestureDetector(
-                                    onTap: () {
-                                      FocusScope.of(context).unfocus();
-                                    },
-                                    child: Container(
-                                      height: 40.0.h,
-                                      width: 50.0.w,
-                                      child: TextField(
-                                        onChanged: (String price) {
-                                          setState(() {
-                                            item.price = double.tryParse(price);
-                                            item.itemTotalPrice =
-                                                (item.price ?? 0.0) *
-                                                    item.quantity;
-                                            updateItemsTotalPrice();
-                                            updateTotalPrice();
-                                          });
-                                        },
-                                        inputFormatters: [
-                                          LengthLimitingTextInputFormatter(4),
-                                        ],
-                                        keyboardType: TextInputType.number,
-                                        decoration: InputDecoration(
-                                          label: Text(
-                                            '${item.price ?? 'Price'}',
-                                            style: const TextStyle(
-                                              color: ColorsManager.darkBlue,
+                                  child: Visibility(
+                                    visible:
+                                        (widget.isCurrentUserPlacerOrReceiver),
+                                    child: GestureDetector(
+                                      onTap: () {
+                                        FocusScope.of(context).unfocus();
+                                      },
+                                      child: Container(
+                                        height: 40.0.h,
+                                        width: 50.0.w,
+                                        child: TextField(
+                                          onChanged: (String price) {
+                                            setState(() {
+                                              item.price =
+                                                  double.tryParse(price);
+                                              item.itemTotalPrice =
+                                                  (item.price ?? 0.0) *
+                                                      item.quantity;
+                                              updateItemsTotalPrice();
+                                              updateTotalPrice();
+                                            });
+                                          },
+                                          inputFormatters: [
+                                            LengthLimitingTextInputFormatter(4),
+                                          ],
+                                          keyboardType: TextInputType.number,
+                                          decoration: InputDecoration(
+                                            label: Text(
+                                              '${item.price ?? 'Price'}',
+                                              style: const TextStyle(
+                                                color: ColorsManager.darkBlue,
+                                              ),
                                             ),
+                                            hintText:
+                                                '${item.price ?? 'Price'}',
+                                            border: const OutlineInputBorder(),
+                                            // filled: true,
+                                            fillColor: Colors.white,
                                           ),
-                                          hintText: '${item.price ?? 'Price'}',
-                                          border: const OutlineInputBorder(),
-                                          // filled: true,
-                                          fillColor: Colors.white,
                                         ),
                                       ),
                                     ),
@@ -270,24 +278,27 @@ class _UserItemsTileState extends State<UserItemsTile> {
                       ],
                     ),
                     getDivider(),
-                    Center(
-                      child: CommonElevatedButtonWidget(
-                        width: 280.w,
-                        text: 'Update Prices & Notify',
-                        onPressed: () {
-                          setState(
-                            () {
-                              widget.updateOrder();
-                              PushNotificationService.sendNotificationToUser(
-                                  widget.user.userId,
-                                  "Your Total Price Is ${totalPrice.toStringAsFixed(2)}");
-                              NotificationService.saveNotification(
-                                  "Your Total Price Is",
-                                  totalPrice.toStringAsFixed(2),
-                                  widget.user.userId);
-                            },
-                          );
-                        },
+                    Visibility(
+                      visible: (widget.isCurrentUserPlacerOrReceiver),
+                      child: Center(
+                        child: CommonElevatedButtonWidget(
+                          width: 280.w,
+                          text: 'Update Prices & Notify',
+                          onPressed: () {
+                            setState(
+                              () {
+                                widget.updateOrder();
+                                PushNotificationService.sendNotificationToUser(
+                                    widget.user.userId,
+                                    "Your Total Price Is ${totalPrice.toStringAsFixed(2)}");
+                                NotificationService.saveNotification(
+                                    "Your Total Price Is",
+                                    totalPrice.toStringAsFixed(2),
+                                    widget.user.userId);
+                              },
+                            );
+                          },
+                        ),
                       ),
                     ),
                     const SizedBox(

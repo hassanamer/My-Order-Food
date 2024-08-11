@@ -8,6 +8,11 @@ class LoadingWidget extends StatefulWidget {
 
 class _LoadingWidgetState extends State<LoadingWidget> {
   @override
+  void initState() {
+    super.initState();
+  }
+
+  @override
   Widget build(BuildContext context) {
     return Container(
       child: Column(
@@ -17,6 +22,8 @@ class _LoadingWidgetState extends State<LoadingWidget> {
           Center(
             child: Container(
               child: Lottie.asset(
+                width: MediaQuery.sizeOf(context).height,
+                height: MediaQuery.sizeOf(context).width,
                 'assets/animation/lotti_indecator.json',
                 fit: BoxFit.fill,
               ),

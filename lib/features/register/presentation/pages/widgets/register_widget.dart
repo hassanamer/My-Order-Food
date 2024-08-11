@@ -84,343 +84,391 @@ class _RegisterWidgetState extends State<RegisterWidget> {
   @override
   Widget build(BuildContext context) {
     const sizedBox = SizedBox(height: 12);
-    return Form(
-      key: _keyform,
-      autovalidateMode: AutovalidateMode.onUserInteraction,
-      child: SingleChildScrollView(
-        child: Padding(
-          padding: const EdgeInsets.all(10.0),
-          child: Column(
-            children: [
-              const TopImage(),
-              const SizedBox(
-                width: double.infinity,
-                height: 20,
-              ),
-              const RegisterTopTitleWidget(),
-              ElevatedButton.icon(
-                onPressed: _pickImage,
-                icon: const Icon(Icons.camera_alt),
-                label: const Text("Pick Profile Image"),
-              ),
-              if (profileImageUrl != null)
-                Image.network(
-                  profileImageUrl!,
-                  height: 150,
-                ),
-              TextFormField(
-                controller: controllerUsername,
-                decoration: const InputDecoration(
-                  labelText: 'Username',
-                ),
-                validator: (value) {
-                  if (value == null || value.isEmpty) {
-                    return 'Please enter a username';
-                  }
-                  return null;
-                },
-              ),
-              sizedBox,
-              TextFormField(
-                controller: controllerName,
-                decoration: const InputDecoration(
-                  labelText: 'Name',
-                ),
-                validator: (value) {
-                  if (value == null || value.isEmpty) {
-                    return 'Please enter your name';
-                  }
-                  return null;
-                },
-              ),
-              sizedBox,
-              TextFormField(
-                controller: controllerEmail,
-                keyboardType: TextInputType.emailAddress,
-                decoration: const InputDecoration(
-                  labelText: 'Email',
-                ),
-                validator: (value) {
-                  if (value == null || value.isEmpty) {
-                    return 'Please enter an email';
-                  }
-                  return null;
-                },
-              ),
-              sizedBox,
-              TextFormField(
-                controller: controllerPassword,
-                obscureText: !isPasswordVisible,
-                decoration: InputDecoration(
-                  labelText: 'Password',
-                  suffixIcon: IconButton(
-                    icon: Icon(
-                      isPasswordVisible
-                          ? Icons.visibility
-                          : Icons.visibility_off,
+    return SingleChildScrollView(
+      child: Column(
+        children: [
+          const TopImage(),
+          Form(
+            key: _keyform,
+            autovalidateMode: AutovalidateMode.onUserInteraction,
+            child: Padding(
+              padding: const EdgeInsets.all(10.0),
+              child: Column(
+                children: [
+                  const RegisterTopTitleWidget(),
+                  Column(
+                    crossAxisAlignment: CrossAxisAlignment.center,
+                    children: [
+                      ElevatedButton.icon(
+                        onPressed: _pickImage,
+                        icon: const Icon(Icons.camera_alt, color: Colors.white),
+                        label: const Text(
+                          "Pick Profile Image",
+                          style: TextStyle(color: Colors.white),
+                        ),
+                        style: ElevatedButton.styleFrom(
+                          foregroundColor: Colors.white,
+                          backgroundColor: Colors.blueAccent,
+                          // Text color
+                          shape: RoundedRectangleBorder(
+                            borderRadius:
+                                BorderRadius.circular(30.0), // Rounded corners
+                          ),
+                          padding: EdgeInsets.symmetric(
+                              horizontal: 20.0, vertical: 12.0),
+                          elevation: 5, // Shadow
+                        ),
+                      ),
+                      if (profileImageUrl != null)
+                        Container(
+                          margin: const EdgeInsets.symmetric(vertical: 20.0),
+                          decoration: BoxDecoration(
+                            borderRadius: BorderRadius.circular(20.0),
+                            // Rounded corners
+                            boxShadow: [
+                              BoxShadow(
+                                color: Colors.black.withOpacity(0.3),
+                                spreadRadius: 3,
+                                blurRadius: 7,
+                                offset:
+                                    Offset(0, 3), // changes position of shadow
+                              ),
+                            ],
+                          ),
+                          child: ClipRRect(
+                            borderRadius: BorderRadius.circular(20.0),
+                            // Rounded corners
+                            child: Image.network(
+                              profileImageUrl!,
+                              height: 150,
+                              width: 150, // Ensure the image is a square
+                              fit: BoxFit.cover,
+                            ),
+                          ),
+                        ),
+                    ],
+                  ),
+                  SizedBox(
+                    height: 10,
+                  ),
+                  TextFormField(
+                    controller: controllerUsername,
+                    decoration: const InputDecoration(
+                      labelText: 'Username',
                     ),
-                    onPressed: () {
-                      setState(() {
-                        isPasswordVisible = !isPasswordVisible;
-                      });
+                    validator: (value) {
+                      if (value == null || value.isEmpty) {
+                        return 'Please enter a username';
+                      }
+                      return null;
                     },
                   ),
-                ),
-                validator: (value) {
-                  if (value == null || value.isEmpty) {
-                    return 'Please enter a password';
-                  }
-                  return null;
-                },
-              ),
-              sizedBox,
-              DropdownButtonFormField<String?>(
-                borderRadius: BorderRadius.circular(12),
-                decoration: InputDecoration(
-                  labelText: 'Gender',
-                  fillColor: authTextFromFieldFillColor.withOpacity(.3),
-                  prefixIcon: const Icon(
-                    Icons.person_outline,
-                    size: 24,
-                    color: authTextFromFieldHintTextColor,
-                  ),
-                  hintText: 'Gender',
-                  hintStyle: const TextStyle(
-                    color: authTextFromFieldHintTextColor,
-                    fontSize: 17,
-                    fontWeight: FontWeight.w500,
-                  ),
-                  filled: true,
-                  enabledBorder: OutlineInputBorder(
-                    borderSide: BorderSide(
-                      color: authTextFromFieldPorderColor.withOpacity(.5),
+                  sizedBox,
+                  TextFormField(
+                    controller: controllerName,
+                    decoration: const InputDecoration(
+                      labelText: 'Name',
                     ),
-                    borderRadius: BorderRadius.circular(10),
+                    validator: (value) {
+                      if (value == null || value.isEmpty) {
+                        return 'Please enter your name';
+                      }
+                      return null;
+                    },
                   ),
-                  focusedBorder: OutlineInputBorder(
-                    borderSide: BorderSide(
-                      color: authTextFromFieldPorderColor.withOpacity(.5),
+                  sizedBox,
+                  TextFormField(
+                    controller: controllerEmail,
+                    keyboardType: TextInputType.emailAddress,
+                    decoration: const InputDecoration(
+                      labelText: 'Email',
                     ),
-                    borderRadius: BorderRadius.circular(10),
+                    validator: (value) {
+                      if (value == null || value.isEmpty) {
+                        return 'Please enter an email';
+                      }
+                      return null;
+                    },
                   ),
-                  errorBorder: OutlineInputBorder(
-                    borderSide: BorderSide(
-                      color: authTextFromFieldErrorBorderColor.withOpacity(.5),
-                    ),
-                    borderRadius: BorderRadius.circular(10),
-                  ),
-                  focusedErrorBorder: OutlineInputBorder(
-                    borderSide: const BorderSide(color: Colors.white),
-                    borderRadius: BorderRadius.circular(10),
-                  ),
-                ),
-                value: selectedGender,
-                icon: const Icon(Icons.keyboard_arrow_down),
-                items: genderItems.map((String item) {
-                  return DropdownMenuItem(
-                    value: item,
-                    child: Text(
-                      item,
-                      style: const TextStyle(fontSize: 16),
-                    ),
-                  );
-                }).toList(),
-                onChanged: (value) {
-                  setState(() {
-                    selectedGender = value!;
-                    controllerGender.text = value;
-                  });
-                },
-                validator: (value) {
-                  if (value == null || value.isEmpty) {
-                    return 'Please select a gender';
-                  }
-                  return null;
-                },
-              ),
-              sizedBox,
-              DropdownButtonFormField<String?>(
-                borderRadius: BorderRadius.circular(12),
-                decoration: InputDecoration(
-                  labelText: 'Do you have a car?',
-                  fillColor: authTextFromFieldFillColor.withOpacity(.3),
-                  prefixIcon: const Icon(
-                    Icons.directions_car,
-                    size: 24,
-                    color: authTextFromFieldHintTextColor,
-                  ),
-                  hintText: 'Do you have a car?',
-                  hintStyle: const TextStyle(
-                    color: authTextFromFieldHintTextColor,
-                    fontSize: 17,
-                    fontWeight: FontWeight.w500,
-                  ),
-                  filled: true,
-                  enabledBorder: OutlineInputBorder(
-                    borderSide: BorderSide(
-                      color: authTextFromFieldPorderColor.withOpacity(.5),
-                    ),
-                    borderRadius: BorderRadius.circular(10),
-                  ),
-                  focusedBorder: OutlineInputBorder(
-                    borderSide: BorderSide(
-                      color: authTextFromFieldPorderColor.withOpacity(.5),
-                    ),
-                    borderRadius: BorderRadius.circular(10),
-                  ),
-                  errorBorder: OutlineInputBorder(
-                    borderSide: BorderSide(
-                      color: authTextFromFieldErrorBorderColor.withOpacity(.5),
-                    ),
-                    borderRadius: BorderRadius.circular(10),
-                  ),
-                  focusedErrorBorder: OutlineInputBorder(
-                    borderSide: const BorderSide(color: Colors.white),
-                    borderRadius: BorderRadius.circular(10),
-                  ),
-                ),
-                value: hasCar,
-                icon: const Icon(Icons.keyboard_arrow_down),
-                items: carItems.map((String item) {
-                  return DropdownMenuItem(
-                    value: item,
-                    child: Text(
-                      item,
-                      style: const TextStyle(fontSize: 16),
-                    ),
-                  );
-                }).toList(),
-                onChanged: (value) {
-                  setState(() {
-                    hasCar = value!;
-                  });
-                },
-                validator: (value) {
-                  if (value == null || value.isEmpty) {
-                    return 'Please select an option';
-                  }
-                  return null;
-                },
-              ),
-              sizedBox,
-              DropdownButtonFormField<String?>(
-                borderRadius: BorderRadius.circular(12),
-                decoration: InputDecoration(
-                  labelText:
-                      'Do you want to place the order or receive it at the gate?',
-                  fillColor: authTextFromFieldFillColor.withOpacity(.3),
-                  prefixIcon: deliveryPreference == 'Place the order'
-                      ? const Icon(
-                          Icons.phone,
-                          size: 24,
-                          color: authTextFromFieldHintTextColor,
-                        )
-                      : const Icon(
-                          Icons.local_shipping,
-                          size: 24,
-                          color: authTextFromFieldHintTextColor,
+                  sizedBox,
+                  TextFormField(
+                    controller: controllerPassword,
+                    obscureText: !isPasswordVisible,
+                    decoration: InputDecoration(
+                      labelText: 'Password',
+                      suffixIcon: IconButton(
+                        icon: Icon(
+                          isPasswordVisible
+                              ? Icons.visibility
+                              : Icons.visibility_off,
                         ),
-                  hintText:
-                      'Do you want to place the order or receive it at the gate?',
-                  hintStyle: const TextStyle(
-                    color: authTextFromFieldHintTextColor,
-                    fontSize: 17,
-                    fontWeight: FontWeight.w500,
-                  ),
-                  filled: true,
-                  enabledBorder: OutlineInputBorder(
-                    borderSide: BorderSide(
-                      color: authTextFromFieldPorderColor.withOpacity(.5),
+                        onPressed: () {
+                          setState(() {
+                            isPasswordVisible = !isPasswordVisible;
+                          });
+                        },
+                      ),
                     ),
-                    borderRadius: BorderRadius.circular(10),
+                    validator: (value) {
+                      if (value == null || value.isEmpty) {
+                        return 'Please enter a password';
+                      }
+                      return null;
+                    },
                   ),
-                  focusedBorder: OutlineInputBorder(
-                    borderSide: BorderSide(
-                      color: authTextFromFieldPorderColor.withOpacity(.5),
+                  sizedBox,
+                  DropdownButtonFormField<String?>(
+                    borderRadius: BorderRadius.circular(12),
+                    decoration: InputDecoration(
+                      labelText: 'Gender',
+                      fillColor: authTextFromFieldFillColor.withOpacity(.3),
+                      prefixIcon: const Icon(
+                        Icons.person_outline,
+                        size: 24,
+                        color: authTextFromFieldHintTextColor,
+                      ),
+                      hintText: 'Gender',
+                      hintStyle: const TextStyle(
+                        color: authTextFromFieldHintTextColor,
+                        fontSize: 17,
+                        fontWeight: FontWeight.w500,
+                      ),
+                      filled: true,
+                      enabledBorder: OutlineInputBorder(
+                        borderSide: BorderSide(
+                          color: authTextFromFieldPorderColor.withOpacity(.5),
+                        ),
+                        borderRadius: BorderRadius.circular(10),
+                      ),
+                      focusedBorder: OutlineInputBorder(
+                        borderSide: BorderSide(
+                          color: authTextFromFieldPorderColor.withOpacity(.5),
+                        ),
+                        borderRadius: BorderRadius.circular(10),
+                      ),
+                      errorBorder: OutlineInputBorder(
+                        borderSide: BorderSide(
+                          color:
+                              authTextFromFieldErrorBorderColor.withOpacity(.5),
+                        ),
+                        borderRadius: BorderRadius.circular(10),
+                      ),
+                      focusedErrorBorder: OutlineInputBorder(
+                        borderSide: const BorderSide(color: Colors.white),
+                        borderRadius: BorderRadius.circular(10),
+                      ),
                     ),
-                    borderRadius: BorderRadius.circular(10),
+                    value: selectedGender,
+                    icon: const Icon(Icons.keyboard_arrow_down),
+                    items: genderItems.map((String item) {
+                      return DropdownMenuItem(
+                        value: item,
+                        child: Text(
+                          item,
+                          style: const TextStyle(fontSize: 16),
+                        ),
+                      );
+                    }).toList(),
+                    onChanged: (value) {
+                      setState(() {
+                        selectedGender = value!;
+                        controllerGender.text = value;
+                      });
+                    },
+                    validator: (value) {
+                      if (value == null || value.isEmpty) {
+                        return 'Please select a gender';
+                      }
+                      return null;
+                    },
                   ),
-                  errorBorder: OutlineInputBorder(
-                    borderSide: BorderSide(
-                      color: authTextFromFieldErrorBorderColor.withOpacity(.5),
+                  sizedBox,
+                  DropdownButtonFormField<String?>(
+                    borderRadius: BorderRadius.circular(12),
+                    decoration: InputDecoration(
+                      labelText: 'Do you have a car?',
+                      fillColor: authTextFromFieldFillColor.withOpacity(.3),
+                      prefixIcon: const Icon(
+                        Icons.directions_car,
+                        size: 24,
+                        color: authTextFromFieldHintTextColor,
+                      ),
+                      hintText: 'Do you have a car?',
+                      hintStyle: const TextStyle(
+                        color: authTextFromFieldHintTextColor,
+                        fontSize: 17,
+                        fontWeight: FontWeight.w500,
+                      ),
+                      filled: true,
+                      enabledBorder: OutlineInputBorder(
+                        borderSide: BorderSide(
+                          color: authTextFromFieldPorderColor.withOpacity(.5),
+                        ),
+                        borderRadius: BorderRadius.circular(10),
+                      ),
+                      focusedBorder: OutlineInputBorder(
+                        borderSide: BorderSide(
+                          color: authTextFromFieldPorderColor.withOpacity(.5),
+                        ),
+                        borderRadius: BorderRadius.circular(10),
+                      ),
+                      errorBorder: OutlineInputBorder(
+                        borderSide: BorderSide(
+                          color:
+                              authTextFromFieldErrorBorderColor.withOpacity(.5),
+                        ),
+                        borderRadius: BorderRadius.circular(10),
+                      ),
+                      focusedErrorBorder: OutlineInputBorder(
+                        borderSide: const BorderSide(color: Colors.white),
+                        borderRadius: BorderRadius.circular(10),
+                      ),
                     ),
-                    borderRadius: BorderRadius.circular(10),
+                    value: hasCar,
+                    icon: const Icon(Icons.keyboard_arrow_down),
+                    items: carItems.map((String item) {
+                      return DropdownMenuItem(
+                        value: item,
+                        child: Text(
+                          item,
+                          style: const TextStyle(fontSize: 16),
+                        ),
+                      );
+                    }).toList(),
+                    onChanged: (value) {
+                      setState(() {
+                        hasCar = value!;
+                      });
+                    },
+                    validator: (value) {
+                      if (value == null || value.isEmpty) {
+                        return 'Please select an option';
+                      }
+                      return null;
+                    },
                   ),
-                  focusedErrorBorder: OutlineInputBorder(
-                    borderSide: const BorderSide(color: Colors.white),
-                    borderRadius: BorderRadius.circular(10),
-                  ),
-                ),
-                value: deliveryPreference,
-                icon: const Icon(Icons.keyboard_arrow_down),
-                items: deliveryItems.map((String item) {
-                  return DropdownMenuItem(
-                    value: item,
-                    child: Text(
-                      item,
-                      style: const TextStyle(fontSize: 16),
+                  sizedBox,
+                  DropdownButtonFormField<String?>(
+                    borderRadius: BorderRadius.circular(12),
+                    decoration: InputDecoration(
+                      labelText:
+                          'Do you want to place the order or receive it at the gate?',
+                      fillColor: authTextFromFieldFillColor.withOpacity(.3),
+                      prefixIcon: deliveryPreference == 'Place the order'
+                          ? const Icon(
+                              Icons.phone,
+                              size: 24,
+                              color: authTextFromFieldHintTextColor,
+                            )
+                          : const Icon(
+                              Icons.local_shipping,
+                              size: 24,
+                              color: authTextFromFieldHintTextColor,
+                            ),
+                      hintText:
+                          'Do you want to place the order or receive it at the gate?',
+                      hintStyle: const TextStyle(
+                        color: authTextFromFieldHintTextColor,
+                        fontSize: 17,
+                        fontWeight: FontWeight.w500,
+                      ),
+                      filled: true,
+                      enabledBorder: OutlineInputBorder(
+                        borderSide: BorderSide(
+                          color: authTextFromFieldPorderColor.withOpacity(.5),
+                        ),
+                        borderRadius: BorderRadius.circular(10),
+                      ),
+                      focusedBorder: OutlineInputBorder(
+                        borderSide: BorderSide(
+                          color: authTextFromFieldPorderColor.withOpacity(.5),
+                        ),
+                        borderRadius: BorderRadius.circular(10),
+                      ),
+                      errorBorder: OutlineInputBorder(
+                        borderSide: BorderSide(
+                          color:
+                              authTextFromFieldErrorBorderColor.withOpacity(.5),
+                        ),
+                        borderRadius: BorderRadius.circular(10),
+                      ),
+                      focusedErrorBorder: OutlineInputBorder(
+                        borderSide: const BorderSide(color: Colors.white),
+                        borderRadius: BorderRadius.circular(10),
+                      ),
                     ),
-                  );
-                }).toList(),
-                onChanged: (value) {
-                  setState(() {
-                    deliveryPreference = value!;
-                  });
-                },
-                validator: (value) {
-                  if (value == null || value.isEmpty) {
-                    return 'Please select an option';
-                  }
-                  return null;
-                },
-              ),
-              sizedBox,
-              TextFormField(
-                controller: controllerPhone,
-                keyboardType: TextInputType.number,
-                decoration: const InputDecoration(
-                  labelText: 'Phone Number',
-                ),
-                validator: (value) {
-                  if (value == null || value.isEmpty) {
-                    return 'Please enter your phone number';
-                  }
-                  return null;
-                },
-              ),
-              sizedBox,
-              CommonElevatedButtonWidget(
-                text: "Sign up",
-                onPressed: () async {
-                  if (_keyform.currentState!.validate()) {
-                    context.read<RegisterCubit>().registerAccountFromRemote(
-                          context,
-                          registerAccountEntity: RegisterAccountEntity(
-                              gender: controllerGender.text.trim(),
-                              name: controllerName.text,
-                              phoneNumber: controllerPhone.text,
-                              username: controllerUsername.text,
-                              hasCar: hasCar,
-                              deliveryPreference: deliveryPreference,
-                              profileImageUrl: profileImageUrl),
-                          email: controllerEmail.text.trim(),
-                          password: controllerPassword.text,
-                        );
-                  }
-                },
-              ),
-              BottomAuthRowWidget(
-                text: "Already have an account?",
-                value: "Login",
-                onTap: () => Navigator.of(context).push(
-                  MaterialPageRoute(
-                    builder: (context) => const LoginPage(),
+                    value: deliveryPreference,
+                    icon: const Icon(Icons.keyboard_arrow_down),
+                    items: deliveryItems.map((String item) {
+                      return DropdownMenuItem(
+                        value: item,
+                        child: Text(
+                          item,
+                          style: const TextStyle(fontSize: 16),
+                        ),
+                      );
+                    }).toList(),
+                    onChanged: (value) {
+                      setState(() {
+                        deliveryPreference = value!;
+                      });
+                    },
+                    validator: (value) {
+                      if (value == null || value.isEmpty) {
+                        return 'Please select an option';
+                      }
+                      return null;
+                    },
                   ),
-                ),
+                  sizedBox,
+                  TextFormField(
+                    controller: controllerPhone,
+                    keyboardType: TextInputType.number,
+                    decoration: const InputDecoration(
+                      labelText: 'Phone Number',
+                    ),
+                    validator: (value) {
+                      if (value == null || value.isEmpty) {
+                        return 'Please enter your phone number';
+                      }
+                      return null;
+                    },
+                  ),
+                  sizedBox,
+                  CommonElevatedButtonWidget(
+                    text: "Sign up",
+                    onPressed: () async {
+                      if (_keyform.currentState!.validate()) {
+                        context.read<RegisterCubit>().registerAccountFromRemote(
+                              context,
+                              registerAccountEntity: RegisterAccountEntity(
+                                  gender: controllerGender.text.trim(),
+                                  name: controllerName.text,
+                                  phoneNumber: controllerPhone.text,
+                                  username: controllerUsername.text,
+                                  hasCar: hasCar,
+                                  deliveryPreference: deliveryPreference,
+                                  profileImageUrl: profileImageUrl),
+                              email: controllerEmail.text.trim(),
+                              password: controllerPassword.text,
+                            );
+                      }
+                    },
+                  ),
+                  BottomAuthRowWidget(
+                    text: "Already have an account?",
+                    value: "Login",
+                    onTap: () => Navigator.of(context).push(
+                      MaterialPageRoute(
+                        builder: (context) => const LoginPage(),
+                      ),
+                    ),
+                  ),
+                ],
               ),
-            ],
+            ),
           ),
-        ),
+        ],
       ),
     );
   }

@@ -78,13 +78,11 @@ class _EnumsState extends State<Enums> {
               ],
             );
           }
-          return Positioned(
-            top: 0,
-            left: 0,
-            right: 0,
-            bottom: 0,
-            child: Container(
-                color: Colors.white.withOpacity(0.5), child: LoadingWidget()),
+          return Stack(
+            children: [
+              Container(
+                  color: Colors.white.withOpacity(0.5), child: LoadingWidget()),
+            ],
           );
         },
       ),

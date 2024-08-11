@@ -5,7 +5,7 @@ import 'package:order/features/event/presentation/pages/widgets/order_status/enu
 import '../../../../../domain/entities/order_entities.dart';
 import '../../order_details_page/order_details_page.dart';
 
-class OrdersListTitleWidget extends StatelessWidget {
+class OrdersListTitleWidget extends StatefulWidget {
   const OrdersListTitleWidget({
     Key? key,
     required this.orderEntity,
@@ -14,6 +14,40 @@ class OrdersListTitleWidget extends StatelessWidget {
 
   final OrderEntity orderEntity;
   final String title;
+
+  @override
+  State<OrdersListTitleWidget> createState() => _OrdersListTitleWidgetState();
+}
+
+class _OrdersListTitleWidgetState extends State<OrdersListTitleWidget> {
+  LinearGradient getGradientForStatus(OrderStatusEnum status) {
+    switch (status) {
+      case OrderStatusEnum.active:
+        return const LinearGradient(
+          colors: [Colors.yellow, Colors.orangeAccent],
+          begin: Alignment.topLeft,
+          end: Alignment.bottomRight,
+        );
+      case OrderStatusEnum.placed:
+        return const LinearGradient(
+          colors: [Colors.blue, Colors.lightBlueAccent],
+          begin: Alignment.topLeft,
+          end: Alignment.bottomRight,
+        );
+      case OrderStatusEnum.arrived:
+        return const LinearGradient(
+          colors: [Colors.green, Colors.lightGreenAccent],
+          begin: Alignment.topLeft,
+          end: Alignment.bottomRight,
+        );
+      case OrderStatusEnum.cancelled:
+        return const LinearGradient(
+          colors: [Colors.red, Colors.deepOrangeAccent],
+          begin: Alignment.topLeft,
+          end: Alignment.bottomRight,
+        );
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -47,7 +81,7 @@ class OrdersListTitleWidget extends StatelessWidget {
                 onTap: () {
                   Navigator.of(context).push(MaterialPageRoute(
                       builder: (context) =>
-                          OrderDetailsPage(orderEntity: orderEntity)));
+                          OrderDetailsPage(orderEntity: widget.orderEntity)));
                 },
                 child: ListTile(
                   trailing: const Icon(
@@ -58,7 +92,7 @@ class OrdersListTitleWidget extends StatelessWidget {
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
                       Text(
-                        title,
+                        widget.title,
                         style: const TextStyle(
                           fontSize: 18,
                           fontWeight: FontWeight.bold,
@@ -71,31 +105,43 @@ class OrdersListTitleWidget extends StatelessWidget {
                             context,
                             MaterialPageRoute(
                               builder: (context) => Enums(
-                                orderEntity: orderEntity,
+                                orderEntity: widget.orderEntity,
                               ),
                             ),
                           );
                         },
                         child: Container(
                           padding: const EdgeInsets.symmetric(
-                            horizontal: 8,
-                            vertical: 4,
+                            horizontal: 16,
+                            vertical: 8,
                           ),
                           decoration: BoxDecoration(
-                              color: Color(0xFFFFFFFF).withOpacity(0.2),
-                              borderRadius:
-                                  const BorderRadius.all(Radius.circular(4))),
+                            gradient:
+                                getGradientForStatus(widget.orderEntity.status),
+                            boxShadow: const [
+                              BoxShadow(
+                                color: Colors.black26,
+                                offset: Offset(2, 2),
+                                blurRadius: 4,
+                              ),
+                            ],
+                            borderRadius:
+                                const BorderRadius.all(Radius.circular(12)),
+                          ),
                           child: Text(
-                            "${orderEntity.status.name}".toUpperCase(),
+                            "${widget.orderEntity.status.name}".toUpperCase(),
                             style: Theme.of(context)
                                 .textTheme
                                 .labelLarge!
                                 .copyWith(
-                                    color: OrderStatusEnum.getStatusColor(
-                                        orderEntity.status)),
+                                  color: OrderStatusEnum.getStatusColor(
+                                      widget.orderEntity.status),
+                                  fontWeight: FontWeight.bold,
+                                  letterSpacing: 1.2,
+                                ),
                           ),
                         ),
-                      )
+                      ),
                     ],
                   ),
                   contentPadding: const EdgeInsets.symmetric(horizontal: 20),

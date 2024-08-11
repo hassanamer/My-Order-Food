@@ -13,16 +13,15 @@ class LoginHeaderWidget extends StatelessWidget {
       children: [
         const Text(
           'Login',
-          style: TextStyles.font18DarkBlueBold,
+          style: TextStyles.font22BlackBold,
         ),
         const SizedBox(height: 8),
         Center(
           child: Column(
             children: [
               _smallParagraph(context,
-                  "Chat with your friends and save your details for a faster"),
+                  "Chat with your friends and save your details \n for a faster checkout experince."),
               const SizedBox(height: 4),
-              _smallParagraph(context, "checkout experince."),
             ],
           ),
         ),
@@ -33,7 +32,7 @@ class LoginHeaderWidget extends StatelessWidget {
   Text _smallParagraph(BuildContext context, String text) {
     return Text(
       text,
-      style: TextStyle(color: Theme.of(context).textTheme.displayLarge!.color!),
+      style: TextStyles.font16BlackSemiBold,
     );
   }
 }

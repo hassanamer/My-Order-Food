@@ -50,17 +50,11 @@ class _RestaurantWidgetState extends State<RestaurantWidget> {
   @override
   Widget build(BuildContext context) {
     const sizedBox = SizedBox(height: 12);
-    const divider = Divider(
-      thickness: 1,
-      indent: 30,
-      endIndent: 30,
-      color: Colors.amber,
-    );
+
     return Form(
       key: keyForm,
       child: ListView(children: [
         sizedBox,
-        divider,
         Container(
           decoration: const BoxDecoration(
               color: Colors.white,
@@ -69,7 +63,7 @@ class _RestaurantWidgetState extends State<RestaurantWidget> {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              const UnderlineTextWidget(text: "- Restaurant Details."),
+              const UnderlineTextWidget(text: "Restaurant Details."),
               sizedBox,
               RestaurantTextFieldWidget(
                   controllerRestaurant: controllerRestaurantname,
@@ -85,7 +79,6 @@ class _RestaurantWidgetState extends State<RestaurantWidget> {
           ),
         ),
         sizedBox,
-        divider,
         CommonElevatedButtonWidget(
           text: 'Upload restaurant picture',
           onPressed: () async {

@@ -1,15 +1,32 @@
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
+import 'package:order/core/theming/styles.dart';
 import 'package:order/core/widgets/app_bar_widget.dart';
+import 'package:order/core/widgets/loading_widget.dart';
 import 'package:order/features/event/domain/entities/order_entities.dart';
 import 'package:order/features/event/presentation/pages/widgets/order_details_page/order_summary_page.dart';
 
-class ViewOrderPage extends StatelessWidget {
+import '../../../event/presentation/cubit/order_cubit.dart';
+
+class ViewOrderPage extends StatefulWidget {
   final VoidCallback? onCalculate;
 
   const ViewOrderPage({Key? key, this.onCalculate});
+
+  @override
+  State<ViewOrderPage> createState() => _ViewOrderPageState();
+}
+
+class _ViewOrderPageState extends State<ViewOrderPage> {
+  late Stream<List<OrderEntity>> _ordersStream;
+
+  @override
+  void initState() {
+    super.initState();
+    _ordersStream = OrderCubit()
+        .getOrdersStream(); // Assuming this returns a Stream<List<OrderEntity>>
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -19,43 +36,42 @@ class ViewOrderPage extends StatelessWidget {
       appBar: const AppBarWidget(
         pageName: "Your Orders",
       ),
-      body: StreamBuilder<QuerySnapshot>(
-        stream: FirebaseFirestore.instance.collection('Order').snapshots(),
-        builder: (context, AsyncSnapshot<QuerySnapshot> snapshot) {
+      body: StreamBuilder<List<OrderEntity>>(
+        stream: _ordersStream,
+        builder: (context, snapshot) {
           if (snapshot.connectionState == ConnectionState.waiting) {
-            return const Center(child: CircularProgressIndicator());
-          }
-          if (snapshot.hasError) {
+            return Center(child: LoadingWidget());
+          } else if (snapshot.hasError) {
             return Center(child: Text('Error: ${snapshot.error}'));
+          } else if (!snapshot.hasData || snapshot.data!.isEmpty) {
+            return Center(
+              child: Text(
+                'You Didn\'t Try To Use Our App Before',
+                style: TextStyles.font18BlueSemiBold,
+              ),
+            );
           }
-          if (!snapshot.hasData || snapshot.data!.docs.isEmpty) {
-            return const Center(child: Text('No orders available'));
-          }
-          final filteredOrders = snapshot.data!.docs.where((doc) {
-            var orderMap = doc.data() as Map<String, dynamic>;
-            var orderEntity = OrderEntity.fromMap(orderMap);
-
+          final orders = snapshot.data!;
+          final filteredOrders = orders.where((orderEntity) {
             bool isCreator = orderEntity.userId == currentUserId;
             bool isParticipant = orderEntity.items
                     ?.any((item) => item.userId == currentUserId) ??
                 false;
-
             return isCreator || isParticipant;
           }).toList();
 
           if (filteredOrders.isEmpty) {
             return const Center(child: Text('No orders available'));
           }
+
           return ListView.builder(
             itemCount: filteredOrders.length,
             itemBuilder: (context, index) {
-              var orderMap =
-                  filteredOrders[index].data() as Map<String, dynamic>;
-              var orderEntity = OrderEntity.fromMap(orderMap);
+              var orderEntity = filteredOrders[index];
               var orderId = orderEntity.id;
               var createdAt = orderEntity.createdAt != null
                   ? DateFormat('yyyy-MM-dd hh:mm a')
-                      .format(orderEntity.createdAt)
+                      .format(orderEntity.createdAt!)
                   : 'Unknown';
               return GestureDetector(
                 onTap: () {
@@ -65,7 +81,7 @@ class ViewOrderPage extends StatelessWidget {
                       builder: (context) => OrderSummaryPage(
                           orderId: orderId,
                           orderEntity: orderEntity,
-                          onCalculate: onCalculate),
+                          onCalculate: widget.onCalculate),
                     ),
                   );
                 },

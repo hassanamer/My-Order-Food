@@ -4,6 +4,7 @@ import 'package:flutter_staggered_animations/flutter_staggered_animations.dart';
 import 'package:get/get.dart';
 import 'package:order/core/widgets/app_bar_widget.dart';
 
+import '../../../../core/theming/styles.dart';
 import '../../../cart/presentation/pages/view_order_page.dart';
 import '../../../login/presentation/cubit/login_cubit.dart';
 import '../../../login/presentation/pages/login_page.dart';
@@ -86,18 +87,26 @@ class SettingsPage extends StatelessWidget {
                     context: context,
                     builder: (BuildContext context) {
                       return AlertDialog(
-                        title: const Text("Logout"),
-                        content: const Text("Are you sure you want to logout?"),
+                        title: const Text(
+                          "Logout",
+                          style: TextStyles.font18BlueSemiBold,
+                        ),
+                        content: const Text(
+                          "Are you sure you want to logout?",
+                        ),
                         actions: [
                           TextButton(
                             onPressed: () => Navigator.pop(context, 'Cancel'),
                             child: const Text(
                               'Cancel',
-                              style: TextStyle(fontWeight: FontWeight.bold),
+                              style: TextStyles.font14BlueSemiBold,
                             ),
                           ),
                           TextButton(
-                            child: const Text("Confirm"),
+                            child: const Text(
+                              "Confirm",
+                              style: TextStyles.font14BlueSemiBold,
+                            ),
                             onPressed: () {
                               context.read<LoginCubit>().logOut();
                               Navigator.of(context).pushReplacement(

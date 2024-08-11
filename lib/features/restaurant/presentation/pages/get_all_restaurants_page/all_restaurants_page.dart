@@ -26,14 +26,12 @@ class _AllRestaurantPageState extends State<AllRestaurantPage> {
         child: BlocConsumer<RestaurantCubit, RestaurantState>(
           builder: (context, state) {
             if (state is RestaurantLoading) {
-              return Positioned(
-                top: 0,
-                left: 0,
-                right: 0,
-                bottom: 0,
-                child: Container(
-                    color: Colors.white.withOpacity(0.5),
-                    child: LoadingWidget()),
+              return Stack(
+                children: [
+                  Container(
+                      color: Colors.white.withOpacity(0.5),
+                      child: LoadingWidget()),
+                ],
               );
             } else if (state is RestaurantLoadedState) {
               return AllRestaurantWidget(
@@ -43,13 +41,18 @@ class _AllRestaurantPageState extends State<AllRestaurantPage> {
                 print(state.errorMessage);
               }
             }
-            return Positioned(
-              top: 0,
-              left: 0,
-              right: 0,
-              bottom: 0,
-              child: Container(
-                  color: Colors.white.withOpacity(0.5), child: LoadingWidget()),
+            return Stack(
+              children: [
+                Positioned(
+                  top: 0,
+                  left: 0,
+                  right: 0,
+                  bottom: 0,
+                  child: Container(
+                      color: Colors.white.withOpacity(0.5),
+                      child: LoadingWidget()),
+                ),
+              ],
             );
           },
           listener: (context, state) {

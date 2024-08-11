@@ -69,14 +69,18 @@ class _MenuuPageeState extends State<MenuuPagee> {
                       height: 10.h,
                     ),
                     if (state is RestaurantLoading)
-                      Positioned(
-                        top: 0,
-                        left: 0,
-                        right: 0,
-                        bottom: 0,
-                        child: Container(
-                            color: Colors.white.withOpacity(0.5),
-                            child: LoadingWidget()),
+                      Stack(
+                        children: [
+                          Positioned(
+                            top: 0,
+                            left: 0,
+                            right: 0,
+                            bottom: 0,
+                            child: Container(
+                                color: Colors.white.withOpacity(0.5),
+                                child: LoadingWidget()),
+                          ),
+                        ],
                       )
                     else
                       CommonElevatedButtonWidget(
