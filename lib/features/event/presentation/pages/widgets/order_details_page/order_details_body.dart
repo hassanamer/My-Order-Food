@@ -199,30 +199,35 @@ class _OrderDetailsBodyState extends State<OrderDetailsBody>
   }
 
   Future<void> _deleteItem(OrderItem item) async {
-    try {
-      final orderDoc =
-          _firestore.collection('Order').doc(widget.orderEntity.id);
-      final orderSnapshot = await orderDoc.get();
-      final items = List<Map<String, dynamic>>.from(orderSnapshot.get('items'));
-      final itemIndex = items.indexWhere(
-          (i) => i['itemName'] == item.itemName && i['userId'] == item.userId);
-      if (itemIndex != -1) {
-        items.removeAt(itemIndex);
-        await orderDoc.update({
-          'items': items,
-        });
+    if (item.userId == currentUser!.uid) {
+      try {
+        final orderDoc =
+            _firestore.collection('Order').doc(widget.orderEntity.id);
+        final orderSnapshot = await orderDoc.get();
+        final items =
+            List<Map<String, dynamic>>.from(orderSnapshot.get('items'));
+        final itemIndex = items.indexWhere((i) =>
+            i['itemName'] == item.itemName && i['userId'] == item.userId);
+        if (itemIndex != -1) {
+          items.removeAt(itemIndex);
+          await orderDoc.update({
+            'items': items,
+          });
+        }
+      } catch (e) {
+        print("Failed to delete item: $e");
       }
-    } catch (e) {
-      print("Failed to delete item: $e");
-    }
 
-    setState(() {
-      widget.itemsList.remove(item);
-      widget.itemsGroupedByUser[item.userId]?.remove(item);
-      if (widget.itemsGroupedByUser[item.userId]?.isEmpty ?? false) {
-        widget.itemsGroupedByUser.remove(item.userId);
-      }
-    });
+      setState(() {
+        widget.itemsList.remove(item);
+        widget.itemsGroupedByUser[item.userId]?.remove(item);
+        if (widget.itemsGroupedByUser[item.userId]?.isEmpty ?? false) {
+          widget.itemsGroupedByUser.remove(item.userId);
+        }
+      });
+    } else {
+      print("You can only delete your own items.");
+    }
   }
 
   @override

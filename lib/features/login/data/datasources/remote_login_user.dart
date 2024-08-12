@@ -4,27 +4,29 @@ import 'package:order/features/login/domain/entities/account_entites.dart';
 
 abstract class RemoteLoginDatasource {
   Future<LoginBaseResponse> remoteLoginUser(String email, String password);
+
   Future<LoginBaseResponse> remoteLogoutUser();
 }
 
 class RemoteLoginDatasourceImpl implements RemoteLoginDatasource {
   late FirebaseDatabseProvider firebaseDB;
+
   RemoteLoginDatasourceImpl(this.firebaseDB);
+
   @override
   Future<LoginBaseResponse> remoteLoginUser(
-
       String email, String password) async {
     try {
       await firebaseDB.auth
           .signInWithEmailAndPassword(email: email, password: password);
-      return LoginBaseResponse(status: true, message: "successfully loggedin");
+      return LoginBaseResponse(status: true, message: "Successfully Logged In");
     } on FirebaseAuthException catch (e) {
       if (e.code == 'user-not-found') {
-        return LoginBaseResponse(status: false, message: 'User not found');
+        return LoginBaseResponse(status: false, message: 'User Not Found');
       } else if (e.code == 'wrong-password') {
-        return LoginBaseResponse(status: false, message: "Wrong password");
+        return LoginBaseResponse(status: false, message: "Wrong Password");
       } else if (e.code == 'invalid-email') {
-        return LoginBaseResponse(status: false, message: "Invalid email");
+        return LoginBaseResponse(status: false, message: "Invalid E-mail");
       }
     } catch (e) {
       return LoginBaseResponse(status: false, message: e.toString());

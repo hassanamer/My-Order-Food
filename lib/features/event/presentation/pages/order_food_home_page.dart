@@ -33,8 +33,8 @@ class _OrderFoodHomePageState extends State<OrderFoodHomePage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBarWidget(
-        titleWidget: const HomePageAppBarTitleWidget(),
+      appBar: const AppBarWidget(
+        titleWidget: HomePageAppBarTitleWidget(),
         hideBackButton: true,
       ),
       body: StreamBuilder<List<OrderEntity>>(
@@ -45,7 +45,7 @@ class _OrderFoodHomePageState extends State<OrderFoodHomePage> {
             } else if (snapshot.hasError) {
               return Center(child: Text('Error: ${snapshot.error}'));
             } else if (!snapshot.hasData || snapshot.data!.isEmpty) {
-              return OrdersEmptyListWidget();
+              return const OrdersEmptyListWidget();
             }
             final orders = snapshot.data!;
             return HomePageOrdersWidget(

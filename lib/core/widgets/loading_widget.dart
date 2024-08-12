@@ -14,32 +14,34 @@ class _LoadingWidgetState extends State<LoadingWidget> {
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.center,
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: <Widget>[
-          Center(
-            child: Container(
-              child: Lottie.asset(
-                width: MediaQuery.sizeOf(context).height,
-                height: MediaQuery.sizeOf(context).width,
-                'assets/animation/lotti_indecator.json',
-                fit: BoxFit.fill,
-              ),
+    return SingleChildScrollView(
+      child: Container(
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.center,
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: <Widget>[
+            Center(
+              child: Container(
+                child: Lottie.asset(
+                  'assets/animation/lotti_indecator.json',
+                  width: MediaQuery.sizeOf(context).width,
+                  height: MediaQuery.sizeOf(context).height,
+                  fit: BoxFit.contain,
+                ),
 
-              //    CircularProgressIndicator.adaptive(
-              //     strokeWidth: 2.0,
-              //     valueColor: AlwaysStoppedAnimation(
-              //       themeManager.headerBackgroundColor,
-              //     ),
-              //     backgroundColor: Platform.isAndroid
-              //         ? themeManager.backgroundColor
-              //         : themeManager.headerBackgroundColor,
-              //   ),
+                //    CircularProgressIndicator.adaptive(
+                //     strokeWidth: 2.0,
+                //     valueColor: AlwaysStoppedAnimation(
+                //       themeManager.headerBackgroundColor,
+                //     ),
+                //     backgroundColor: Platform.isAndroid
+                //         ? themeManager.backgroundColor
+                //         : themeManager.headerBackgroundColor,
+                //   ),
+              ),
             ),
-          ),
-        ],
+          ],
+        ),
       ),
     );
   }

@@ -49,7 +49,7 @@ final appTheme = ThemeData(
         borderSide: const BorderSide(color: Colors.white),
         borderRadius: BorderRadius.circular(10),
       ),
-      floatingLabelStyle: const TextStyle(color: primaryColor),
+      floatingLabelStyle: const TextStyle(color: Colors.black),
       iconColor: secondaryColor,
       border: OutlineInputBorder(
         borderSide: const BorderSide(color: primaryColor),

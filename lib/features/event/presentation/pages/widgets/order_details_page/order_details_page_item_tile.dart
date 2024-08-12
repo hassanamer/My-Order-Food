@@ -1,4 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_staggered_animations/flutter_staggered_animations.dart';
 import 'package:order/features/register/data/models/register_account_model.dart';
@@ -22,6 +23,7 @@ class EventDetailPageItemTile extends StatefulWidget {
   final RegisterAccountModel? user;
   OrderEntity? orderEntity;
   final Function(OrderItem item) onDeleteItem;
+  User? currentUser = FirebaseAuth.instance.currentUser;
 
   @override
   State<EventDetailPageItemTile> createState() =>
@@ -141,17 +143,21 @@ class _EventDetailPageItemTileState extends State<EventDetailPageItemTile> {
                                 ),
                                 Expanded(
                                   flex: 1,
-                                  child: IconButton(
-                                    icon: const Icon(Icons.remove,
-                                        color: Colors.white),
-                                    onPressed: () async {
-                                      setState(() {
-                                        if (item.quantity > 1) {
-                                          item.quantity--;
-                                        }
-                                      });
-                                      await _updateItemQuantity(item);
-                                    },
+                                  child: Visibility(
+                                    visible:
+                                        item.userId == widget.currentUser!.uid,
+                                    child: IconButton(
+                                      icon: const Icon(Icons.remove,
+                                          color: Colors.white),
+                                      onPressed: () async {
+                                        setState(() {
+                                          if (item.quantity > 1) {
+                                            item.quantity--;
+                                          }
+                                        });
+                                        await _updateItemQuantity(item);
+                                      },
+                                    ),
                                   ),
                                 ),
                                 Expanded(
@@ -168,22 +174,32 @@ class _EventDetailPageItemTileState extends State<EventDetailPageItemTile> {
                                 ),
                                 Expanded(
                                   flex: 1,
-                                  child: IconButton(
-                                    icon: const Icon(Icons.add,
-                                        color: Colors.white),
-                                    onPressed: () async {
-                                      setState(() {
-                                        item.quantity++;
-                                      });
-                                      await _updateItemQuantity(item);
-                                    },
+                                  child: Visibility(
+                                    visible:
+                                        item.userId == widget.currentUser!.uid,
+                                    child: IconButton(
+                                      icon: const Icon(Icons.add,
+                                          color: Colors.white),
+                                      onPressed: () async {
+                                        setState(() {
+                                          item.quantity++;
+                                        });
+                                        await _updateItemQuantity(item);
+                                      },
+                                    ),
                                   ),
                                 ),
                                 Expanded(
                                   flex: 1,
-                                  child: IconButton(
-                                    icon: Icon(Icons.delete, color: Colors.red),
-                                    onPressed: () => widget.onDeleteItem(item),
+                                  child: Visibility(
+                                    visible:
+                                        item.userId == widget.currentUser!.uid,
+                                    child: IconButton(
+                                      icon:
+                                          Icon(Icons.delete, color: Colors.red),
+                                      onPressed: () =>
+                                          widget.onDeleteItem(item),
+                                    ),
                                   ),
                                 ),
                               ],

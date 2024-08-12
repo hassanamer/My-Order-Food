@@ -2,22 +2,14 @@ import '../../domain/entities/account_entites.dart';
 
 class User extends Account {
   User({
-    required String userId,
-    required String username,
-    required String password,
-    final String? name,
-    final String? email,
-    final String? phoneNumber,
-    final String? gender,
-  }) : super(
-          userId: userId,
-          username: username,
-          password: password,
-          email: email,
-          gender: gender,
-          name: name,
-          phoneNumber: phoneNumber,
-        );
+    required String super.userId,
+    required String super.username,
+    required String super.password,
+    super.name,
+    super.email,
+    super.phoneNumber,
+    super.gender,
+  });
 
   Map<String, dynamic> toMap() {
     return {

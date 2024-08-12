@@ -50,42 +50,39 @@ class _HomePageOrdersWidgetState extends State<HomePageOrdersWidget> {
       padding: const EdgeInsets.all(8.0),
       child: RefreshIndicator(
         onRefresh: _refresh,
-        child: Flexible(
-          flex: 1,
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.start,
-            crossAxisAlignment: CrossAxisAlignment.stretch,
-            children: [
-              Padding(
-                padding: const EdgeInsets.all(3.0),
-                child: CustomRowHomePage(
-                    firstText: 'Restaurant',
-                    secondText: 'See More',
-                    press: () {
-                      Navigator.of(context).push(MaterialPageRoute(
-                          builder: (context) => const AllRestaurantPage()));
-                    }),
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.start,
+          crossAxisAlignment: CrossAxisAlignment.stretch,
+          children: [
+            Padding(
+              padding: const EdgeInsets.all(3.0),
+              child: CustomRowHomePage(
+                  firstText: 'Restaurant',
+                  secondText: 'See More',
+                  press: () {
+                    Navigator.of(context).push(MaterialPageRoute(
+                        builder: (context) => const AllRestaurantPage()));
+                  }),
+            ),
+            const SizedBox(
+              height: 5,
+            ),
+            const Expanded(flex: 1, child: GetRestaurantRowWidget()),
+            divider,
+            Expanded(
+              flex: 3,
+              child: ListView.separated(
+                itemCount: todayOrders.length,
+                itemBuilder: (context, index) {
+                  return OrdersListTitleWidget(
+                    title: todayOrders[index].title ?? '',
+                    orderEntity: todayOrders[index],
+                  );
+                },
+                separatorBuilder: (context, index) => divider,
               ),
-              const SizedBox(
-                height: 5,
-              ),
-              const GetRestaurantRowWidget(),
-              divider,
-              Flexible(
-                flex: 3,
-                child: ListView.separated(
-                    shrinkWrap: true,
-                    itemCount: todayOrders.length,
-                    itemBuilder: (context, index) {
-                      return OrdersListTitleWidget(
-                        title: todayOrders[index].title ?? '',
-                        orderEntity: todayOrders[index],
-                      );
-                    },
-                    separatorBuilder: (context, index) => divider),
-              ),
-            ],
-          ),
+            ),
+          ],
         ),
       ),
     );

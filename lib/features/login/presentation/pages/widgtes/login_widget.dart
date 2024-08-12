@@ -78,101 +78,103 @@ class _LoginWidgetState extends State<LoginWidget> {
     //   passwordController.text = "P@ssw0rd";
     // }
     return GradientBackground(
-      child: Center(
-        child: Column(
-          children: [
-            const TopImage(),
-            Padding(
-              padding: const EdgeInsets.symmetric(vertical: 50.0),
-              child: Form(
-                key: _formKey,
-                child: Padding(
-                  padding:
-                      const EdgeInsets.symmetric(horizontal: 15, vertical: 15),
-                  child: SingleChildScrollView(
-                    child: Column(
-                      children: [
-                        const LoginHeaderWidget(),
-                        const SizedBox(height: 15),
-                        LoginTextFieldWidget(
-                          hintText: "Email",
-                          obscureText: false,
-                          prefixIcon: const Icon(Icons.email),
-                          controllerEmail: emailController,
-                          onChanged: () {
-                            _formKey.currentState?.validate();
-                          },
-                        ),
-                        const SizedBox(height: 12),
-                        LoginTextFieldWidget(
-                          obscureText: passwordVisible,
-                          controllerEmail: passwordController,
-                          hintText: "Password",
-                          prefixIcon: const Icon(Icons.lock),
-                          suffixIcon: IconButton(
-                            onPressed: () {
+      child: SingleChildScrollView(
+        child: Center(
+          child: Column(
+            children: [
+              const TopImage(),
+              Padding(
+                padding: const EdgeInsets.symmetric(vertical: 50.0),
+                child: Form(
+                  key: _formKey,
+                  child: Padding(
+                    padding: const EdgeInsets.symmetric(
+                        horizontal: 15, vertical: 15),
+                    child: SingleChildScrollView(
+                      child: Column(
+                        children: [
+                          const LoginHeaderWidget(),
+                          const SizedBox(height: 15),
+                          LoginTextFieldWidget(
+                            hintText: "Email",
+                            obscureText: false,
+                            prefixIcon: const Icon(Icons.email),
+                            controllerEmail: emailController,
+                            onChanged: () {
+                              _formKey.currentState?.validate();
+                            },
+                          ),
+                          const SizedBox(height: 12),
+                          LoginTextFieldWidget(
+                            obscureText: passwordVisible,
+                            controllerEmail: passwordController,
+                            hintText: "Password",
+                            prefixIcon: const Icon(Icons.lock),
+                            suffixIcon: IconButton(
+                              onPressed: () {
+                                setState(() {
+                                  passwordVisible = !passwordVisible;
+                                });
+                              },
+                              icon: Icon(
+                                passwordVisible
+                                    ? Icons.visibility_off
+                                    : Icons.visibility,
+                              ),
+                            ),
+                          ),
+                          const SizedBox(height: 12),
+                          CommonElevatedButtonWidget(
+                            text: "Log in",
+                            onPressed: () async {
+                              final PushNotificationService
+                                  pushNotificationService =
+                                  PushNotificationService(
+                                _firebaseMessaging,
+                              );
+                              pushNotificationService.updateUserFcmToken();
+                              pushNotificationService.initialise();
                               setState(() {
-                                passwordVisible = !passwordVisible;
+                                if (_formKey.currentState!.validate()) {
+                                  context.read<LoginCubit>().remoteLogin(
+                                        emailController.text.trim(),
+                                        passwordController.text,
+                                        context,
+                                      );
+                                }
                               });
                             },
-                            icon: Icon(
-                              passwordVisible
-                                  ? Icons.visibility_off
-                                  : Icons.visibility,
+                          ),
+                          Row(
+                            children: [
+                              Checkbox(
+                                activeColor: Colors.blue,
+                                value: _rememberMe,
+                                onChanged: (newValue) {
+                                  setState(() => _rememberMe = newValue!);
+                                  _handleRememberMe(newValue ?? false);
+                                },
+                              ),
+                              const Text('Remember Me'),
+                            ],
+                          ),
+                          BottomAuthRowWidget(
+                            text: "Don't have an account ?",
+                            value: "Sign up",
+                            onTap: () => Navigator.of(context).push(
+                              MaterialPageRoute(
+                                builder: (context) => const RegisterPage(),
+                              ),
                             ),
                           ),
-                        ),
-                        const SizedBox(height: 12),
-                        CommonElevatedButtonWidget(
-                          text: "Log in",
-                          onPressed: () async {
-                            final PushNotificationService
-                                pushNotificationService =
-                                PushNotificationService(
-                              _firebaseMessaging,
-                            );
-                            pushNotificationService.updateUserFcmToken();
-                            pushNotificationService.initialise();
-                            setState(() {
-                              if (_formKey.currentState!.validate()) {
-                                context.read<LoginCubit>().remoteLogin(
-                                      emailController.text.trim(),
-                                      passwordController.text,
-                                      context,
-                                    );
-                              }
-                            });
-                          },
-                        ),
-                        Row(
-                          children: [
-                            Checkbox(
-                              activeColor: Colors.blue,
-                              value: _rememberMe,
-                              onChanged: (newValue) {
-                                setState(() => _rememberMe = newValue!);
-                                _handleRememberMe(newValue ?? false);
-                              },
-                            ),
-                            const Text('Remember Me'),
-                          ],
-                        ),
-                        BottomAuthRowWidget(
-                          text: "Don't have an account ?",
-                          value: "Sign up",
-                          onTap: () => Navigator.of(context).push(
-                            MaterialPageRoute(
-                              builder: (context) => const RegisterPage(),
-                            ),
-                          ),
-                        ),
-                      ],
+                        ],
+                      ),
                     ),
                   ),
                 ),
               ),
-            ),
-          ],
+            ],
+          ),
         ),
       ),
     );

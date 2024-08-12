@@ -191,6 +191,8 @@ class _OrderSummaryPageState extends State<OrderSummaryPage> {
                       keyboardType: TextInputType.number,
                       decoration: InputDecoration(
                         labelText: '${deliveryFee ?? 'Delivery Fees'}',
+                        hintStyle: TextStyle(color: Colors.black),
+                        labelStyle: TextStyle(color: Colors.black),
                         border: const OutlineInputBorder(),
                         hintText: "${deliveryFee ?? 'Delivery Fees'}",
                         filled: true,
