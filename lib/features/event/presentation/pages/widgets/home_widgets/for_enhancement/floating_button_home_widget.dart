@@ -1,11 +1,10 @@
 import 'package:flutter/material.dart';
-
-import '../../create_order_pages/create_order_page.dart';
+import 'package:order/features/event/presentation/pages/widgets/create_order_pages/create_order_page.dart';
 
 class FloatingButtonHomeWidget extends StatelessWidget {
   const FloatingButtonHomeWidget({
-    Key? key,
-  }) : super(key: key);
+    super.key,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -13,7 +12,7 @@ class FloatingButtonHomeWidget extends StatelessWidget {
       onPressed: () {
         Navigator.push(
             context,
-            MaterialPageRoute(
+            MaterialPageRoute<dynamic>(
                 builder: (_) => const CreateOrderPage(
                       isUpdateEvent: false,
                     )));

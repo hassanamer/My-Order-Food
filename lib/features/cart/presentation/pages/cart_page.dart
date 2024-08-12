@@ -19,29 +19,30 @@ class _CartPageState extends State<CartPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: const AppBarWidget(
-        pageName: "Cart",
+        pageName: 'Cart',
       ),
+      // ignore: always_specify_types
       body: BlocProvider(
-        create: (context) => CartCubit()..getAllCartItems(),
+        create: (BuildContext context) => CartCubit()..getAllCartItems(),
         child: BlocConsumer<CartCubit, CartState>(
-          listener: (context, state) {
+          listener: (BuildContext context, CartState state) {
             if (state is CartError) {
               if (kDebugMode) {
                 print(state.errorMessage);
               }
             }
           },
-          builder: (context, state) {
+          builder: (BuildContext context, CartState state) {
             if (state is CartItemsLoadded) {
               return CartWidget(menuModel: state.menuModel);
             } else if (state is EmptyCart) {
               return const Center(child: Text('Your cart is empty....!'));
             }
             return Stack(
-              children: [
+              children: <Widget>[
                 Container(
                     color: Colors.white.withOpacity(0.5),
-                    child: LoadingWidget()),
+                    child: const LoadingWidget()),
               ],
             );
           },

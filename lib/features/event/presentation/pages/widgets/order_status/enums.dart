@@ -3,17 +3,16 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:order/core/widgets/app_bar_widget.dart';
+import 'package:order/core/widgets/loading_widget.dart';
 import 'package:order/features/event/domain/entities/order_entities.dart';
-
-import '../../../../../../core/widgets/loading_widget.dart';
-import '../../../cubit/order_cubit.dart';
-import '../../../cubit/order_state.dart';
-import 'order_status_item_view.dart';
+import 'package:order/features/event/presentation/cubit/order_cubit.dart';
+import 'package:order/features/event/presentation/cubit/order_state.dart';
+import 'package:order/features/event/presentation/pages/widgets/order_status/order_status_item_view.dart';
 
 class Enums extends StatefulWidget {
   final OrderEntity orderEntity;
 
-  const Enums({Key? key, required this.orderEntity}) : super(key: key);
+  const Enums({required this.orderEntity, super.key});
 
   @override
   State<Enums> createState() => _EnumsState();
@@ -30,15 +29,15 @@ class _EnumsState extends State<Enums> {
 
   @override
   Widget build(BuildContext context) {
-    final themeColors = Theme.of(context).colorScheme;
+    final ColorScheme themeColors = Theme.of(context).colorScheme;
     return Scaffold(
-      backgroundColor: themeColors.background,
+      backgroundColor: themeColors.surface,
       appBar: const AppBarWidget(
-        pageName: "Order Status",
+        pageName: 'Order Status',
         hideBackButton: false,
       ),
       body: BlocConsumer<OrderCubit, OrderState>(
-        listener: (context, state) {
+        listener: (BuildContext context, OrderState state) {
           if (state is OrderSuccessState) {
             context.read<OrderCubit>().getAllOrders();
           }
@@ -51,7 +50,7 @@ class _EnumsState extends State<Enums> {
             print(state.orderEntity);
           }
         },
-        builder: (context, state) {
+        builder: (BuildContext context, OrderState state) {
           if (state is OrderLoadedState) {
             return ListView(
               padding: const EdgeInsets.only(
@@ -60,28 +59,27 @@ class _EnumsState extends State<Enums> {
                 top: 48,
                 bottom: 16,
               ),
-              children: [
-                ...OrderStatusEnum.values
-                    .mapIndexed(
-                      (i, e) => OrderStatusItemView(
-                        color: e.color,
-                        title: e.title,
-                        subtitle: e.descreption,
-                        icon: e.icon,
-                        showLine: i < OrderStatusEnum.values.length - 1,
-                        isActive: OrderStatusEnum.values
-                                .indexOf(widget.orderEntity.status) >=
-                            i,
-                      ),
-                    )
-                    .toList(),
+              children: <Widget>[
+                ...OrderStatusEnum.values.mapIndexed(
+                  (int i, OrderStatusEnum e) => OrderStatusItemView(
+                    color: e.color,
+                    title: e.title,
+                    subtitle: e.descreption,
+                    icon: e.icon,
+                    showLine: i < OrderStatusEnum.values.length - 1,
+                    isActive: OrderStatusEnum.values
+                            .indexOf(widget.orderEntity.status) >=
+                        i,
+                  ),
+                ),
               ],
             );
           }
           return Stack(
-            children: [
+            children: <Widget>[
               Container(
-                  color: Colors.white.withOpacity(0.5), child: LoadingWidget()),
+                  color: Colors.white.withOpacity(0.5),
+                  child: const LoadingWidget()),
             ],
           );
         },

@@ -1,6 +1,7 @@
 import 'dart:io';
 
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:order/features/event/domain/entities/order_entities.dart';
 import 'package:order/features/restaurant/data/datasource/restaurant_datasource.dart';
 import 'package:order/features/restaurant/data/model/restaurant_model.dart';
 import 'package:order/features/restaurant/domain/usecase/add_restaurant_usecase.dart';
@@ -22,11 +23,12 @@ class RestaurantCubit extends Cubit<RestaurantState> {
       emit(RestaurantLoading());
       addRestaurantUsecase = sl();
       uploadImageUsecase = sl();
+      // ignore: always_specify_types
       final imageResponse = await uploadImageUsecase.call(imageFile);
       if (imageResponse.status) {
         restaurantModel.imageURL =
             imageResponse.message; // Use message field for imageURL
-        final addedRestaurant =
+        final BaseResponse addedRestaurant =
             await addRestaurantUsecase.call(restaurantModel);
         if (addedRestaurant.status) {
           emit(RestaurantSuccess(addedRestaurant));
@@ -45,7 +47,8 @@ class RestaurantCubit extends Cubit<RestaurantState> {
     try {
       emit(RestaurantLoading());
       getAllRestaurantUsecase = sl();
-      final allRestaurants = await getAllRestaurantUsecase.call();
+      final List<RestaurantModel> allRestaurants =
+          await getAllRestaurantUsecase.call();
       emit(RestaurantLoadedState(restaurantModel: allRestaurants));
     } catch (e) {
       emit(RestaurantError(errorMessage: e.toString()));
@@ -57,17 +60,19 @@ class RestaurantCubit extends Cubit<RestaurantState> {
     try {
       emit(RestaurantLoading());
       uploadImageUsecase = sl();
-      final imageResponse = await uploadImageUsecase.call(imageFile);
+      final BaseResponse imageResponse =
+          await uploadImageUsecase.call(imageFile);
       if (imageResponse.status) {
-        final restaurantDatasource = RestaurantDatasourceImpl();
-        final restaurantModel =
+        final RestaurantDatasourceImpl restaurantDatasource =
+            RestaurantDatasourceImpl();
+        final RestaurantModel? restaurantModel =
             await restaurantDatasource.getRestaurantByName(restaurantName);
         if (restaurantModel != null) {
           restaurantModel.imageURL = imageResponse.message;
           await restaurantDatasource.updateResturantMenu(restaurantModel);
-          emit(RestaurantSuccess("Menu Updated Successfully"));
+          emit(RestaurantSuccess('Menu Updated Successfully'));
         } else {
-          emit(RestaurantError(errorMessage: "Restaurant not found"));
+          emit(RestaurantError(errorMessage: 'Restaurant not found'));
         }
       } else {
         emit(RestaurantError(errorMessage: imageResponse.message));
@@ -81,10 +86,12 @@ class RestaurantCubit extends Cubit<RestaurantState> {
     try {
       emit(RestaurantLoading());
       uploadImageUsecase = sl();
-      final imageResponse = await uploadImageUsecase.call(imageFile);
+      final BaseResponse imageResponse =
+          await uploadImageUsecase.call(imageFile);
       if (imageResponse.status) {
-        final restaurantDatasource = RestaurantDatasourceImpl();
-        final restaurantModel =
+        final RestaurantDatasourceImpl restaurantDatasource =
+            RestaurantDatasourceImpl();
+        final RestaurantModel? restaurantModel =
             await restaurantDatasource.getRestaurantByName(restaurantName);
         if (restaurantModel != null) {
           restaurantModel.imageURL = imageResponse.message;
@@ -93,7 +100,7 @@ class RestaurantCubit extends Cubit<RestaurantState> {
             MenuImageUpdatedState(imageResponse.message, restaurantModel),
           );
         } else {
-          emit(RestaurantError(errorMessage: "Restaurant not found"));
+          emit(RestaurantError(errorMessage: 'Restaurant not found'));
         }
       } else {
         emit(RestaurantError(errorMessage: imageResponse.message));

@@ -7,15 +7,15 @@ class EventWidget extends StatelessWidget {
   final List<OrderEntity> eventEntity;
 
   const EventWidget({
-    Key? key,
     required this.eventEntity,
-  }) : super(key: key);
+    super.key,
+  });
 
   @override
   Widget build(BuildContext context) {
     return ListView.separated(
       itemCount: eventEntity.length,
-      itemBuilder: (context, index) {
+      itemBuilder: (BuildContext context, int index) {
         return ListTile(
           leading: Text(eventEntity[index].id.toString()),
           title: Text(
@@ -34,7 +34,8 @@ class EventWidget extends StatelessWidget {
           },
         );
       },
-      separatorBuilder: (context, index) => const Divider(thickness: 1),
+      separatorBuilder: (BuildContext context, int index) =>
+          const Divider(thickness: 1),
     );
   }
 }

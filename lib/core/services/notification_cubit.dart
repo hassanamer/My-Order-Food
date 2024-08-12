@@ -1,8 +1,7 @@
 import 'package:bloc/bloc.dart';
 import 'package:meta/meta.dart';
-
-import 'notification_model.dart';
-import 'notification_service.dart';
+import 'package:order/core/services/notification_model.dart';
+import 'package:order/core/services/notification_service.dart';
 
 part 'notification_state.dart';
 
@@ -14,10 +13,10 @@ class NotificationCubit extends Cubit<NotificationState> {
   void loadNotifications() async {
     emit(NotificationLoading());
     try {
-      await for (final notifications
+      await for (final List<NotificationModel> notifications
           in NotificationService.currentUserNotificationsStream()) {
-        bool unseenNotifications =
-            notifications.any((notification) => !notification.notificationSeen);
+        bool unseenNotifications = notifications.any(
+            (NotificationModel notification) => !notification.notificationSeen);
         emit(NotificationLoaded(
             notifications: notifications,
             unseenNotifications: unseenNotifications));
@@ -28,9 +27,9 @@ class NotificationCubit extends Cubit<NotificationState> {
   }
 
   Future<void> markAllNotificationsAsSeen() async {
-    final state = this.state;
+    final NotificationState state = this.state;
     if (state is NotificationLoaded) {
-      for (var notification in state.notifications) {
+      for (NotificationModel notification in state.notifications) {
         if (!notification.notificationSeen) {
           notification.notificationSeen = true;
           await NotificationService.updateNotification(notification);

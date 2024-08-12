@@ -3,7 +3,7 @@ class ChatMessages {
   String content;
 
   ChatMessages({
-    this.idFrom,
     required this.content,
+    this.idFrom,
   });
 }

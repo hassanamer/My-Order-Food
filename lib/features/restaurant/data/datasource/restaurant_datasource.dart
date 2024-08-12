@@ -3,13 +3,12 @@ import 'dart:io';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:order/features/event/domain/entities/order_entities.dart';
 import 'package:order/features/restaurant/data/model/menu_model.dart';
-
-import '../../../event/domain/entities/order_entities.dart';
-import '../model/restaurant_model.dart';
+import 'package:order/features/restaurant/data/model/restaurant_model.dart';
 
 class FirebaseDatasourceProvider {
-  static final _firebaseDatasourceProvider =
+  static final FirebaseDatasourceProvider _firebaseDatasourceProvider =
       FirebaseDatasourceProvider._internal();
 
   factory FirebaseDatasourceProvider() {
@@ -49,11 +48,12 @@ class RestaurantDatasourceImpl extends RestaurantDatasourceInterface {
       await firebaseFirestore
           .collection('Restaurants')
           .doc(restaurantModel.restaurantName)
+          // ignore: always_specify_types
           .set({
-        "restaurantName": restaurantModel.restaurantName,
-        "restaurantDescription": restaurantModel.restaurantDescription,
-        "restaurantHotline": restaurantModel.hotlineNum,
-        "imageURL": restaurantModel.imageURL,
+        'restaurantName': restaurantModel.restaurantName,
+        'restaurantDescription': restaurantModel.restaurantDescription,
+        'restaurantHotline': restaurantModel.hotlineNum,
+        'imageURL': restaurantModel.imageURL,
       });
       return BaseResponse(status: true, message: 'added Successfully');
     } catch (e) {
@@ -69,9 +69,9 @@ class RestaurantDatasourceImpl extends RestaurantDatasourceInterface {
           .collection('Restaurants')
           .doc(restaurantModel.restaurantName)
           .update(restaurantModel.toMap());
-      return BaseResponse(status: true, message: "Menu Updated Successfully");
+      return BaseResponse(status: true, message: 'Menu Updated Successfully');
     } catch (e) {
-      throw e;
+      rethrow;
     }
   }
 
@@ -83,33 +83,35 @@ class RestaurantDatasourceImpl extends RestaurantDatasourceInterface {
           .doc(menuModel.name)
           .update(menuModel.toMap());
     } catch (e) {
-      throw e;
+      rethrow;
     }
   }
 
   @override
   Future<BaseResponse> uploadImage(File imageFile) async {
     try {
-      var snapshot = await firebaseStorage
+      TaskSnapshot snapshot = await firebaseStorage
           .ref()
           .child('images/${imageFile.path.split('/').last}')
           .putFile(imageFile);
 
-      var downloadURL = await snapshot.ref.getDownloadURL();
+      String downloadURL = await snapshot.ref.getDownloadURL();
 
       return BaseResponse(
           status: true, message: downloadURL); // Return the URL as the message
     } catch (e) {
       return BaseResponse(
-          status: false, message: "You must choose an image..!");
+          status: false, message: 'You must choose an image..!');
     }
   }
 
   @override
   Future<List<RestaurantModel>> getAllRestaurant() async {
-    final retrieve = firebaseFirestore.collection('Restaurants');
-    final querySnapshot = await retrieve.get();
-    List<RestaurantModel> restaurants = [];
+    final CollectionReference<Map<String, dynamic>> retrieve =
+        firebaseFirestore.collection('Restaurants');
+    final QuerySnapshot<Map<String, dynamic>> querySnapshot =
+        await retrieve.get();
+    List<RestaurantModel> restaurants = <RestaurantModel>[];
     for (QueryDocumentSnapshot<Map<String, dynamic>> doc
         in querySnapshot.docs) {
       restaurants.add(RestaurantModel.fromSnapShot(doc));
@@ -121,12 +123,12 @@ class RestaurantDatasourceImpl extends RestaurantDatasourceInterface {
   Future<BaseResponse> getUploadedImage() async {
     try {
       XFile? pickedImage;
-      var file = File(pickedImage!.path);
-      var snapshot =
+      File file = File(pickedImage!.path);
+      TaskSnapshot snapshot =
           await firebaseStorage.ref().child('images/$file').putFile(file);
       await snapshot.ref.getDownloadURL();
 
-      return BaseResponse(status: true, message: "Image retrive successfully");
+      return BaseResponse(status: true, message: 'Image retrive successfully');
     } catch (e) {
       return BaseResponse(status: false, message: e.toString());
     }
@@ -134,16 +136,17 @@ class RestaurantDatasourceImpl extends RestaurantDatasourceInterface {
 
   Future<RestaurantModel?> getRestaurantByName(String restaurantName) async {
     try {
-      final docSnapshot = await firebaseFirestore
-          .collection('Restaurants')
-          .doc(restaurantName)
-          .get();
+      final DocumentSnapshot<Map<String, dynamic>> docSnapshot =
+          await firebaseFirestore
+              .collection('Restaurants')
+              .doc(restaurantName)
+              .get();
       if (docSnapshot.exists) {
         return RestaurantModel.fromSnapShot(docSnapshot);
       }
       return null;
     } catch (e) {
-      throw e;
+      rethrow;
     }
   }
 }

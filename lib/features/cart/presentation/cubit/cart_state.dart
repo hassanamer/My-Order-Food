@@ -1,4 +1,6 @@
-import '../../../restaurant/data/model/menu_model.dart';
+// ignore_for_file: always_specify_types
+
+import 'package:order/features/restaurant/data/model/menu_model.dart';
 
 abstract class CartState {}
 
@@ -8,6 +10,7 @@ class CartLoading extends CartState {}
 
 class CartError extends CartState {
   String errorMessage;
+
   CartError({required this.errorMessage});
 }
 
@@ -17,6 +20,7 @@ class CartSuccess extends CartState {
 
 class CartItemsLoadded extends CartState {
   final List<MenuModel> menuModel;
+
   CartItemsLoadded({
     required this.menuModel,
   });

@@ -5,14 +5,13 @@ import 'package:order/core/theming/styles.dart';
 import 'package:order/core/widgets/app_bar_widget.dart';
 import 'package:order/core/widgets/loading_widget.dart';
 import 'package:order/features/event/domain/entities/order_entities.dart';
+import 'package:order/features/event/presentation/cubit/order_cubit.dart';
 import 'package:order/features/event/presentation/pages/widgets/order_details_page/order_summary_page.dart';
-
-import '../../../event/presentation/cubit/order_cubit.dart';
 
 class ViewOrderPage extends StatefulWidget {
   final VoidCallback? onCalculate;
 
-  const ViewOrderPage({Key? key, this.onCalculate});
+  const ViewOrderPage({super.key, this.onCalculate});
 
   @override
   State<ViewOrderPage> createState() => _ViewOrderPageState();
@@ -34,28 +33,30 @@ class _ViewOrderPageState extends State<ViewOrderPage> {
 
     return Scaffold(
       appBar: const AppBarWidget(
-        pageName: "Your Orders",
+        pageName: 'Your Orders',
       ),
       body: StreamBuilder<List<OrderEntity>>(
         stream: _ordersStream,
-        builder: (context, snapshot) {
+        builder:
+            (BuildContext context, AsyncSnapshot<List<OrderEntity>> snapshot) {
           if (snapshot.connectionState == ConnectionState.waiting) {
-            return Center(child: LoadingWidget());
+            return const Center(child: LoadingWidget());
           } else if (snapshot.hasError) {
             return Center(child: Text('Error: ${snapshot.error}'));
           } else if (!snapshot.hasData || snapshot.data!.isEmpty) {
-            return Center(
+            return const Center(
               child: Text(
                 'You Didn\'t Try To Use Our App Before',
                 style: TextStyles.font18BlueSemiBold,
               ),
             );
           }
-          final orders = snapshot.data!;
-          final filteredOrders = orders.where((orderEntity) {
+          final List<OrderEntity> orders = snapshot.data!;
+          final List<OrderEntity> filteredOrders =
+              orders.where((OrderEntity orderEntity) {
             bool isCreator = orderEntity.userId == currentUserId;
             bool isParticipant = orderEntity.items
-                    ?.any((item) => item.userId == currentUserId) ??
+                    ?.any((OrderItem item) => item.userId == currentUserId) ??
                 false;
             return isCreator || isParticipant;
           }).toList();
@@ -66,19 +67,20 @@ class _ViewOrderPageState extends State<ViewOrderPage> {
 
           return ListView.builder(
             itemCount: filteredOrders.length,
-            itemBuilder: (context, index) {
-              var orderEntity = filteredOrders[index];
-              var orderId = orderEntity.id;
-              var createdAt = orderEntity.createdAt != null
+            itemBuilder: (BuildContext context, int index) {
+              OrderEntity orderEntity = filteredOrders[index];
+              String orderId = orderEntity.id;
+              // ignore: unnecessary_null_comparison
+              String createdAt = orderEntity.createdAt != null
                   ? DateFormat('yyyy-MM-dd hh:mm a')
-                      .format(orderEntity.createdAt!)
+                      .format(orderEntity.createdAt)
                   : 'Unknown';
               return GestureDetector(
                 onTap: () {
                   Navigator.push(
                     context,
-                    MaterialPageRoute(
-                      builder: (context) => OrderSummaryPage(
+                    MaterialPageRoute<dynamic>(
+                      builder: (BuildContext context) => OrderSummaryPage(
                           orderId: orderId,
                           orderEntity: orderEntity,
                           onCalculate: widget.onCalculate),
@@ -111,9 +113,9 @@ class _ViewOrderPageState extends State<ViewOrderPage> {
         padding: const EdgeInsets.all(16.0),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
+          children: <Widget>[
             Row(
-              children: [
+              children: <Widget>[
                 const Icon(Icons.shopping_cart, color: Colors.blue),
                 const SizedBox(width: 10),
                 Text(
@@ -127,7 +129,7 @@ class _ViewOrderPageState extends State<ViewOrderPage> {
             ),
             const SizedBox(height: 10),
             Row(
-              children: [
+              children: <Widget>[
                 const Icon(Icons.date_range, color: Colors.grey),
                 const SizedBox(width: 10),
                 Text(

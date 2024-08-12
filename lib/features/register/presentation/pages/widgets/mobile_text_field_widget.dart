@@ -1,12 +1,11 @@
 import 'package:flutter/material.dart';
-
-import '../../../../../core/theme_app.dart';
+import 'package:order/core/theme_app.dart';
 
 class MobileTextFieldWidget extends StatelessWidget {
   const MobileTextFieldWidget({
-    Key? key,
     required this.controllerPhone,
-  }) : super(key: key);
+    super.key,
+  });
 
   final TextEditingController controllerPhone;
 
@@ -25,10 +24,10 @@ class MobileTextFieldWidget extends StatelessWidget {
           fontWeight: FontWeight.w500,
         ),
         prefixIcon: const Icon(Icons.phone_outlined),
-        suffixIcon: const Text(""),
+        suffixIcon: const Text(''),
         filled: true,
       ),
-      validator: (value, {int i = 1}) {
+      validator: (String? value, {int i = 1}) {
         if (value == null || value.isEmpty) {
           return 'Please enter your Phone number.';
         }

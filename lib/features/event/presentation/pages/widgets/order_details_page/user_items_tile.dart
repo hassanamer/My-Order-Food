@@ -2,17 +2,17 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_staggered_animations/flutter_staggered_animations.dart';
+import 'package:order/core/services/notification_service.dart';
+import 'package:order/core/services/push_notification_service.dart';
 import 'package:order/core/theming/colors.dart';
+import 'package:order/core/theming/styles.dart';
+import 'package:order/core/widgets/common_elevated_button_widget.dart';
+import 'package:order/features/event/domain/entities/order_entities.dart';
+import 'package:order/features/event/domain/remote_usecases/remote_get_user_order.dart';
+import 'package:order/features/register/data/models/register_account_model.dart';
+import 'package:order/features/register/user/pages/user_profile_screen.dart';
 
-import '../../../../../../core/services/notification_service.dart';
-import '../../../../../../core/services/push_notification_service.dart';
-import '../../../../../../core/theming/styles.dart';
-import '../../../../../../core/widgets/common_elevated_button_widget.dart';
-import '../../../../../register/data/models/register_account_model.dart';
-import '../../../../../register/user/pages/user_profile_screen.dart';
-import '../../../../domain/entities/order_entities.dart';
-import '../../../../domain/remote_usecases/remote_get_user_order.dart';
-
+// ignore: must_be_immutable
 class UserItemsTile extends StatefulWidget {
   final RegisterAccountModel user;
   final List<OrderItem> items;
@@ -24,7 +24,6 @@ class UserItemsTile extends StatefulWidget {
   bool isCurrentUserPlacerOrReceiver;
 
   UserItemsTile({
-    super.key,
     required this.user,
     required this.items,
     required this.isCurrentUserPlacerOrReceiver,
@@ -33,6 +32,7 @@ class UserItemsTile extends StatefulWidget {
     required this.createdAt,
     required this.userDeliveryFee,
     required this.vat,
+    super.key,
   });
 
   @override
@@ -41,16 +41,16 @@ class UserItemsTile extends StatefulWidget {
 
 class _UserItemsTileState extends State<UserItemsTile> {
   late GetUserUsecase getUserOrderUsecase;
-  Map<String, List<OrderItem>> itemsGroupedByUser = {};
-  Map<String, RegisterAccountModel> userMap = {};
-  List<OrderItem> itemsList = [];
+  Map<String, List<OrderItem>> itemsGroupedByUser = <String, List<OrderItem>>{};
+  Map<String, RegisterAccountModel> userMap = <String, RegisterAccountModel>{};
+  List<OrderItem> itemsList = <OrderItem>[];
   bool isLoading = true;
   double totalPrice = 0;
 
   @override
   initState() {
     super.initState();
-    itemsList = widget.orderEntity.items ?? [];
+    itemsList = widget.orderEntity.items ?? <OrderItem>[];
   }
 
   Widget getDivider() {
@@ -64,7 +64,7 @@ class _UserItemsTileState extends State<UserItemsTile> {
 
   void updateItemsTotalPrice() {
     double total = 0.0;
-    for (var item in widget.items) {
+    for (OrderItem item in widget.items) {
       total += item.itemTotalPrice ?? 0;
     }
     widget.orderEntity.itemsTotalPricePerUser[widget.user.userId!] = total;
@@ -98,11 +98,11 @@ class _UserItemsTileState extends State<UserItemsTile> {
             decoration: BoxDecoration(
               borderRadius: BorderRadius.circular(15),
               gradient: LinearGradient(
-                colors: [Colors.blue.shade400, Colors.blue.shade900],
+                colors: <Color>[Colors.blue.shade400, Colors.blue.shade900],
                 begin: Alignment.topLeft,
                 end: Alignment.bottomRight,
               ),
-              boxShadow: [
+              boxShadow: <BoxShadow>[
                 BoxShadow(
                   color: Colors.black.withOpacity(0.1),
                   blurRadius: 8,
@@ -117,14 +117,14 @@ class _UserItemsTileState extends State<UserItemsTile> {
                 onTap: () {},
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
+                  children: <Widget>[
                     Padding(
                       padding: const EdgeInsets.all(5.0),
                       child: Container(
                         padding: const EdgeInsets.symmetric(
                             horizontal: 5, vertical: 5),
                         decoration: const BoxDecoration(
-                          boxShadow: [
+                          boxShadow: <BoxShadow>[
                             BoxShadow(
                               blurRadius: 9,
                               color: Colors.transparent,
@@ -134,7 +134,7 @@ class _UserItemsTileState extends State<UserItemsTile> {
                         ),
                         child: Row(
                           mainAxisAlignment: MainAxisAlignment.start,
-                          children: [
+                          children: <Widget>[
                             GradientCircleAvatar(
                                 profileImageUrl: widget.user.profileImageUrl,
                                 width: 100.w,
@@ -148,15 +148,15 @@ class _UserItemsTileState extends State<UserItemsTile> {
                     ),
                     getDivider(),
                     ...widget.items.map(
-                      (item) => Padding(
+                      (OrderItem item) => Padding(
                         padding: const EdgeInsets.symmetric(
                             horizontal: 10.0, vertical: 5.0),
                         child: Column(
-                          children: [
+                          children: <Widget>[
                             Row(
                               // mainAxisAlignment:
                               // MainAxisAlignment.spaceEvenly,
-                              children: [
+                              children: <Widget>[
                                 const Expanded(
                                   flex: 1,
                                   child: Text('Item :',
@@ -178,7 +178,7 @@ class _UserItemsTileState extends State<UserItemsTile> {
                             Row(
                               // mainAxisAlignment:
                               //     MainAxisAlignment.spaceBetween,
-                              children: [
+                              children: <Widget>[
                                 const Expanded(
                                   flex: 1,
                                   child: Text('Qty :',
@@ -187,7 +187,7 @@ class _UserItemsTileState extends State<UserItemsTile> {
                                 // const Spacer(),
                                 Expanded(
                                   flex: 3,
-                                  child: Text("${item.quantity}",
+                                  child: Text('${item.quantity}',
                                       overflow: TextOverflow.ellipsis,
                                       style: TextStyles.font20WhiteBold),
                                 ),
@@ -198,7 +198,7 @@ class _UserItemsTileState extends State<UserItemsTile> {
                             ),
                             Row(
                               mainAxisAlignment: MainAxisAlignment.spaceAround,
-                              children: [
+                              children: <Widget>[
                                 Expanded(
                                   child: Visibility(
                                     visible:
@@ -207,7 +207,7 @@ class _UserItemsTileState extends State<UserItemsTile> {
                                       onTap: () {
                                         FocusScope.of(context).unfocus();
                                       },
-                                      child: Container(
+                                      child: SizedBox(
                                         height: 40.0.h,
                                         width: 50.0.w,
                                         child: TextField(
@@ -222,7 +222,7 @@ class _UserItemsTileState extends State<UserItemsTile> {
                                               updateTotalPrice();
                                             });
                                           },
-                                          inputFormatters: [
+                                          inputFormatters: <TextInputFormatter>[
                                             LengthLimitingTextInputFormatter(4),
                                           ],
                                           keyboardType: TextInputType.number,
@@ -263,7 +263,7 @@ class _UserItemsTileState extends State<UserItemsTile> {
                     ),
                     const SizedBox(height: 5),
                     Column(
-                      children: [
+                      children: <Widget>[
                         Center(
                           child: Text(
                             maxLines: 1,
@@ -290,9 +290,9 @@ class _UserItemsTileState extends State<UserItemsTile> {
                                 widget.updateOrder();
                                 PushNotificationService.sendNotificationToUser(
                                     widget.user.userId,
-                                    "Your Total Price Is ${totalPrice.toStringAsFixed(2)}");
+                                    'Your Total Price Is ${totalPrice.toStringAsFixed(2)}');
                                 NotificationService.saveNotification(
-                                    "Your Total Price Is",
+                                    'Your Total Price Is',
                                     totalPrice.toStringAsFixed(2),
                                     widget.user.userId);
                               },

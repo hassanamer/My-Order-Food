@@ -1,3 +1,5 @@
+// ignore_for_file: always_specify_types
+
 abstract class LoginState {}
 
 class SuccessState extends LoginState {

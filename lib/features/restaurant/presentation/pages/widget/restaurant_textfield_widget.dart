@@ -2,13 +2,14 @@ import 'package:flutter/material.dart';
 
 class RestaurantTextFieldWidget extends StatelessWidget {
   const RestaurantTextFieldWidget({
-    Key? key,
     required this.controllerRestaurant,
     required this.labelText,
-  }) : super(key: key);
+    super.key,
+  });
 
   final TextEditingController controllerRestaurant;
   final String labelText;
+
   @override
   Widget build(BuildContext context) {
     return TextFormField(
@@ -18,7 +19,7 @@ class RestaurantTextFieldWidget extends StatelessWidget {
         labelText: labelText,
         prefixIcon: const Icon(Icons.restaurant_outlined),
       ),
-      validator: (value) {
+      validator: (String? value) {
         if (value!.isNotEmpty) {
           return null;
         } else {

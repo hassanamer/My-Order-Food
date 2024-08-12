@@ -1,6 +1,5 @@
 import 'package:order/features/event/domain/entities/order_entities.dart';
-
-import '../reporisatory/restaurant_reporisatory.dart';
+import 'package:order/features/restaurant/domain/reporisatory/restaurant_reporisatory.dart';
 
 class GetUploadedImageUsecase {
   final RestaurantReporisatory restaurantReporisatory;

@@ -7,12 +7,12 @@ class CommonContainerRestaurantWidget extends StatelessWidget {
   final TextStyle textStyle;
 
   const CommonContainerRestaurantWidget({
-    Key? key,
     required this.text,
     required this.iconData,
     required this.isShowEndicon,
+    super.key,
     this.textStyle = const TextStyle(fontSize: 21, fontWeight: FontWeight.bold),
-  }) : super(key: key);
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -20,7 +20,7 @@ class CommonContainerRestaurantWidget extends StatelessWidget {
       padding: const EdgeInsets.all(8),
       alignment: Alignment.centerLeft,
       child: Row(
-        children: [
+        children: <Widget>[
           Offstage(offstage: !isShowEndicon, child: Icon(iconData)),
           const SizedBox(width: 6),
           Text(

@@ -5,7 +5,7 @@ class AwesomeNotificationService {
   static Future<void> initializeNotification() async {
     await AwesomeNotifications().initialize(
       null,
-      [
+      <NotificationChannel>[
         NotificationChannel(
           channelGroupKey: 'high_importance_channel',
           channelKey: 'high_importance_channel',
@@ -20,7 +20,7 @@ class AwesomeNotificationService {
           criticalAlerts: true,
         )
       ],
-      channelGroups: [
+      channelGroups: <NotificationChannelGroup>[
         NotificationChannelGroup(
           channelGroupKey: 'high_importance_channel_group',
           channelGroupName: 'Group 1',
@@ -30,7 +30,7 @@ class AwesomeNotificationService {
     );
 
     await AwesomeNotifications().isNotificationAllowed().then(
-      (isAllowed) async {
+      (bool isAllowed) async {
         if (!isAllowed) {
           await AwesomeNotifications().requestPermissionToSendNotifications();
         }
@@ -67,8 +67,9 @@ class AwesomeNotificationService {
   static Future<void> onActionReceivedMethod(
       ReceivedAction receivedAction) async {
     debugPrint('onActionReceivedMethod');
-    final payload = receivedAction.payload ?? {};
-    if (payload["navigate"] == "true") {
+    final Map<String, dynamic> payload =
+        receivedAction.payload ?? <String, dynamic>{};
+    if (payload['navigate'] == 'true') {
       // MainApp.navigatorKey.currentState?.push(
       //   MaterialPageRoute(
       //     builder: (_) => const SecondScreen(),

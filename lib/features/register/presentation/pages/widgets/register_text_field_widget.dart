@@ -1,13 +1,12 @@
 import 'package:flutter/material.dart';
-
-import '../../../../../core/theme_app.dart';
+import 'package:order/core/theme_app.dart';
 
 class RegisterTextFieldWidget extends StatelessWidget {
   const RegisterTextFieldWidget({
-    Key? key,
     required this.controller,
     required this.hintText,
-  }) : super(key: key);
+    super.key,
+  });
 
   final TextEditingController controller;
   final String hintText;
@@ -23,7 +22,7 @@ class RegisterTextFieldWidget extends StatelessWidget {
           size: 24,
           color: authTextFromFieldHintTextColor,
         ),
-        suffixIcon: const Text(""),
+        suffixIcon: const Text(''),
         hintText: hintText,
         hintStyle: const TextStyle(
           color: authTextFromFieldHintTextColor,
@@ -32,7 +31,7 @@ class RegisterTextFieldWidget extends StatelessWidget {
         ),
         filled: true,
       ),
-      validator: (value) {
+      validator: (String? value) {
         if (value!.isNotEmpty) {
           return null;
         } else {

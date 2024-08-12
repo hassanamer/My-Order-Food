@@ -1,17 +1,16 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:order/features/cart/presentation/cubit/cart_cubit.dart';
+import 'package:order/features/cart/presentation/pages/widgets/cart_alert_dialog_widget.dart';
 import 'package:order/features/restaurant/presentation/pages/get_menu_pages/menuu_pagee.dart';
-
-import 'cart_alert_dialog_widget.dart';
 
 class BottomContainerCartWidget extends StatelessWidget {
   final double total;
 
   const BottomContainerCartWidget({
-    Key? key,
     required this.total,
-  }) : super(key: key);
+    super.key,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -20,7 +19,7 @@ class BottomContainerCartWidget extends StatelessWidget {
       decoration: BoxDecoration(
         color: Colors.white,
         borderRadius: const BorderRadius.all(Radius.circular(10)),
-        boxShadow: [
+        boxShadow: <BoxShadow>[
           BoxShadow(
             color: Colors.grey.withOpacity(0.5),
             spreadRadius: 5,
@@ -30,8 +29,8 @@ class BottomContainerCartWidget extends StatelessWidget {
         ],
       ),
       child: Column(
-        children: [
-          Text("$total"),
+        children: <Widget>[
+          Text('$total'),
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceEvenly,
             children: <Widget>[
@@ -39,15 +38,16 @@ class BottomContainerCartWidget extends StatelessWidget {
                 height: 40,
                 width: 120,
                 child: OutlinedButton(
-                  onPressed: () => Navigator.of(context).push(MaterialPageRoute(
-                    builder: (context) => MenuuPagee(),
+                  onPressed: () =>
+                      Navigator.of(context).push(MaterialPageRoute<dynamic>(
+                    builder: (BuildContext context) => MenuuPagee(),
                   )),
                   style: OutlinedButton.styleFrom(
                       shape: RoundedRectangleBorder(
                           borderRadius: BorderRadius.circular(10)),
                       side: const BorderSide(
                           color: Color.fromARGB(255, 207, 78, 27))),
-                  child: const Text("Add Item"),
+                  child: const Text('Add Item'),
                 ),
               ),
               const SizedBox(width: 30),
@@ -62,7 +62,7 @@ class BottomContainerCartWidget extends StatelessWidget {
                   style: OutlinedButton.styleFrom(
                       shape: RoundedRectangleBorder(
                           borderRadius: BorderRadius.circular(10))),
-                  child: const Text("Check out"),
+                  child: const Text('Check out'),
                 ),
               ),
             ],

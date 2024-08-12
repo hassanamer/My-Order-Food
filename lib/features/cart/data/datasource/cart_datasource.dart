@@ -1,9 +1,10 @@
+// ignore_for_file: always_specify_types
+
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:order/features/cart/data/models/cart_items_model.dart';
 import 'package:order/features/event/domain/entities/order_entities.dart';
-
-import '../../../restaurant/data/model/menu_model.dart';
+import 'package:order/features/restaurant/data/model/menu_model.dart';
 
 class FirebaseDatasourceProvider {
   static final _firebaseDatasourceProvider =
@@ -49,7 +50,7 @@ class CartDatasourceImpl extends CartDatasourceInterface {
       });
       return BaseResponse(
           status: true,
-          message: "Item added , ${menuModel.name} was added to your cart");
+          message: 'Item added , ${menuModel.name} was added to your cart');
     } catch (e) {
       return BaseResponse(status: false, message: e.toString());
     }
@@ -58,14 +59,14 @@ class CartDatasourceImpl extends CartDatasourceInterface {
   @override
   Future<BaseResponse> addCartData(CartItemModel cartItemModel) async {
     try {
-      await firebaseFirestore.collection("checkout_list").doc().set({
+      await firebaseFirestore.collection('checkout_list').doc().set({
         'name': cartItemModel.name,
         'price': cartItemModel.price,
         'quantity': cartItemModel.quantity,
       });
       return BaseResponse(
           status: true,
-          message: "Item added , ${cartItemModel.name} to checkout list");
+          message: 'Item added , ${cartItemModel.name} to checkout list');
     } catch (e) {
       return BaseResponse(status: false, message: e.toString());
     }
@@ -105,7 +106,7 @@ class CartDatasourceImpl extends CartDatasourceInterface {
           documents.reference.delete();
         }
       });
-      return BaseResponse(status: true, message: "Cart cleared Successfully");
+      return BaseResponse(status: true, message: 'Cart cleared Successfully');
     } catch (e) {
       return BaseResponse(status: false, message: e.toString());
     }

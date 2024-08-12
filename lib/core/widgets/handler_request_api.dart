@@ -2,8 +2,7 @@
 
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
-
-import 'loading.dart';
+import 'package:order/core/widgets/loading.dart';
 
 Future<T?> handlerRequestApi<T>({
   required BuildContext context,
@@ -13,6 +12,7 @@ Future<T?> handlerRequestApi<T>({
   FocusManager.instance.primaryFocus?.unfocus();
   try {
     LoadingHandler.loadingDialog(context);
+    // ignore: always_specify_types
     final data = await body();
     if (Navigator.canPop(context)) {
       Navigator.of(context).pop();

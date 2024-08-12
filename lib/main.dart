@@ -1,3 +1,5 @@
+// ignore_for_file: always_specify_types
+
 import 'dart:async';
 import 'dart:convert';
 
@@ -7,40 +9,40 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
+import 'package:nested/nested.dart';
 import 'package:order/core/bloc_observer/bloc_observer.dart';
+import 'package:order/core/services/awesome_notification_service.dart';
 import 'package:order/core/services/my_firebase_notification.dart';
+import 'package:order/core/services/notification_cubit.dart';
 import 'package:order/core/theme_app.dart';
+import 'package:order/core/widgets/welcome_splash_widget.dart';
 import 'package:order/features/cart/presentation/cubit/cart_cubit.dart';
+import 'package:order/features/event/presentation/cubit/order_cubit.dart';
 import 'package:order/features/event/presentation/pages/order_food_home_page.dart';
 import 'package:order/features/event/presentation/pages/settings_page.dart';
 import 'package:order/features/event/presentation/pages/widgets/onboarding_page.dart';
 import 'package:order/features/login/presentation/cubit/login_cubit.dart';
+import 'package:order/features/login/presentation/pages/login_page.dart';
 import 'package:order/features/notification/notification_page.dart';
 import 'package:order/features/register/presentation/cubit/register_cubit.dart';
+import 'package:order/features/register/presentation/pages/profile_page.dart';
+import 'package:order/features/register/presentation/pages/register_page.dart';
+import 'package:order/features/register/user/profile_cubit.dart';
 import 'package:order/features/restaurant/presentation/cubit/restaurant_cubit.dart';
 import 'package:order/features/restaurant/presentation/pages/add_restaurant_page.dart';
 import 'package:order/features/restaurant/presentation/pages/get_all_restaurants_page/all_restaurants_page.dart';
 import 'package:order/features/restaurant/presentation/pages/menu_page/menu_page.dart';
+import 'package:order/firebase_options.dart';
+import 'package:order/injection_container.dart' as di;
 import 'package:shared_preferences/shared_preferences.dart';
 
-import 'core/services/awesome_notification_service.dart';
-import 'core/services/notification_cubit.dart';
-import 'core/widgets/welcome_splash_widget.dart';
-import 'features/event/presentation/cubit/order_cubit.dart';
-import 'features/login/presentation/pages/login_page.dart';
-import 'features/register/presentation/pages/profile_page.dart';
-import 'features/register/presentation/pages/register_page.dart';
-import 'features/register/user/profile_cubit.dart';
-import 'firebase_options.dart';
-import 'injection_container.dart' as di;
-
-final navigatorKey = GlobalKey<NavigatorState>();
-final List<Map<String, String>> _notifications = [];
+final GlobalKey<NavigatorState> navigatorKey = GlobalKey<NavigatorState>();
+final List<Map<String, String>> _notifications = <Map<String, String>>[];
 
 Future _firebaseBackgroundMessage(RemoteMessage message) async {
   if (message.notification != null) {
-    print("NOTIFICATION RECEIVED IN THE BACKGROUND");
-    _notifications.add({
+    print('NOTIFICATION RECEIVED IN THE BACKGROUND');
+    _notifications.add(<String, String>{
       'title': message.notification!.title ?? 'No Title',
       'body': message.notification!.body ?? 'No Body',
     });
@@ -71,7 +73,7 @@ void main() async {
 
     FirebaseMessaging.onMessage.listen((RemoteMessage message) {
       String payloadData = jsonEncode(message.data);
-      print("GOT MESSAGE IN THE FOREGROUND");
+      print('GOT MESSAGE IN THE FOREGROUND');
       if (message.notification != null) {
         PushNotification.showSimpleNotification(
           title: message.notification!.title!,
@@ -94,14 +96,14 @@ void main() async {
     Bloc.observer = MyGlobalObserver();
 
     runApp(const MyApp());
-  }, (e, s) {
+  }, (Object e, StackTrace s) {
     print(e);
     print(s);
   });
 }
 
 void handleNotification(RemoteMessage message) {
-  final notification = {
+  final Map<String, String> notification = <String, String>{
     'title': message.notification?.title ?? 'No Title',
     'body': message.notification?.body ?? 'No Body',
   };
@@ -130,9 +132,9 @@ class _MyAppState extends State<MyApp> {
       designSize: const Size(375, 812), // Set the design size of your UI
       minTextAdapt: true,
       splitScreenMode: true,
-      builder: (context, child) {
+      builder: (BuildContext context, Widget? child) {
         return MultiBlocProvider(
-          providers: [
+          providers: <SingleChildWidget>[
             BlocProvider(create: (_) => di.sl<LoginCubit>()),
             BlocProvider(create: (_) => di.sl<RegisterCubit>()),
             BlocProvider(create: (_) => di.sl<OrderCubit>()..getAllOrders()),
@@ -150,19 +152,21 @@ class _MyAppState extends State<MyApp> {
             theme: appTheme,
             debugShowCheckedModeBanner: false,
             navigatorKey: navigatorKey,
-            routes: {
-              'splash': (context) => const WelcomeSplashWidget(),
-              'onboarding': (context) => OnBoard(),
-              'login': (context) => const LoginPage(),
-              'register': (context) => const RegisterPage(),
-              'home': (context) => const OrderFoodHomePage(),
-              'restaurant': (context) => const RestaurantPage(),
-              'menu': (context) => const MenuPage(),
-              'allrestaurant': (context) => const AllRestaurantPage(),
+            routes: <String, Widget Function(BuildContext p1)>{
+              'splash': (BuildContext context) => const WelcomeSplashWidget(),
+              'onboarding': (BuildContext context) => const OnBoard(),
+              'login': (BuildContext context) => const LoginPage(),
+              'register': (BuildContext context) => const RegisterPage(),
+              'home': (BuildContext context) => const OrderFoodHomePage(),
+              'restaurant': (BuildContext context) => const RestaurantPage(),
+              'menu': (BuildContext context) => const MenuPage(),
+              'allrestaurant': (BuildContext context) =>
+                  const AllRestaurantPage(),
               // 'cart': (context) => const CartPage(),
-              'settings': (context) => const SettingsPage(),
-              'profile': (context) => const ProfilePage(),
-              'notifications': (context) => NotificationPage(),
+              'settings': (BuildContext context) => const SettingsPage(),
+              'profile': (BuildContext context) => const ProfilePage(),
+              'notifications': (BuildContext context) =>
+                  const NotificationPage(),
             },
             initialRoute: isviewed != 0 ? 'onboarding' : 'splash',
           ),

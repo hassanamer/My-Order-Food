@@ -1,3 +1,5 @@
+// ignore_for_file: always_specify_types
+
 import 'package:order/features/event/domain/entities/order_entities.dart';
 
 abstract class OrderState {}

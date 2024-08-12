@@ -1,37 +1,24 @@
-import '../../domain/entities/register_entities.dart';
+// ignore_for_file: always_specify_types
+
+import 'package:order/features/register/domain/entities/register_entities.dart';
 
 class RegisterAccountModel extends RegisterAccountEntity {
   RegisterAccountModel({
-    String? userId,
-    String? username,
-    String? name,
-    String? email,
-    String? phoneNumber,
-    String? profileImageUrl,
-    String? gender,
-    String? message,
-    int? replyCode,
-    String? fcmToken,
-    String? hasCar,
-    String? deliveryPreference,
-    int? placedOrderCount = 0,
-    int? receivedOrderCount = 0,
-  }) : super(
-          userId: userId,
-          username: username,
-          email: email,
-          profileImageUrl: profileImageUrl,
-          gender: gender,
-          name: name,
-          phoneNumber: phoneNumber,
-          message: message,
-          replyCode: replyCode,
-          fcmToken: fcmToken,
-          hasCar: hasCar,
-          deliveryPreference: deliveryPreference,
-          placedOrderCount: placedOrderCount,
-          receivedOrderCount: receivedOrderCount,
-        );
+    super.userId,
+    super.username,
+    super.name,
+    super.email,
+    super.phoneNumber,
+    super.profileImageUrl,
+    super.gender,
+    super.message,
+    super.replyCode,
+    super.fcmToken,
+    super.hasCar,
+    super.deliveryPreference,
+    super.placedOrderCount,
+    super.receivedOrderCount,
+  });
 
   Map<String, dynamic> toMap() {
     return {

@@ -1,47 +1,38 @@
+// ignore_for_file: always_specify_types
+
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:order/features/event/domain/entities/order_entities.dart';
 
 class OrderModel extends OrderEntity {
   OrderModel({
-    String? userId,
-    required String id,
-    String? title,
-    List<OrderItem>? items,
-    double? deliveryFees,
+    required super.id,
+    required super.vat,
+    required super.itemsTotalPricePerUser,
+    required super.createdAt,
+    required super.status,
+    super.userId,
+    super.title,
+    super.items,
+    super.deliveryFees,
     int? itemCount,
-    String? placerUid,
-    String? receiverUid,
-    required double vat,
-    required Map<String, double> itemsTotalPricePerUser,
-    required DateTime createdAt,
-    required OrderStatusEnum status,
-  }) : super(
-          userId: userId,
-          id: id,
-          title: title,
-          deliveryFees: deliveryFees,
-          receiverUid: receiverUid,
-          placerUid: placerUid,
-          items: items,
-          vat: vat,
-          itemsTotalPricePerUser: itemsTotalPricePerUser,
-          createdAt: createdAt,
-          status: status,
-        );
+    super.placerUid,
+    super.receiverUid,
+  });
 
+  @override
   Map<String, dynamic> toMap() {
     return {
       'userId': userId,
       'id': id,
       'title': title,
-      "items": items?.map((item) => item.toMap()),
-      "createdAt": createdAt,
-      "vat": vat,
-      "placerUid": placerUid,
-      "receiverUid": receiverUid,
-      "itemsTotalPricePerUser": itemsTotalPricePerUser,
-      "deliveryFees": deliveryFees,
-      "status": status.index,
+      'items': items?.map((OrderItem item) => item.toMap()),
+      'createdAt': createdAt,
+      'vat': vat,
+      'placerUid': placerUid,
+      'receiverUid': receiverUid,
+      'itemsTotalPricePerUser': itemsTotalPricePerUser,
+      'deliveryFees': deliveryFees,
+      'status': status.index,
     };
   }
 
@@ -58,11 +49,12 @@ class OrderModel extends OrderEntity {
       deliveryFees: map['deliveryFees'],
       status: OrderStatusEnum.values[map['status']],
       items: map['items']
-          ?.map((item) => OrderItem.fromMap(item as Map<String, dynamic>))
+          ?.map((OrderItem item) =>
+              OrderItem.fromMap(item as Map<String, dynamic>))
           .toList(),
       itemsTotalPricePerUser:
           (map['itemsTotalPricePerUser'] as Map<String, dynamic>)
-              .map((key, value) => MapEntry(key, value)),
+              .map((String key, value) => MapEntry(key, value)),
     );
   }
 
@@ -85,7 +77,7 @@ class OrderModel extends OrderEntity {
           .toList(),
       itemsTotalPricePerUser: (documentSnapshot
               .data()!['itemsTotalPricePerUser'] as Map<String, dynamic>)
-          .map((key, value) => MapEntry(key, value)),
+          .map((String key, value) => MapEntry(key, value)),
     );
   }
 

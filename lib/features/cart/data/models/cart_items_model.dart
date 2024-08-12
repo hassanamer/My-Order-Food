@@ -12,6 +12,7 @@ class CartItemModel {
   });
 
   Map<String, dynamic> toMap() {
+    // ignore: always_specify_types
     return {
       'name': name,
       'quantity': quantity,

@@ -3,14 +3,14 @@ import 'package:order/features/event/presentation/pages/widgets/order_status/uti
 
 class OrderStatusItemView extends StatelessWidget {
   const OrderStatusItemView(
-      {Key? key,
-      required this.color,
+      {required this.color,
       required this.title,
       required this.subtitle,
       required this.icon,
       required this.showLine,
-      required this.isActive})
-      : super(key: key);
+      required this.isActive,
+      super.key});
+
   final Color color;
   final String title;
   final String subtitle;
@@ -20,7 +20,7 @@ class OrderStatusItemView extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final themeColors = Theme.of(context).colorScheme;
+    final ColorScheme themeColors = Theme.of(context).colorScheme;
 
     return Opacity(
       opacity: isActive ? 1 : 0.3,
@@ -28,12 +28,12 @@ class OrderStatusItemView extends StatelessWidget {
         padding: const EdgeInsets.only(top: 8.0),
         child: Row(
           crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
+          children: <Widget>[
             SizedBox(
               height: 100,
               child: Column(
                 mainAxisSize: MainAxisSize.min,
-                children: [
+                children: <Widget>[
                   Container(
                     width: 24,
                     height: 24,

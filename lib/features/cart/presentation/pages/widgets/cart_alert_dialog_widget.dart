@@ -1,18 +1,18 @@
 import 'package:flutter/material.dart';
 import 'package:order/core/persistent_bottom_nav_bar_widget.dart';
-
-import '../../../../../core/theme_app.dart';
+import 'package:order/core/theme_app.dart';
 
 class CartAlertDialogWidget extends StatelessWidget {
   const CartAlertDialogWidget({
-    super.key,
     required this.isCloseDismissible,
+    super.key,
   });
 
   final bool isCloseDismissible;
 
   @override
   Widget build(BuildContext context) {
+    // ignore: deprecated_member_use
     return WillPopScope(
       onWillPop: () async => isCloseDismissible,
       child: AlertDialog(
@@ -21,21 +21,22 @@ class CartAlertDialogWidget extends StatelessWidget {
           elevation: 0.0,
           content: Column(
             mainAxisAlignment: MainAxisAlignment.end,
-            children: [
+            children: <Widget>[
               Container(
                 padding: const EdgeInsets.all(10.0),
                 decoration: const BoxDecoration(
                     color: Colors.white,
                     borderRadius: BorderRadius.all(Radius.circular(10.0))),
                 child: Column(
-                  children: [
+                  children: <Widget>[
                     if (isCloseDismissible)
                       Align(
                         alignment: Alignment.centerRight,
                         child: GestureDetector(
-                            onTap: () =>
-                                Navigator.of(context).push(MaterialPageRoute(
-                                  builder: (context) => const NavBarWidget(),
+                            onTap: () => Navigator.of(context)
+                                    .push(MaterialPageRoute<dynamic>(
+                                  builder: (BuildContext context) =>
+                                      const NavBarWidget(),
                                 )),
                             child: const Icon(Icons.cancel_outlined)),
                       ),
@@ -59,7 +60,7 @@ class CartAlertDialogWidget extends StatelessWidget {
 }
 
 Future<void> showAlertDialog(BuildContext context,
-    {bool scrollable = false, isCloseDismissible = false}) async {
+    {bool scrollable = false, bool isCloseDismissible = false}) async {
   return showDialog<void>(
     context: context,
     barrierDismissible: isCloseDismissible,

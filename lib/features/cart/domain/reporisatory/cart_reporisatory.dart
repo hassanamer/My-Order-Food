@@ -1,6 +1,5 @@
 import 'package:order/features/event/domain/entities/order_entities.dart';
-
-import '../../../restaurant/data/model/menu_model.dart';
+import 'package:order/features/restaurant/data/model/menu_model.dart';
 
 abstract class CartReporisatoryInterface {
   Future<BaseResponse> addProductToCart(MenuModel menuModel);

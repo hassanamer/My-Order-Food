@@ -1,13 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:order/core/services/notification_cubit.dart';
+import 'package:order/core/services/notification_model.dart';
+import 'package:order/core/services/notification_service.dart';
 import 'package:order/core/widgets/app_bar_widget.dart';
 
-import '../../core/services/notification_cubit.dart';
-import '../../core/services/notification_model.dart';
-import '../../core/services/notification_service.dart';
-
 class NotificationPage extends StatefulWidget {
-  const NotificationPage({Key? key}) : super(key: key);
+  const NotificationPage({super.key});
 
   @override
   _NotificationPageState createState() => _NotificationPageState();
@@ -27,12 +26,13 @@ class _NotificationPageState extends State<NotificationPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: const AppBarWidget(
-        pageName: "Notifications",
+        pageName: 'Notifications',
         hideNotificationIcon: true,
       ),
       body: StreamBuilder<List<NotificationModel>>(
         stream: _notificationsStream,
-        builder: (context, snapshot) {
+        builder: (BuildContext context,
+            AsyncSnapshot<List<NotificationModel>> snapshot) {
           if (snapshot.connectionState == ConnectionState.waiting) {
             return const Center(child: CircularProgressIndicator());
           } else if (snapshot.hasError) {
@@ -41,12 +41,12 @@ class _NotificationPageState extends State<NotificationPage> {
             return const Center(child: Text('No notifications'));
           }
 
-          final notifications = snapshot.data!;
+          final List<NotificationModel> notifications = snapshot.data!;
 
           return ListView.builder(
             itemCount: notifications.length,
-            itemBuilder: (context, index) {
-              final notification = notifications[index];
+            itemBuilder: (BuildContext context, int index) {
+              final NotificationModel notification = notifications[index];
               return ListTile(
                 title: Text(notification.title),
                 subtitle: Text(notification.message),
@@ -63,8 +63,8 @@ class _NotificationPageState extends State<NotificationPage> {
   }
 
   String _formatTimestamp(DateTime timestamp) {
-    final now = DateTime.now();
-    final difference = now.difference(timestamp);
+    final DateTime now = DateTime.now();
+    final Duration difference = now.difference(timestamp);
 
     if (difference.inDays > 1) {
       return '${difference.inDays} days ago';

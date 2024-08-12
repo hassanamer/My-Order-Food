@@ -27,7 +27,6 @@ linter:
     always_use_package_imports: true
     prefer_const_constructors: true
     annotate_overrides: true
-    sort_pub_dependencies: true
     avoid_single_cascade_in_expression_statements: true
     prefer_final_fields: true
     always_put_required_named_parameters_first: true

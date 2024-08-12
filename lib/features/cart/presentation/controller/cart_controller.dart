@@ -1,15 +1,14 @@
 import 'package:get/get.dart';
-
-import '../../../restaurant/data/model/menu_model.dart';
+import 'package:order/features/restaurant/data/model/menu_model.dart';
 
 class CartController {
-  var cartDataDetails = <MenuModel>[].obs;
+  RxList<MenuModel> cartDataDetails = <MenuModel>[].obs;
 
   double cartTotalPrice() {
     double total = 0;
     double delivartFee = 25.0;
     double serviceFee = 12.0;
-    for (var item in cartDataDetails) {
+    for (MenuModel item in cartDataDetails) {
       num price = item.price;
       total += price + delivartFee + serviceFee;
     }

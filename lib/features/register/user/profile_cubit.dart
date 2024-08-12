@@ -1,3 +1,5 @@
+// ignore_for_file: always_specify_types
+
 import 'package:bloc/bloc.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:equatable/equatable.dart';
@@ -27,10 +29,10 @@ class ProfileCubit extends Cubit<ProfileState> {
             profileImageUrl: data['profileImageUrl'] ?? '',
           ));
         } else {
-          emit(ProfileError('User profile not found'));
+          emit(const ProfileError('User profile not found'));
         }
       } else {
-        emit(ProfileError('User not authenticated'));
+        emit(const ProfileError('User not authenticated'));
       }
     } catch (e) {
       emit(ProfileError('Failed to fetch user profile: $e'));
@@ -57,7 +59,7 @@ class ProfileCubit extends Cubit<ProfileState> {
         });
         fetchUserProfile();
       } else {
-        emit(ProfileError('User not authenticated'));
+        emit(const ProfileError('User not authenticated'));
       }
     } catch (e) {
       emit(ProfileError('Failed to update profile: $e'));

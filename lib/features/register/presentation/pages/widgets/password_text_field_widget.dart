@@ -1,12 +1,11 @@
 import 'package:flutter/material.dart';
-
-import '../../../../../core/theme_app.dart';
+import 'package:order/core/theme_app.dart';
 
 class PasswordTextFieldWidget extends StatelessWidget {
   const PasswordTextFieldWidget({
-    Key? key,
     required this.controllerPassword,
-  }) : super(key: key);
+    super.key,
+  });
 
   final TextEditingController controllerPassword;
 
@@ -27,9 +26,9 @@ class PasswordTextFieldWidget extends StatelessWidget {
           fontWeight: FontWeight.w500,
         ),
         prefixIcon: const Icon(Icons.lock_outline),
-        suffixIcon: const Text(""),
+        suffixIcon: const Text(''),
       ),
-      validator: (value) {
+      validator: (String? value) {
         if (value == null || value.isEmpty) {
           return 'Please enter your Password.';
         }

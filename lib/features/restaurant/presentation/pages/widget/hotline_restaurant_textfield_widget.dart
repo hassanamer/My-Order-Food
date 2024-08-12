@@ -2,9 +2,9 @@ import 'package:flutter/material.dart';
 
 class HotLineRestaurantTextFieldWidget extends StatelessWidget {
   const HotLineRestaurantTextFieldWidget({
-    Key? key,
     required this.controllerRestaurantHotline,
-  }) : super(key: key);
+    super.key,
+  });
 
   final TextEditingController controllerRestaurantHotline;
 

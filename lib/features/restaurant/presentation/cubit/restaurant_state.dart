@@ -1,3 +1,5 @@
+// ignore_for_file: always_specify_types
+
 import 'package:order/features/register/domain/entities/register_entities.dart';
 import 'package:order/features/restaurant/data/model/restaurant_model.dart';
 
@@ -29,7 +31,7 @@ class RestaurantError extends RestaurantState {
 
 class CreateRestaurantSuccessfully extends RestaurantState {
   RegisterAccountEntity registerAccountEntity;
-  String message = "Addedd Suessfully";
+  String message = 'Addedd Suessfully';
 
   CreateRestaurantSuccessfully(
       {required this.registerAccountEntity, required this.message});

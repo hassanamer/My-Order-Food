@@ -1,16 +1,15 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_staggered_animations/flutter_staggered_animations.dart';
+import 'package:order/features/event/domain/entities/order_entities.dart';
+import 'package:order/features/event/presentation/pages/widgets/order_details_page/order_details_page.dart';
 import 'package:order/features/event/presentation/pages/widgets/order_status/enums.dart';
-
-import '../../../../../domain/entities/order_entities.dart';
-import '../../order_details_page/order_details_page.dart';
 
 class OrdersListTitleWidget extends StatefulWidget {
   const OrdersListTitleWidget({
-    Key? key,
     required this.orderEntity,
     required this.title,
-  }) : super(key: key);
+    super.key,
+  });
 
   final OrderEntity orderEntity;
   final String title;
@@ -24,25 +23,25 @@ class _OrdersListTitleWidgetState extends State<OrdersListTitleWidget> {
     switch (status) {
       case OrderStatusEnum.active:
         return const LinearGradient(
-          colors: [Colors.yellow, Colors.orangeAccent],
+          colors: <Color>[Colors.yellow, Colors.orangeAccent],
           begin: Alignment.topLeft,
           end: Alignment.bottomRight,
         );
       case OrderStatusEnum.placed:
         return const LinearGradient(
-          colors: [Colors.blue, Colors.lightBlueAccent],
+          colors: <Color>[Colors.blue, Colors.lightBlueAccent],
           begin: Alignment.topLeft,
           end: Alignment.bottomRight,
         );
       case OrderStatusEnum.arrived:
         return const LinearGradient(
-          colors: [Colors.green, Colors.lightGreenAccent],
+          colors: <Color>[Colors.green, Colors.lightGreenAccent],
           begin: Alignment.topLeft,
           end: Alignment.bottomRight,
         );
       case OrderStatusEnum.cancelled:
         return const LinearGradient(
-          colors: [Colors.red, Colors.deepOrangeAccent],
+          colors: <Color>[Colors.red, Colors.deepOrangeAccent],
           begin: Alignment.topLeft,
           end: Alignment.bottomRight,
         );
@@ -62,11 +61,11 @@ class _OrdersListTitleWidgetState extends State<OrdersListTitleWidget> {
             decoration: BoxDecoration(
               borderRadius: BorderRadius.circular(15),
               gradient: LinearGradient(
-                colors: [Colors.blue.shade400, Colors.blue.shade900],
+                colors: <Color>[Colors.blue.shade400, Colors.blue.shade900],
                 begin: Alignment.topLeft,
                 end: Alignment.bottomRight,
               ),
-              boxShadow: [
+              boxShadow: <BoxShadow>[
                 BoxShadow(
                   color: Colors.black.withOpacity(0.1),
                   blurRadius: 8,
@@ -79,8 +78,8 @@ class _OrdersListTitleWidgetState extends State<OrdersListTitleWidget> {
               child: InkWell(
                 borderRadius: BorderRadius.circular(15),
                 onTap: () {
-                  Navigator.of(context).push(MaterialPageRoute(
-                      builder: (context) =>
+                  Navigator.of(context).push(MaterialPageRoute<dynamic>(
+                      builder: (BuildContext context) =>
                           OrderDetailsPage(orderEntity: widget.orderEntity)));
                 },
                 child: ListTile(
@@ -90,7 +89,7 @@ class _OrdersListTitleWidgetState extends State<OrdersListTitleWidget> {
                   ),
                   title: Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
+                    children: <Widget>[
                       Text(
                         widget.title,
                         style: const TextStyle(
@@ -103,8 +102,8 @@ class _OrdersListTitleWidgetState extends State<OrdersListTitleWidget> {
                         onPressed: () {
                           Navigator.push(
                             context,
-                            MaterialPageRoute(
-                              builder: (context) => Enums(
+                            MaterialPageRoute<dynamic>(
+                              builder: (BuildContext context) => Enums(
                                 orderEntity: widget.orderEntity,
                               ),
                             ),
@@ -118,7 +117,7 @@ class _OrdersListTitleWidgetState extends State<OrdersListTitleWidget> {
                           decoration: BoxDecoration(
                             gradient:
                                 getGradientForStatus(widget.orderEntity.status),
-                            boxShadow: const [
+                            boxShadow: const <BoxShadow>[
                               BoxShadow(
                                 color: Colors.black26,
                                 offset: Offset(2, 2),
@@ -129,7 +128,7 @@ class _OrdersListTitleWidgetState extends State<OrdersListTitleWidget> {
                                 const BorderRadius.all(Radius.circular(12)),
                           ),
                           child: Text(
-                            "${widget.orderEntity.status.name}".toUpperCase(),
+                            widget.orderEntity.status.name.toUpperCase(),
                             style: Theme.of(context)
                                 .textTheme
                                 .labelLarge!

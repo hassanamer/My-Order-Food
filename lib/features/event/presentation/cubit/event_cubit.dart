@@ -26,10 +26,10 @@ class EventCubit extends Cubit<EventState> {
     try {
       emit(EventLoadingState());
       addEventUsecase = sl();
-      final addedEvent = await addEventUsecase.call(eventEntity);
+      final BaseResponse addedEvent = await addEventUsecase.call(eventEntity);
       if (addedEvent.status) {
         emit(EventSuccessState(addedEvent));
-        final allEvent = await getAllEventsUsecase.call();
+        final List<OrderEntity> allEvent = await getAllEventsUsecase.call();
         emit(EventLoadedState(eventEntity: allEvent));
       } else {
         emit(EventErrorState(errorMessage: addedEvent.message));
@@ -39,11 +39,12 @@ class EventCubit extends Cubit<EventState> {
     }
   }
 
+  // ignore: always_specify_types
   Future<void> deleteEvent(eventId) async {
     try {
       emit(EventLoadingState());
       deleteEventUsecase = sl();
-      final deletedEvent = await deleteEventUsecase.call(eventId);
+      final BaseResponse deletedEvent = await deleteEventUsecase.call(eventId);
       if (deletedEvent.status) {
         emit(EventSuccessState(deletedEvent));
       } else {
@@ -58,7 +59,7 @@ class EventCubit extends Cubit<EventState> {
     try {
       emit(EventLoadingState());
       getAllEventsUsecase = sl();
-      final allEvent = await getAllEventsUsecase.call();
+      final List<OrderEntity> allEvent = await getAllEventsUsecase.call();
       emit(EventLoadedState(eventEntity: allEvent));
     } catch (e) {
       emit(EventErrorState(errorMessage: e.toString()));
@@ -69,7 +70,8 @@ class EventCubit extends Cubit<EventState> {
     try {
       emit(EventLoadingState());
       updateEventUsecase = sl();
-      final updatedEvent = await updateEventUsecase.call(eventEntity);
+      final BaseResponse updatedEvent =
+          await updateEventUsecase.call(eventEntity);
       if (updatedEvent.status) {
         emit(EventSuccessState(updatedEvent));
       } else {

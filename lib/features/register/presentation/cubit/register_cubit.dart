@@ -2,14 +2,14 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:order/core/widgets/handler_request_api.dart';
+import 'package:order/features/event/domain/entities/order_entities.dart';
 import 'package:order/features/register/data/models/register_account_model.dart';
 import 'package:order/features/register/domain/entities/register_entities.dart';
 import 'package:order/features/register/domain/usecase/get_user_info_usecase.dart';
+import 'package:order/features/register/domain/usecase/register_usecase.dart';
 import 'package:order/features/register/domain/usecase/remote_register_usecase.dart';
 import 'package:order/features/register/presentation/cubit/register_state.dart';
 import 'package:order/injection_container.dart';
-
-import '../../domain/usecase/register_usecase.dart';
 
 class RegisterCubit extends Cubit<RegisterState> {
   late RegisterUsecase registerUsecase;
@@ -21,7 +21,8 @@ class RegisterCubit extends Cubit<RegisterState> {
       required String password,
       required RegisterAccountEntity registerAccountEntity}) async {
     emit(RegisterLoadingState());
-    final remoteRegisterUsecase = RemoteRegisterUsecase(sl());
+    final RemoteRegisterUsecase remoteRegisterUsecase =
+        RemoteRegisterUsecase(sl());
 
     try {
       handlerRequestApi(
@@ -44,7 +45,8 @@ class RegisterCubit extends Cubit<RegisterState> {
     try {
       emit(RegisterLoadingState());
 
-      final registered = await registerUsecase.call(registerAccount);
+      final BaseResponse registered =
+          await registerUsecase.call(registerAccount);
       if (registered.status) {
         emit(RegisteredState(registered));
       } else {
@@ -58,8 +60,8 @@ class RegisterCubit extends Cubit<RegisterState> {
   Future<void> getUserInfo(RegisterAccountModel registerAccountModel) async {
     try {
       emit(ProfileLoadingState());
-      final getUserInfoUsecase = GetUserInfoUsecase(sl());
-      final userInfo = await getUserInfoUsecase.call();
+      final GetUserInfoUsecase getUserInfoUsecase = GetUserInfoUsecase(sl());
+      final RegisterAccountModel userInfo = await getUserInfoUsecase.call();
       if (userInfo.replyCode == 200) {
         emit(ProfileSuccessState(registerAccountModel: registerAccountModel));
       } else {

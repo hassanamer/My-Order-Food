@@ -1,15 +1,15 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:order/core/theming/styles.dart';
+import 'package:order/features/restaurant/data/model/restaurant_model.dart';
+import 'package:order/features/restaurant/presentation/cubit/restaurant_cubit.dart';
 import 'package:order/features/restaurant/presentation/pages/get_menu_pages/menuu_pagee.dart';
 
-import '../../../../../../../core/theming/styles.dart';
-import '../../../../../../restaurant/data/model/restaurant_model.dart';
-import '../../../../../../restaurant/presentation/cubit/restaurant_cubit.dart';
-
+// ignore: must_be_immutable
 class RowImageTextRestaurantWidget extends StatefulWidget {
-  List<RestaurantModel> restaurantModel = [];
+  List<RestaurantModel> restaurantModel = <RestaurantModel>[];
 
-  RowImageTextRestaurantWidget({super.key, required this.restaurantModel});
+  RowImageTextRestaurantWidget({required this.restaurantModel, super.key});
 
   @override
   State<RowImageTextRestaurantWidget> createState() =>
@@ -31,24 +31,25 @@ class _RowImageTextRestaurantWidgetState
           physics: const ClampingScrollPhysics(),
           scrollDirection: Axis.horizontal,
           itemCount: widget.restaurantModel.length,
-          itemBuilder: (context, index) {
-            final restaurant = widget.restaurantModel[index];
+          itemBuilder: (BuildContext context, int index) {
+            final RestaurantModel restaurant = widget.restaurantModel[index];
             return InkWell(
               onTap: () => Navigator.of(context)
                   .push(
-                MaterialPageRoute(
-                  builder: (context) => MenuuPagee(
+                MaterialPageRoute<dynamic>(
+                  builder: (BuildContext context) => MenuuPagee(
                     restaurantName: restaurant.restaurantName,
                     restaurantImage: restaurant.imageURL,
                   ),
                 ),
               )
+                  // ignore: always_specify_types
                   .then((value) {
                 setState(() {
                   context.read<RestaurantCubit>().getAllRestaurants();
                 });
               }),
-              child: Column(children: [
+              child: Column(children: <Widget>[
                 Container(
                   padding: const EdgeInsets.symmetric(horizontal: 12),
                   margin: const EdgeInsets.all(2),
@@ -57,7 +58,7 @@ class _RowImageTextRestaurantWidgetState
                     borderRadius: BorderRadius.circular(10),
                   ),
                   child: Image.asset(
-                    "assets/images/restaurant.png",
+                    'assets/images/restaurant.png',
                     width: 70,
                     height: 80,
                   ),
@@ -67,12 +68,12 @@ class _RowImageTextRestaurantWidgetState
                       const EdgeInsets.symmetric(horizontal: 10, vertical: 9),
                   decoration: BoxDecoration(
                     gradient: const LinearGradient(
-                      colors: [Colors.blueAccent, Colors.lightBlue],
+                      colors: <Color>[Colors.blueAccent, Colors.lightBlue],
                       begin: Alignment.topLeft,
                       end: Alignment.bottomRight,
                     ),
                     borderRadius: BorderRadius.circular(12),
-                    boxShadow: const [
+                    boxShadow: const <BoxShadow>[
                       BoxShadow(
                         color: Colors.black26,
                         offset: Offset(2, 2),

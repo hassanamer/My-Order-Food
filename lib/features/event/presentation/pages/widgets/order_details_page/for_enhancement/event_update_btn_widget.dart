@@ -6,9 +6,9 @@ class UpdateBtnWidget extends StatelessWidget {
   final OrderEntity eventEntity;
 
   const UpdateBtnWidget({
-    Key? key,
     required this.eventEntity,
-  }) : super(key: key);
+    super.key,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -16,7 +16,7 @@ class UpdateBtnWidget extends StatelessWidget {
       onPressed: () {
         Navigator.push(
             context,
-            MaterialPageRoute(
+            MaterialPageRoute<dynamic>(
               builder: (_) => CreateOrderPage(
                 isUpdateEvent: true,
                 eventEntity: eventEntity,
@@ -24,7 +24,7 @@ class UpdateBtnWidget extends StatelessWidget {
             ));
       },
       icon: const Icon(Icons.edit),
-      label: const Text("Edit"),
+      label: const Text('Edit'),
     );
   }
 }

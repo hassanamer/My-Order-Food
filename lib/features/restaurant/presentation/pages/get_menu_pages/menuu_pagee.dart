@@ -4,13 +4,13 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:order/core/widgets/app_bar_widget.dart';
+import 'package:order/core/widgets/common_elevated_button_widget.dart';
 import 'package:order/core/widgets/loading_widget.dart';
+import 'package:order/features/restaurant/presentation/cubit/restaurant_cubit.dart';
+import 'package:order/features/restaurant/presentation/cubit/restaurant_state.dart';
 
-import '../../../../../core/widgets/app_bar_widget.dart';
-import '../../../../../core/widgets/common_elevated_button_widget.dart';
-import '../../cubit/restaurant_cubit.dart';
-import '../../cubit/restaurant_state.dart';
-
+// ignore: must_be_immutable
 class MenuuPagee extends StatefulWidget {
   String? restaurantImage;
   final String? restaurantName;
@@ -27,14 +27,15 @@ class _MenuuPageeState extends State<MenuuPagee> {
 
   @override
   Widget build(BuildContext context) {
+    // ignore: always_specify_types
     return BlocProvider(
-      create: (context) => _restaurantCubit,
+      create: (BuildContext context) => _restaurantCubit,
       child: Scaffold(
         appBar: AppBarWidget(
-          pageName: " ${widget.restaurantName} Menu",
+          pageName: ' ${widget.restaurantName} Menu',
         ),
         body: BlocConsumer<RestaurantCubit, RestaurantState>(
-          listener: (context, state) {
+          listener: (BuildContext context, RestaurantState state) {
             if (state is MenuImageUpdatedState) {
               setState(() {
                 widget.restaurantImage = state.newImageUrl;
@@ -45,24 +46,22 @@ class _MenuuPageeState extends State<MenuuPagee> {
               );
             }
           },
-          builder: (context, state) {
+          builder: (BuildContext context, RestaurantState state) {
             return SingleChildScrollView(
               child: Padding(
                 padding: const EdgeInsets.all(8.0),
                 child: Column(
-                  children: [
-                    Container(
-                      child: InteractiveViewer(
-                        panEnabled: true,
-                        boundaryMargin: EdgeInsets.all(20.0),
-                        minScale: 0.5,
-                        maxScale: 3,
-                        clipBehavior: Clip.hardEdge,
-                        child: Center(
-                          child: widget.restaurantImage != null
-                              ? Image.network(widget.restaurantImage!)
-                              : Text("No image available"),
-                        ),
+                  children: <Widget>[
+                    InteractiveViewer(
+                      panEnabled: true,
+                      boundaryMargin: const EdgeInsets.all(20.0),
+                      minScale: 0.5,
+                      maxScale: 3,
+                      clipBehavior: Clip.hardEdge,
+                      child: Center(
+                        child: widget.restaurantImage != null
+                            ? Image.network(widget.restaurantImage!)
+                            : const Text('No image available'),
                       ),
                     ),
                     SizedBox(
@@ -70,7 +69,7 @@ class _MenuuPageeState extends State<MenuuPagee> {
                     ),
                     if (state is RestaurantLoading)
                       Stack(
-                        children: [
+                        children: <Widget>[
                           Positioned(
                             top: 0,
                             left: 0,
@@ -78,7 +77,7 @@ class _MenuuPageeState extends State<MenuuPagee> {
                             bottom: 0,
                             child: Container(
                                 color: Colors.white.withOpacity(0.5),
-                                child: LoadingWidget()),
+                                child: const LoadingWidget()),
                           ),
                         ],
                       )

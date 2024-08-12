@@ -2,8 +2,8 @@ import 'package:flutter/material.dart';
 
 class RegisterTopTitleWidget extends StatelessWidget {
   const RegisterTopTitleWidget({
-    Key? key,
-  }) : super(key: key);
+    super.key,
+  });
 
   @override
   Widget build(BuildContext context) {

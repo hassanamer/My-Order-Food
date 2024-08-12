@@ -4,6 +4,7 @@ import 'package:order/features/register/domain/entities/register_entities.dart';
 abstract class RegisterState {}
 
 class RegisteredState extends RegisterState {
+  // ignore: always_specify_types
   RegisteredState(registered);
 }
 

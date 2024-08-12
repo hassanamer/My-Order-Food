@@ -38,7 +38,7 @@ class _RestaurantWidgetState extends State<RestaurantWidget> {
 
   // Function to pick an image from gallery
   Future<void> pickImage() async {
-    final pickedFile =
+    final XFile? pickedFile =
         await ImagePicker().pickImage(source: ImageSource.gallery);
     if (pickedFile != null) {
       setState(() {
@@ -49,11 +49,11 @@ class _RestaurantWidgetState extends State<RestaurantWidget> {
 
   @override
   Widget build(BuildContext context) {
-    const sizedBox = SizedBox(height: 12);
+    const SizedBox sizedBox = SizedBox(height: 12);
 
     return Form(
       key: keyForm,
-      child: ListView(children: [
+      child: ListView(children: <Widget>[
         sizedBox,
         Container(
           decoration: const BoxDecoration(
@@ -62,16 +62,16 @@ class _RestaurantWidgetState extends State<RestaurantWidget> {
           padding: const EdgeInsets.all(24),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              const UnderlineTextWidget(text: "Restaurant Details."),
+            children: <Widget>[
+              const UnderlineTextWidget(text: 'Restaurant Details.'),
               sizedBox,
               RestaurantTextFieldWidget(
                   controllerRestaurant: controllerRestaurantname,
-                  labelText: "Name"),
+                  labelText: 'Name'),
               sizedBox,
               RestaurantTextFieldWidget(
                   controllerRestaurant: _controllerRestaurantDescription,
-                  labelText: "Description"),
+                  labelText: 'Description'),
               sizedBox,
               HotLineRestaurantTextFieldWidget(
                   controllerRestaurantHotline: controllerRestaurantHotline),
@@ -90,14 +90,14 @@ class _RestaurantWidgetState extends State<RestaurantWidget> {
           height: 10.h,
         ),
         CommonElevatedButtonWidget(
-          text: "Add restaurant",
+          text: 'Add restaurant',
           onPressed: () {
             setState(() {
               if (keyForm.currentState!.validate() &&
                   _restaurantImage != null) {
                 ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
                     backgroundColor: Colors.green,
-                    content: Text("Restaurant added successfully")));
+                    content: Text('Restaurant added successfully')));
                 context.read<RestaurantCubit>().addRestaurant(
                       RestaurantModel(
                         restaurantName: controllerRestaurantname.text,
@@ -110,7 +110,7 @@ class _RestaurantWidgetState extends State<RestaurantWidget> {
               } else {
                 ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
                     backgroundColor: Colors.red,
-                    content: Text("Please upload a picture")));
+                    content: Text('Please upload a picture')));
               }
             });
           },

@@ -9,10 +9,9 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:order/core/theming/styles.dart';
 import 'package:order/core/widgets/app_bar_widget.dart';
-
-import '../../../../core/widgets/common_elevated_button_widget.dart';
-import '../../../../core/widgets/loading_widget.dart';
-import '../profile_cubit.dart';
+import 'package:order/core/widgets/common_elevated_button_widget.dart';
+import 'package:order/core/widgets/loading_widget.dart';
+import 'package:order/features/register/user/profile_cubit.dart';
 
 class UserProfileScreen extends StatefulWidget {
   const UserProfileScreen({super.key});
@@ -30,7 +29,7 @@ class _UserProfileScreenState extends State<UserProfileScreen> {
   File? _imageFile;
 
   bool _isEditing = false;
-  final _formKey = GlobalKey<FormState>();
+  final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
 
   @override
   void initState() {
@@ -46,7 +45,7 @@ class _UserProfileScreenState extends State<UserProfileScreen> {
         pageName: 'Profile',
       ),
       body: BlocConsumer<ProfileCubit, ProfileState>(
-        listener: (context, state) {
+        listener: (BuildContext context, ProfileState state) {
           if (state is ProfileLoaded) {
             userName = state.userName;
             email = state.email;
@@ -55,7 +54,7 @@ class _UserProfileScreenState extends State<UserProfileScreen> {
             profileImageUrl = state.profileImageUrl;
           }
         },
-        builder: (context, state) {
+        builder: (BuildContext context, ProfileState state) {
           if (state is ProfileLoaded) {
             return Padding(
               padding: const EdgeInsets.all(16.0),
@@ -63,7 +62,7 @@ class _UserProfileScreenState extends State<UserProfileScreen> {
                 key: _formKey,
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.center,
-                  children: [
+                  children: <Widget>[
                     GestureDetector(
                       onTap: _isEditing ? _pickImage : null,
                       child: GradientCircleAvatar(
@@ -112,15 +111,17 @@ class _UserProfileScreenState extends State<UserProfileScreen> {
           }
 
           return Container(
-              color: Colors.white.withOpacity(0.5), child: LoadingWidget());
+              color: Colors.white.withOpacity(0.5),
+              child: const LoadingWidget());
         },
       ),
     );
   }
 
   Future<void> _pickImage() async {
-    final picker = ImagePicker();
-    final pickedFile = await picker.pickImage(source: ImageSource.gallery);
+    final ImagePicker picker = ImagePicker();
+    final XFile? pickedFile =
+        await picker.pickImage(source: ImageSource.gallery);
 
     setState(() {
       if (pickedFile != null) {
@@ -137,7 +138,7 @@ class _UserProfileScreenState extends State<UserProfileScreen> {
     User? currentUser = FirebaseAuth.instance.currentUser;
     if (currentUser != null && _imageFile != null) {
       try {
-        final storageRef = FirebaseStorage.instance
+        final Reference storageRef = FirebaseStorage.instance
             .ref()
             .child('Users')
             .child(currentUser.uid);
@@ -147,7 +148,7 @@ class _UserProfileScreenState extends State<UserProfileScreen> {
         await FirebaseFirestore.instance
             .collection('Users')
             .doc(currentUser.uid)
-            .update({'profileImageUrl': downloadUrl});
+            .update(<Object, Object?>{'profileImageUrl': downloadUrl});
 
         setState(() {
           profileImageUrl = downloadUrl;
@@ -170,7 +171,7 @@ class _UserProfileScreenState extends State<UserProfileScreen> {
           await FirebaseFirestore.instance
               .collection('Users')
               .doc(currentUser.uid)
-              .update({
+              .update(<Object, Object?>{
             'userName': userName,
             'phoneNumber': phoneNumber,
             'gender': gender,
@@ -204,7 +205,7 @@ class _UserProfileScreenState extends State<UserProfileScreen> {
       padding: const EdgeInsets.symmetric(vertical: 8.0),
       child: Row(
         mainAxisAlignment: MainAxisAlignment.center,
-        children: [
+        children: <Widget>[
           isEditing && isEditable
               ? Expanded(
                   child: TextFormField(
@@ -215,7 +216,7 @@ class _UserProfileScreenState extends State<UserProfileScreen> {
                       prefixIcon: Icon(getIconForLabel(label, value)),
                     ),
                     initialValue: value,
-                    onChanged: (newValue) {
+                    onChanged: (String newValue) {
                       setState(() {
                         if (label == 'Phone') {
                           phoneNumber = newValue;
@@ -228,9 +229,9 @@ class _UserProfileScreenState extends State<UserProfileScreen> {
                         }
                       });
                     },
-                    validator: (newValue) =>
+                    validator: (String? newValue) =>
                         newValue!.isEmpty ? '$label cannot be empty' : null,
-                    onSaved: (newValue) {
+                    onSaved: (String? newValue) {
                       if (label == 'Phone') {
                         phoneNumber = newValue!;
                       } else if (label == 'Username') {
@@ -258,8 +259,8 @@ class GradientTile extends StatelessWidget {
   final double borderRadius;
 
   const GradientTile({
-    super.key,
     required this.value,
+    super.key,
     this.gradientStartColor = Colors.blue,
     this.gradientEndColor = Colors.blueAccent,
     this.fontSize = 20.0,
@@ -274,7 +275,7 @@ class GradientTile extends StatelessWidget {
       margin: const EdgeInsets.all(8.0),
       decoration: BoxDecoration(
         gradient: LinearGradient(
-          colors: [gradientStartColor, gradientEndColor],
+          colors: <Color>[gradientStartColor, gradientEndColor],
           begin: Alignment.topLeft,
           end: Alignment.bottomRight,
         ),
@@ -292,16 +293,17 @@ class GradientTile extends StatelessWidget {
   }
 }
 
+// ignore: must_be_immutable
 class GradientCircleAvatar extends StatelessWidget {
   final String? profileImageUrl;
   double width;
   double height;
 
   GradientCircleAvatar(
-      {super.key,
-      required this.profileImageUrl,
+      {required this.profileImageUrl,
       required this.width,
-      required this.height});
+      required this.height,
+      super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -312,7 +314,7 @@ class GradientCircleAvatar extends StatelessWidget {
       // Adjust size as needed
       decoration: BoxDecoration(
         gradient: LinearGradient(
-          colors: [Colors.blue.shade400, Colors.blue.shade900],
+          colors: <Color>[Colors.blue.shade400, Colors.blue.shade900],
           begin: Alignment.topLeft,
           end: Alignment.bottomRight,
         ),

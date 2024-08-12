@@ -7,6 +7,7 @@ import 'package:order/features/cart/domain/reporisatory/cart_reporisatory.dart';
 import 'package:order/features/cart/domain/usecase/add_items_to_cart_usecase.dart';
 import 'package:order/features/cart/domain/usecase/clear_cart_items_usecase.dart';
 import 'package:order/features/cart/domain/usecase/get_all_cart_items_usecase.dart';
+import 'package:order/features/cart/domain/usecase/view_orders_usecase.dart';
 import 'package:order/features/cart/presentation/cubit/cart_cubit.dart';
 import 'package:order/features/event/data/datasource/remote_order_datasource.dart';
 import 'package:order/features/event/data/reporisatory/remote_order_repository_impl.dart';
@@ -18,6 +19,8 @@ import 'package:order/features/event/domain/remote_usecases/update_ticket.dart';
 import 'package:order/features/event/domain/reporisatory/order_repository.dart';
 import 'package:order/features/event/presentation/cubit/order_cubit.dart';
 import 'package:order/features/login/data/datasources/remote_login_user.dart';
+import 'package:order/features/login/data/reporisatory/account_reporisatory_impl.dart';
+import 'package:order/features/login/domain/repositories/account_repository.dart';
 import 'package:order/features/login/domain/usecases/remote_login_usecase.dart';
 import 'package:order/features/login/domain/usecases/remote_logout_usecase.dart';
 import 'package:order/features/login/presentation/cubit/login_cubit.dart';
@@ -27,6 +30,7 @@ import 'package:order/features/register/domain/reposisatory/register_reprisatory
 import 'package:order/features/register/domain/usecase/get_user_info_usecase.dart';
 import 'package:order/features/register/domain/usecase/remote_register_usecase.dart';
 import 'package:order/features/register/presentation/cubit/register_cubit.dart';
+import 'package:order/features/register/user/profile_cubit.dart';
 import 'package:order/features/restaurant/data/datasource/restaurant_datasource.dart';
 import 'package:order/features/restaurant/data/reporisatory/restaurant_reporisatory_impl.dart';
 import 'package:order/features/restaurant/domain/reporisatory/restaurant_reporisatory.dart';
@@ -36,12 +40,7 @@ import 'package:order/features/restaurant/domain/usecase/get_uploaded_iamge_usec
 import 'package:order/features/restaurant/domain/usecase/upload_image_usecase.dart';
 import 'package:order/features/restaurant/presentation/cubit/restaurant_cubit.dart';
 
-import 'features/cart/domain/usecase/view_orders_usecase.dart';
-import 'features/login/data/reporisatory/account_reporisatory_impl.dart';
-import 'features/login/domain/repositories/account_repository.dart';
-import 'features/register/user/profile_cubit.dart';
-
-final sl = GetIt.instance;
+final GetIt sl = GetIt.instance;
 
 void init() {
   // lazy singleton for FirebaseDatabaseProvider

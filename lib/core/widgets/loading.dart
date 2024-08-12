@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
-
-import 'loading_widget.dart';
+import 'package:order/core/widgets/loading_widget.dart';
 
 class LoadingHandler {
   static Future<void> loadingDialog(BuildContext context) async {
@@ -11,10 +10,10 @@ class LoadingHandler {
           elevation: 0,
           backgroundColor: Colors.transparent,
           content: Stack(
-            children: [
+            children: <Widget>[
               Container(
                 color: Colors.transparent,
-                child: LoadingWidget(),
+                child: const LoadingWidget(),
               ),
             ],
           ),

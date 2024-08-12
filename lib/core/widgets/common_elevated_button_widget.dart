@@ -13,10 +13,10 @@ class CommonElevatedButtonWidget extends StatelessWidget {
   final double width;
   final double height;
 
-  CommonElevatedButtonWidget({
-    Key? key,
+  const CommonElevatedButtonWidget({
     required this.text,
     required this.onPressed,
+    super.key,
     this.color = Colors.blue,
     this.fontSize = 18.0,
     this.borderRadius = 15.0,
@@ -24,7 +24,7 @@ class CommonElevatedButtonWidget extends StatelessWidget {
     this.padding = const EdgeInsets.all(15),
     this.width = 300,
     this.height = 55,
-  }) : super(key: key);
+  });
 
   @override
   Widget build(BuildContext context) {

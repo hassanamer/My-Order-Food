@@ -1,8 +1,7 @@
 import 'dart:async';
 
 import 'package:flutter/material.dart';
-
-import '../../features/login/presentation/pages/login_page.dart';
+import 'package:order/features/login/presentation/pages/login_page.dart';
 
 class WelcomeSplashWidget extends StatefulWidget {
   const WelcomeSplashWidget({super.key});
@@ -17,8 +16,10 @@ class _WelcomeSplashWidgetState extends State<WelcomeSplashWidget> {
     super.initState();
     Timer(
         const Duration(seconds: 4),
-        () => Navigator.pushReplacement(context,
-            MaterialPageRoute(builder: (context) => const LoginPage())));
+        () => Navigator.pushReplacement(
+            context,
+            MaterialPageRoute<dynamic>(
+                builder: (BuildContext context) => const LoginPage())));
   }
 
   @override

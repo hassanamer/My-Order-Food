@@ -1,7 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
-
-import '../../data/models/order_model.dart';
+import 'package:order/features/event/data/models/order_model.dart';
 
 class OrderEntity {
   final String id;
@@ -12,27 +11,27 @@ class OrderEntity {
   OrderStatusEnum status;
   double vat = 0;
   late final List<OrderItem>? items;
-  Map<String, double> itemsTotalPricePerUser = {};
+  Map<String, double> itemsTotalPricePerUser = <String, double>{};
   String? placerUid;
   String? receiverUid;
 
   OrderEntity({
     required this.id,
-    this.userId,
-    this.title,
-    this.items,
-    this.placerUid,
-    this.receiverUid,
     required this.vat,
     required this.deliveryFees,
     required this.createdAt,
     required this.status,
     required this.itemsTotalPricePerUser,
+    this.userId,
+    this.title,
+    this.items,
+    this.placerUid,
+    this.receiverUid,
   });
 
   factory OrderEntity.fromMap(Map<String, dynamic> map) {
     return OrderEntity(
-      id: map["id"],
+      id: map['id'],
       userId: map['userId'] ?? '',
       title: map['title'] ?? '',
       receiverUid: map['receiverUid'] ?? '',
@@ -41,16 +40,19 @@ class OrderEntity {
       vat: map['vat'] ?? 0,
       itemsTotalPricePerUser:
           (map['itemsTotalPricePerUser'] as Map<String, dynamic>)
-              .map((key, value) => MapEntry(key, value)),
+              // ignore: always_specify_types
+              .map((String key, value) => MapEntry(key, value)),
       createdAt: (map['createdAt'] as Timestamp).toDate(),
       status: OrderStatusEnum.values[map['status'] ?? 0],
       items: (map['items'] as List<dynamic>?)
+          // ignore: always_specify_types
           ?.map((item) => OrderItem.fromMap(item))
           .toList(),
     );
   }
 
   Map<String, dynamic> toMap() {
+    // ignore: always_specify_types
     return {
       'id': id,
       'userId': userId,
@@ -60,7 +62,7 @@ class OrderEntity {
       'createdAt': Timestamp.fromDate(createdAt),
       'status': status.index,
       'vat': vat,
-      'items': items?.map((item) => item.toMap()).toList(),
+      'items': items?.map((OrderItem item) => item.toMap()).toList(),
       'itemsTotalPricePerUser': itemsTotalPricePerUser,
       'deliveryFees': deliveryFees,
     };
@@ -99,6 +101,7 @@ class OrderItem {
   });
 
   Map<String, dynamic> toMap() {
+    // ignore: always_specify_types
     return {
       'userId': userId,
       'price': price,
@@ -189,7 +192,7 @@ class CommentEntity {
   int? id;
   String comment;
 
-  CommentEntity({this.id, required this.comment});
+  CommentEntity({required this.comment, this.id});
 }
 
 class BaseResponse {

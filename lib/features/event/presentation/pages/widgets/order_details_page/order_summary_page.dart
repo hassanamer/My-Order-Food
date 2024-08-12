@@ -4,43 +4,43 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:intl/intl.dart';
 import 'package:order/core/services/notification_service.dart';
+import 'package:order/core/services/push_notification_service.dart';
+import 'package:order/core/theming/styles.dart';
 import 'package:order/core/widgets/app_bar_widget.dart';
+import 'package:order/core/widgets/common_elevated_button_widget.dart';
 import 'package:order/core/widgets/loading_widget.dart';
 import 'package:order/features/event/domain/entities/order_entities.dart';
+import 'package:order/features/event/domain/remote_usecases/add_order_usecase.dart';
+import 'package:order/features/event/domain/remote_usecases/remote_get_user_order.dart';
+import 'package:order/features/event/presentation/cubit/order_cubit.dart';
+import 'package:order/features/event/presentation/pages/widgets/order_details_page/user_items_tile.dart';
+import 'package:order/features/register/data/models/register_account_model.dart';
+import 'package:order/injection_container.dart';
 
-import '../../../../../../core/services/push_notification_service.dart';
-import '../../../../../../core/theming/styles.dart';
-import '../../../../../../core/widgets/common_elevated_button_widget.dart';
-import '../../../../../../injection_container.dart';
-import '../../../../../register/data/models/register_account_model.dart';
-import '../../../../domain/remote_usecases/add_order_usecase.dart';
-import '../../../../domain/remote_usecases/remote_get_user_order.dart';
-import '../../../cubit/order_cubit.dart';
-import 'user_items_tile.dart';
-
+// ignore: must_be_immutable
 class OrderSummaryPage extends StatefulWidget {
-  Map<String, double> itemTotalPrices = {};
+  Map<String, double> itemTotalPrices = <String, double>{};
   final VoidCallback? onCalculate;
 
   final String orderId;
   final OrderEntity orderEntity;
 
   OrderSummaryPage({
-    Key? key,
     required this.orderId,
     required this.orderEntity,
+    super.key,
     this.onCalculate,
-  }) : super(key: key);
+  });
 
   @override
   State<OrderSummaryPage> createState() => _OrderSummaryPageState();
 }
 
 class _OrderSummaryPageState extends State<OrderSummaryPage> {
-  var isLoading = true;
-  Map<String, RegisterAccountModel> userMap = {};
-  Map<String, double> itemsTotalPricePerUser = {};
-  Map<String, List<OrderItem>> itemsGroupedByUser = {};
+  bool isLoading = true;
+  Map<String, RegisterAccountModel> userMap = <String, RegisterAccountModel>{};
+  Map<String, double> itemsTotalPricePerUser = <String, double>{};
+  Map<String, List<OrderItem>> itemsGroupedByUser = <String, List<OrderItem>>{};
   late AddOrderUsecase addOrderUsecase;
   late GetUserUsecase getUserUsecase;
   double userDeliveryFee = 0.0;
@@ -65,7 +65,7 @@ class _OrderSummaryPageState extends State<OrderSummaryPage> {
     _intializeItemsGroupedByUser();
     getUserUsecase
         .getUsers(itemsGroupedByUser.keys.toList())
-        .then((value) => setState(() {
+        .then((Map<String, RegisterAccountModel> value) => setState(() {
               userMap = value;
               isLoading = false;
             }));
@@ -79,12 +79,12 @@ class _OrderSummaryPageState extends State<OrderSummaryPage> {
   }
 
   void _intializeItemsGroupedByUser() {
-    List<OrderItem> items = widget.orderEntity.items ?? [];
+    List<OrderItem> items = widget.orderEntity.items ?? <OrderItem>[];
 
-    for (var item in items) {
+    for (OrderItem item in items) {
       String userId = item.userId;
       if (!itemsGroupedByUser.containsKey(userId)) {
-        itemsGroupedByUser[userId] = [];
+        itemsGroupedByUser[userId] = <OrderItem>[];
       }
       itemsGroupedByUser[userId]!.add(item);
     }
@@ -122,17 +122,17 @@ class _OrderSummaryPageState extends State<OrderSummaryPage> {
           height: MediaQuery.sizeOf(context).height,
           width: MediaQuery.sizeOf(context).width,
           decoration: BoxDecoration(color: Colors.white.withOpacity(0.7)),
-          child: Center(child: LoadingWidget()));
+          child: const Center(child: LoadingWidget()));
     }
     return StreamBuilder<OrderEntity>(
         stream: orderStream,
-        builder: (context, snapshot) {
+        builder: (BuildContext context, AsyncSnapshot<OrderEntity> snapshot) {
           if (snapshot.connectionState == ConnectionState.waiting) {
             return Stack(
-              children: [
+              children: <Widget>[
                 Container(
                   color: Colors.white.withOpacity(0.9),
-                  child: LoadingWidget(),
+                  child: const LoadingWidget(),
                 ),
               ],
             );
@@ -141,7 +141,7 @@ class _OrderSummaryPageState extends State<OrderSummaryPage> {
             return Center(child: Text('Error: ${snapshot.error}'));
           }
           if (!snapshot.hasData || snapshot.data == null) {
-            return Center(child: Text('No Order Data'));
+            return const Center(child: Text('No Order Data'));
           }
 
           OrderEntity orderEntity = snapshot.data!;
@@ -153,7 +153,7 @@ class _OrderSummaryPageState extends State<OrderSummaryPage> {
           return Scaffold(
             resizeToAvoidBottomInset: true,
             appBar: AppBarWidget(
-              pageName: "Order ${widget.orderEntity.title} Summary",
+              pageName: 'Order ${widget.orderEntity.title} Summary',
               pageDescreption:
                   "Created At: ${DateFormat('yyyy-MM-dd hh:mm a').format(widget.orderEntity.createdAt)}",
             ),
@@ -161,12 +161,12 @@ class _OrderSummaryPageState extends State<OrderSummaryPage> {
               padding: const EdgeInsets.all(16.0),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
+                children: <Widget>[
                   const SizedBox(height: 10),
                   Expanded(
                     child: ListView.builder(
                       itemCount: itemsGroupedByUser.keys.length,
-                      itemBuilder: (context, index) {
+                      itemBuilder: (BuildContext context, int index) {
                         String userId =
                             itemsGroupedByUser.keys.elementAt(index);
                         List<OrderItem> userItems = itemsGroupedByUser[userId]!;
@@ -191,14 +191,14 @@ class _OrderSummaryPageState extends State<OrderSummaryPage> {
                       keyboardType: TextInputType.number,
                       decoration: InputDecoration(
                         labelText: '${deliveryFee ?? 'Delivery Fees'}',
-                        hintStyle: TextStyle(color: Colors.black),
-                        labelStyle: TextStyle(color: Colors.black),
+                        hintStyle: const TextStyle(color: Colors.black),
+                        labelStyle: const TextStyle(color: Colors.black),
                         border: const OutlineInputBorder(),
                         hintText: "${deliveryFee ?? 'Delivery Fees'}",
                         filled: true,
                         fillColor: Colors.white,
                       ),
-                      onChanged: (value) {
+                      onChanged: (String value) {
                         setState(() {
                           deliveryFee = double.tryParse(value) ?? 0.0;
                           if (itemsGroupedByUser.isNotEmpty) {
@@ -214,7 +214,7 @@ class _OrderSummaryPageState extends State<OrderSummaryPage> {
                           keyboardHeight = 300;
                         });
                       },
-                      onTapOutside: (value) {
+                      onTapOutside: (PointerDownEvent value) {
                         setState(() {
                           keyboardHeight = 0;
                           FocusScope.of(context).unfocus();
@@ -233,13 +233,13 @@ class _OrderSummaryPageState extends State<OrderSummaryPage> {
                     visible: (isCurrentUserPlacerOrReceiver),
                     child: Center(
                       child: Row(
-                        children: [
+                        children: <Widget>[
                           Checkbox(
                               value: vat != 0, onChanged: _onCheckBoxChanged),
                           const Text(
                             maxLines: 1,
                             overflow: TextOverflow.ellipsis,
-                            "Including VAT 14 %",
+                            'Including VAT 14 %',
                             style: TextStyles.font14WhiteMedium,
                           ),
                         ],
@@ -254,14 +254,14 @@ class _OrderSummaryPageState extends State<OrderSummaryPage> {
                         text: 'Order Arrived',
                         onPressed: () {
                           setState(() {
-                            for (var userId in itemsGroupedByUser.keys) {
+                            for (String userId in itemsGroupedByUser.keys) {
                               PushNotificationService.sendNotificationToUser(
                                 userId,
-                                "Your Order Is Arrived, Hurry Up, We Waiting You",
+                                'Your Order Is Arrived, Hurry Up, We Waiting You',
                               );
                               NotificationService.saveNotification(
-                                  "Your Order Is Arrived",
-                                  "Your Order Is Arrived, Hurry Up, We Waiting You",
+                                  'Your Order Is Arrived',
+                                  'Your Order Is Arrived, Hurry Up, We Waiting You',
                                   userId);
                             }
                             widget.orderEntity.status = OrderStatusEnum.arrived;

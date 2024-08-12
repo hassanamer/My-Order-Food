@@ -19,18 +19,18 @@ class _AllRestaurantPageState extends State<AllRestaurantPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: const AppBarWidget(
-        pageName: "Restaurants",
+        pageName: 'Restaurants',
       ),
       body: Padding(
         padding: const EdgeInsets.all(10),
         child: BlocConsumer<RestaurantCubit, RestaurantState>(
-          builder: (context, state) {
+          builder: (BuildContext context, RestaurantState state) {
             if (state is RestaurantLoading) {
               return Stack(
-                children: [
+                children: <Widget>[
                   Container(
                       color: Colors.white.withOpacity(0.5),
-                      child: LoadingWidget()),
+                      child: const LoadingWidget()),
                 ],
               );
             } else if (state is RestaurantLoadedState) {
@@ -42,7 +42,7 @@ class _AllRestaurantPageState extends State<AllRestaurantPage> {
               }
             }
             return Stack(
-              children: [
+              children: <Widget>[
                 Positioned(
                   top: 0,
                   left: 0,
@@ -50,12 +50,12 @@ class _AllRestaurantPageState extends State<AllRestaurantPage> {
                   bottom: 0,
                   child: Container(
                       color: Colors.white.withOpacity(0.5),
-                      child: LoadingWidget()),
+                      child: const LoadingWidget()),
                 ),
               ],
             );
           },
-          listener: (context, state) {
+          listener: (BuildContext context, RestaurantState state) {
             if (state is RestaurantError) {
               if (kDebugMode) {
                 print(state.errorMessage);

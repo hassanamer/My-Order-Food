@@ -6,8 +6,7 @@ import 'package:order/features/event/presentation/pages/settings_page.dart';
 class PersistentBottomBarScaffold extends StatefulWidget {
   final List<PersistentTabItem> items;
 
-  const PersistentBottomBarScaffold({Key? key, required this.items})
-      : super(key: key);
+  const PersistentBottomBarScaffold({required this.items, super.key});
 
   @override
   PersistentBottomBarScaffoldState createState() =>
@@ -20,6 +19,7 @@ class PersistentBottomBarScaffoldState
 
   @override
   Widget build(BuildContext context) {
+    // ignore: deprecated_member_use
     return WillPopScope(
       onWillPop: () async {
         if (widget.items[_selectedTab].navigatorkey?.currentState?.canPop() ??
@@ -34,11 +34,13 @@ class PersistentBottomBarScaffoldState
         body: IndexedStack(
           index: _selectedTab,
           children: widget.items
-              .map((page) => Navigator(
+              .map<Widget>((PersistentTabItem page) => Navigator(
                     key: page.navigatorkey,
-                    onGenerateInitialRoutes: (navigator, initialRoute) {
-                      return [
-                        MaterialPageRoute(builder: (context) => page.tab)
+                    onGenerateInitialRoutes:
+                        (NavigatorState navigator, String initialRoute) {
+                      return <Route<dynamic>>[
+                        MaterialPageRoute<dynamic>(
+                            builder: (BuildContext context) => page.tab)
                       ];
                     },
                   ))
@@ -46,10 +48,10 @@ class PersistentBottomBarScaffoldState
         ),
         bottomNavigationBar: BottomNavigationBar(
           currentIndex: _selectedTab,
-          onTap: (index) {
+          onTap: (int index) {
             if (index == _selectedTab) {
               widget.items[index].navigatorkey?.currentState
-                  ?.popUntil((route) => route.isFirst);
+                  ?.popUntil((Route<dynamic> route) => route.isFirst);
             } else {
               setState(() {
                 _selectedTab = index;
@@ -57,7 +59,7 @@ class PersistentBottomBarScaffoldState
             }
           },
           items: widget.items
-              .map((item) => BottomNavigationBarItem(
+              .map((PersistentTabItem item) => BottomNavigationBarItem(
                   icon: Icon(item.icon), label: item.title))
               .toList(),
           backgroundColor: Colors.white,
@@ -80,23 +82,26 @@ class PersistentTabItem {
 
   PersistentTabItem({
     required this.tab,
-    this.navigatorkey,
     required this.title,
     required this.icon,
+    this.navigatorkey,
   });
 }
 
 class HomePage extends StatelessWidget {
-  final _tab1navigatorKey = GlobalKey<NavigatorState>();
-  final _tab2navigatorKey = GlobalKey<NavigatorState>();
-  final _tab3navigatorKey = GlobalKey<NavigatorState>();
+  final GlobalKey<NavigatorState> _tab1navigatorKey =
+      GlobalKey<NavigatorState>();
+  final GlobalKey<NavigatorState> _tab2navigatorKey =
+      GlobalKey<NavigatorState>();
+  final GlobalKey<NavigatorState> _tab3navigatorKey =
+      GlobalKey<NavigatorState>();
 
   HomePage({super.key});
 
   @override
   Widget build(BuildContext context) {
     return PersistentBottomBarScaffold(
-      items: [
+      items: <PersistentTabItem>[
         PersistentTabItem(
           tab: const OrderFoodHomePage(),
           icon: Icons.home_outlined,

@@ -4,6 +4,7 @@ import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:order/core/theme_app.dart';
 import 'package:order/core/theming/gradient_background.dart';
 import 'package:order/core/theming/styles.dart';
 import 'package:order/core/widgets/botton_auth_row_widget.dart';
@@ -14,12 +15,10 @@ import 'package:order/features/register/domain/entities/register_entities.dart';
 import 'package:order/features/register/presentation/cubit/register_cubit.dart';
 import 'package:order/features/register/presentation/pages/widgets/register_top_title_widget.dart';
 
-import '../../../../../core/theme_app.dart';
-
 class RegisterWidget extends StatefulWidget {
   final RegisterAccountEntity registerAccountEntity;
 
-  const RegisterWidget({super.key, required this.registerAccountEntity});
+  const RegisterWidget({required this.registerAccountEntity, super.key});
 
   @override
   State<RegisterWidget> createState() => _RegisterWidgetState();
@@ -40,9 +39,12 @@ class _RegisterWidgetState extends State<RegisterWidget> {
   bool isPasswordVisible = false;
   String? profileImageUrl;
 
-  List<String> genderItems = ['Female', 'Male'];
-  List<String> carItems = ['Yes', 'No'];
-  List<String> deliveryItems = ['Place the order', 'Receive it at the gate'];
+  List<String> genderItems = <String>['Female', 'Male'];
+  List<String> carItems = <String>['Yes', 'No'];
+  List<String> deliveryItems = <String>[
+    'Place the order',
+    'Receive it at the gate'
+  ];
 
   @override
   void initState() {
@@ -68,16 +70,16 @@ class _RegisterWidgetState extends State<RegisterWidget> {
   }
 
   Future<void> _pickImage() async {
-    final ImagePicker _picker = ImagePicker();
-    final XFile? image = await _picker.pickImage(source: ImageSource.gallery);
+    final ImagePicker picker = ImagePicker();
+    final XFile? image = await picker.pickImage(source: ImageSource.gallery);
 
     if (image != null) {
-      final storageRef = FirebaseStorage.instance
+      final Reference storageRef = FirebaseStorage.instance
           .ref()
           .child('profile_images/${DateTime.now().millisecondsSinceEpoch}.jpg');
-      final uploadTask = storageRef.putFile(File(image.path));
-      final snapshot = await uploadTask;
-      final downloadUrl = await snapshot.ref.getDownloadURL();
+      final UploadTask uploadTask = storageRef.putFile(File(image.path));
+      final TaskSnapshot snapshot = await uploadTask;
+      final String downloadUrl = await snapshot.ref.getDownloadURL();
       setState(() {
         profileImageUrl = downloadUrl;
       });
@@ -86,11 +88,11 @@ class _RegisterWidgetState extends State<RegisterWidget> {
 
   @override
   Widget build(BuildContext context) {
-    const sizedBox = SizedBox(height: 12);
+    const SizedBox sizedBox = SizedBox(height: 12);
     return GradientBackground(
       child: SingleChildScrollView(
         child: Column(
-          children: [
+          children: <Widget>[
             const TopImage(),
             Form(
               key: _keyform,
@@ -98,17 +100,17 @@ class _RegisterWidgetState extends State<RegisterWidget> {
               child: Padding(
                 padding: const EdgeInsets.all(10.0),
                 child: Column(
-                  children: [
+                  children: <Widget>[
                     const RegisterTopTitleWidget(),
                     Column(
                       crossAxisAlignment: CrossAxisAlignment.center,
-                      children: [
+                      children: <Widget>[
                         ElevatedButton.icon(
                           onPressed: _pickImage,
                           icon:
                               const Icon(Icons.camera_alt, color: Colors.white),
                           label: const Text(
-                            "Pick Profile Image",
+                            'Pick Profile Image',
                             style: TextStyle(color: Colors.white),
                           ),
                           style: ElevatedButton.styleFrom(
@@ -119,7 +121,7 @@ class _RegisterWidgetState extends State<RegisterWidget> {
                               borderRadius: BorderRadius.circular(
                                   30.0), // Rounded corners
                             ),
-                            padding: EdgeInsets.symmetric(
+                            padding: const EdgeInsets.symmetric(
                                 horizontal: 20.0, vertical: 12.0),
                             elevation: 5, // Shadow
                           ),
@@ -130,12 +132,12 @@ class _RegisterWidgetState extends State<RegisterWidget> {
                             decoration: BoxDecoration(
                               borderRadius: BorderRadius.circular(20.0),
                               // Rounded corners
-                              boxShadow: [
+                              boxShadow: <BoxShadow>[
                                 BoxShadow(
                                   color: Colors.black.withOpacity(0.3),
                                   spreadRadius: 3,
                                   blurRadius: 7,
-                                  offset: Offset(
+                                  offset: const Offset(
                                       0, 3), // changes position of shadow
                                 ),
                               ],
@@ -153,7 +155,7 @@ class _RegisterWidgetState extends State<RegisterWidget> {
                           ),
                       ],
                     ),
-                    SizedBox(
+                    const SizedBox(
                       height: 10,
                     ),
                     TextFormField(
@@ -164,7 +166,7 @@ class _RegisterWidgetState extends State<RegisterWidget> {
                           color: Colors.black,
                         ),
                       ),
-                      validator: (value) {
+                      validator: (String? value) {
                         if (value == null || value.isEmpty) {
                           return 'Please enter a username';
                         }
@@ -180,7 +182,7 @@ class _RegisterWidgetState extends State<RegisterWidget> {
                           color: Colors.black,
                         ),
                       ),
-                      validator: (value) {
+                      validator: (String? value) {
                         if (value == null || value.isEmpty) {
                           return 'Please enter your name';
                         }
@@ -199,7 +201,7 @@ class _RegisterWidgetState extends State<RegisterWidget> {
                         hintText: 'Email',
                         hintStyle: TextStyle(color: Colors.black),
                       ),
-                      validator: (value) {
+                      validator: (String? value) {
                         if (value == null || value.isEmpty) {
                           return 'Please enter an email';
                         }
@@ -212,11 +214,11 @@ class _RegisterWidgetState extends State<RegisterWidget> {
                       obscureText: !isPasswordVisible,
                       decoration: InputDecoration(
                         labelText: 'Password',
-                        labelStyle: TextStyle(
+                        labelStyle: const TextStyle(
                           color: Colors.black,
                         ),
                         hintText: 'Password',
-                        hintStyle: TextStyle(color: Colors.black),
+                        hintStyle: const TextStyle(color: Colors.black),
                         suffixIcon: IconButton(
                           icon: Icon(
                             isPasswordVisible
@@ -230,7 +232,7 @@ class _RegisterWidgetState extends State<RegisterWidget> {
                           },
                         ),
                       ),
-                      validator: (value) {
+                      validator: (String? value) {
                         if (value == null || value.isEmpty) {
                           return 'Please enter a password';
                         }
@@ -242,7 +244,7 @@ class _RegisterWidgetState extends State<RegisterWidget> {
                       borderRadius: BorderRadius.circular(12),
                       decoration: InputDecoration(
                         labelText: 'Gender',
-                        labelStyle: TextStyle(
+                        labelStyle: const TextStyle(
                           color: Colors.black,
                         ),
                         fillColor: authTextFromFieldFillColor.withOpacity(.3),
@@ -285,7 +287,7 @@ class _RegisterWidgetState extends State<RegisterWidget> {
                       value: selectedGender,
                       icon: const Icon(Icons.keyboard_arrow_down),
                       items: genderItems.map((String item) {
-                        return DropdownMenuItem(
+                        return DropdownMenuItem<String>(
                           value: item,
                           child: Text(
                             item,
@@ -293,13 +295,13 @@ class _RegisterWidgetState extends State<RegisterWidget> {
                           ),
                         );
                       }).toList(),
-                      onChanged: (value) {
+                      onChanged: (String? value) {
                         setState(() {
                           selectedGender = value!;
                           controllerGender.text = value;
                         });
                       },
-                      validator: (value) {
+                      validator: (String? value) {
                         if (value == null || value.isEmpty) {
                           return 'Please select a gender';
                         }
@@ -349,7 +351,7 @@ class _RegisterWidgetState extends State<RegisterWidget> {
                         color: Colors.black,
                       ),
                       items: carItems.map((String item) {
-                        return DropdownMenuItem(
+                        return DropdownMenuItem<String>(
                           value: item,
                           child: Text(
                             item,
@@ -357,12 +359,12 @@ class _RegisterWidgetState extends State<RegisterWidget> {
                           ),
                         );
                       }).toList(),
-                      onChanged: (value) {
+                      onChanged: (String? value) {
                         setState(() {
                           hasCar = value!;
                         });
                       },
-                      validator: (value) {
+                      validator: (String? value) {
                         if (value == null || value.isEmpty) {
                           return 'Please select an option';
                         }
@@ -425,7 +427,7 @@ class _RegisterWidgetState extends State<RegisterWidget> {
                       value: deliveryPreference,
                       icon: const Icon(Icons.keyboard_arrow_down),
                       items: deliveryItems.map((String item) {
-                        return DropdownMenuItem(
+                        return DropdownMenuItem<String>(
                           value: item,
                           child: Text(
                             item,
@@ -433,12 +435,12 @@ class _RegisterWidgetState extends State<RegisterWidget> {
                           ),
                         );
                       }).toList(),
-                      onChanged: (value) {
+                      onChanged: (String? value) {
                         setState(() {
                           deliveryPreference = value!;
                         });
                       },
-                      validator: (value) {
+                      validator: (String? value) {
                         if (value == null || value.isEmpty) {
                           return 'Please select an option';
                         }
@@ -455,7 +457,7 @@ class _RegisterWidgetState extends State<RegisterWidget> {
                           color: Colors.black,
                         ),
                       ),
-                      validator: (value) {
+                      validator: (String? value) {
                         if (value == null || value.isEmpty) {
                           return 'Please enter your phone number';
                         }
@@ -464,7 +466,7 @@ class _RegisterWidgetState extends State<RegisterWidget> {
                     ),
                     sizedBox,
                     CommonElevatedButtonWidget(
-                      text: "Sign up",
+                      text: 'Sign up',
                       onPressed: () async {
                         if (_keyform.currentState!.validate()) {
                           context
@@ -486,11 +488,11 @@ class _RegisterWidgetState extends State<RegisterWidget> {
                       },
                     ),
                     BottomAuthRowWidget(
-                      text: "Already have an account?",
-                      value: "Login",
+                      text: 'Already have an account?',
+                      value: 'Login',
                       onTap: () => Navigator.of(context).push(
-                        MaterialPageRoute(
-                          builder: (context) => const LoginPage(),
+                        MaterialPageRoute<dynamic>(
+                          builder: (BuildContext context) => const LoginPage(),
                         ),
                       ),
                     ),

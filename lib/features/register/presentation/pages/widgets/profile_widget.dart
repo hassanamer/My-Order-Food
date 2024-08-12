@@ -1,13 +1,12 @@
 import 'package:flutter/material.dart';
-
-import '../../../data/models/register_account_model.dart';
+import 'package:order/features/register/data/models/register_account_model.dart';
 
 class ProfileWidget extends StatefulWidget {
   final RegisterAccountModel registerAccountModel;
 
   const ProfileWidget({
-    super.key,
     required this.registerAccountModel,
+    super.key,
   });
 
   @override
@@ -18,7 +17,7 @@ class _ProfileWidgetState extends State<ProfileWidget> {
   @override
   Widget build(BuildContext context) {
     return Column(
-      children: [
+      children: <Widget>[
         editableTextField(
             label: widget.registerAccountModel.name ?? '',
             prefixIcon: const Icon(Icons.person))

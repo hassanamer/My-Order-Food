@@ -1,22 +1,24 @@
+import 'dart:ui';
+
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:intl/intl.dart';
+import 'package:order/core/services/notification_service.dart';
+import 'package:order/core/services/push_notification_service.dart';
+import 'package:order/core/theming/styles.dart';
+import 'package:order/core/widgets/common_elevated_button_widget.dart';
 import 'package:order/core/widgets/loading_widget.dart';
+import 'package:order/features/cart/presentation/pages/view_order_page.dart';
+import 'package:order/features/event/domain/entities/order_entities.dart';
+import 'package:order/features/event/domain/remote_usecases/add_order_usecase.dart';
+import 'package:order/features/event/domain/remote_usecases/remote_get_user_order.dart';
+import 'package:order/features/event/presentation/pages/widgets/order_details_page/order_details_page_item_tile.dart';
+import 'package:order/features/register/data/models/register_account_model.dart';
+import 'package:order/injection_container.dart';
 
-import '../../../../../../core/services/notification_service.dart';
-import '../../../../../../core/services/push_notification_service.dart';
-import '../../../../../../core/theming/styles.dart';
-import '../../../../../../core/widgets/common_elevated_button_widget.dart';
-import '../../../../../../injection_container.dart';
-import '../../../../../cart/presentation/pages/view_order_page.dart';
-import '../../../../../register/data/models/register_account_model.dart';
-import '../../../../domain/entities/order_entities.dart';
-import '../../../../domain/remote_usecases/add_order_usecase.dart';
-import '../../../../domain/remote_usecases/remote_get_user_order.dart';
-import 'order_details_page_item_tile.dart';
-
+// ignore: must_be_immutable
 class OrderDetailsBody extends StatefulWidget {
   final OrderEntity orderEntity;
   Map<String, List<OrderItem>> itemsGroupedByUser;
@@ -32,19 +34,19 @@ class OrderDetailsBody extends StatefulWidget {
   List<OrderItem> itemsList;
 
   OrderDetailsBody(
-      {super.key,
-      required this.orderEntity,
+      {required this.orderEntity,
       required this.itemsGroupedByUser,
       required this.userMapFuture,
-      this.addItem,
       required this.isCreator,
-      this.onCalculatePressed,
       required this.itemName,
       required this.setItemName,
       required this.itemCount,
       required this.setItemCount,
       required this.itemController,
-      required this.itemsList});
+      required this.itemsList,
+      super.key,
+      this.addItem,
+      this.onCalculatePressed});
 
   @override
   State<OrderDetailsBody> createState() => _OrderDetailsBodyState();
@@ -95,6 +97,7 @@ class _OrderDetailsBodyState extends State<OrderDetailsBody>
     super.initState();
     addOrderUsecase = sl();
     getUserOrderUsecase = sl();
+    // ignore: unnecessary_null_comparison
     createdAt = widget.orderEntity.createdAt != null
         ? DateFormat('yyyy-MM-dd hh:mm a').format(widget.orderEntity.createdAt)
         : 'Unknown';
@@ -108,25 +111,26 @@ class _OrderDetailsBodyState extends State<OrderDetailsBody>
 
   @override
   void didChangeMetrics() {
-    final bottomInset = WidgetsBinding.instance.window.viewInsets.bottom;
+    final ViewPadding viewInsets =
+        WidgetsBinding.instance.platformDispatcher.views.first.viewInsets;
     setState(() {
-      keyboardHeight = bottomInset;
+      keyboardHeight = viewInsets.bottom;
     });
   }
 
   Future<void> assignUsersAndNotify(
       Map<String, RegisterAccountModel> userMap) async {
     List<RegisterAccountModel> usersInOrder = userMap.values.toList();
-    usersInOrder
-        .sort((a, b) => a.placedOrderCount!.compareTo(b.placedOrderCount!));
+    usersInOrder.sort((RegisterAccountModel a, RegisterAccountModel b) =>
+        a.placedOrderCount!.compareTo(b.placedOrderCount!));
 
     placer = null;
     receiver = null;
 
-    for (var user in usersInOrder) {
+    for (RegisterAccountModel user in usersInOrder) {
       if (placer == null &&
-          (user.deliveryPreference == "Place the order" ||
-              user.hasCar == "No")) {
+          (user.deliveryPreference == 'Place the order' ||
+              user.hasCar == 'No')) {
         placer = user;
         widget.orderEntity.placerUid = placer!.userId;
       }
@@ -140,10 +144,10 @@ class _OrderDetailsBodyState extends State<OrderDetailsBody>
       widget.orderEntity.placerUid = placer!.userId;
     }
 
-    for (var user in usersInOrder) {
+    for (RegisterAccountModel user in usersInOrder) {
       if (receiver == null &&
-          (user.hasCar == "Yes" ||
-              user.deliveryPreference == "Receive it at the gate")) {
+          (user.hasCar == 'Yes' ||
+              user.deliveryPreference == 'Receive it at the gate')) {
         receiver = user;
         widget.orderEntity.receiverUid = receiver!.userId;
       }
@@ -153,10 +157,10 @@ class _OrderDetailsBodyState extends State<OrderDetailsBody>
     }
 
     if (receiver == null && usersInOrder.isNotEmpty) {
-      usersInOrder.sort(
-          (a, b) => a.receivedOrderCount!.compareTo(b.receivedOrderCount!));
+      usersInOrder.sort((RegisterAccountModel a, RegisterAccountModel b) =>
+          a.receivedOrderCount!.compareTo(b.receivedOrderCount!));
       receiver = usersInOrder.firstWhere(
-          (user) => user.userId != placer?.userId,
+          (RegisterAccountModel user) => user.userId != placer?.userId,
           orElse: () => usersInOrder.first);
       if (receiver != null) {
         widget.orderEntity.receiverUid = receiver!.userId;
@@ -171,7 +175,7 @@ class _OrderDetailsBodyState extends State<OrderDetailsBody>
       PushNotificationService.sendNotificationToUser(placer!.userId,
           "You're Chosen To Place The Order, Thank You So Much For Your Help");
       NotificationService.saveNotification("You're Chosen To Place The Order",
-          "Thank You So Much For Your Help", placer!.userId);
+          'Thank You So Much For Your Help', placer!.userId);
     }
 
     if (receiver != null) {
@@ -184,13 +188,16 @@ class _OrderDetailsBodyState extends State<OrderDetailsBody>
           "You're Chosen To Receive The Order At The Gate, Thank You So Much For Your Help");
       NotificationService.saveNotification(
           "You're Chosen To Receive The Order At The Gate",
-          "Thank You So Much For Your Help",
+          'Thank You So Much For Your Help',
           receiver!.userId);
     }
 
     await addOrderUsecase.update(widget.orderEntity);
 
-    await _firestore.collection('Order').doc(widget.orderEntity.id).update({
+    await _firestore
+        .collection('Order')
+        .doc(widget.orderEntity.id)
+        .update(<Object, Object?>{
       'placerUid': placer?.userId,
       'receiverUid': receiver?.userId,
     });
@@ -201,21 +208,22 @@ class _OrderDetailsBodyState extends State<OrderDetailsBody>
   Future<void> _deleteItem(OrderItem item) async {
     if (item.userId == currentUser!.uid) {
       try {
-        final orderDoc =
+        final DocumentReference<Map<String, dynamic>> orderDoc =
             _firestore.collection('Order').doc(widget.orderEntity.id);
-        final orderSnapshot = await orderDoc.get();
-        final items =
+        final DocumentSnapshot<Map<String, dynamic>> orderSnapshot =
+            await orderDoc.get();
+        final List<Map<String, dynamic>> items =
             List<Map<String, dynamic>>.from(orderSnapshot.get('items'));
-        final itemIndex = items.indexWhere((i) =>
+        final int itemIndex = items.indexWhere((Map<String, dynamic> i) =>
             i['itemName'] == item.itemName && i['userId'] == item.userId);
         if (itemIndex != -1) {
           items.removeAt(itemIndex);
-          await orderDoc.update({
+          await orderDoc.update(<Object, Object?>{
             'items': items,
           });
         }
       } catch (e) {
-        print("Failed to delete item: $e");
+        print('Failed to delete item: $e');
       }
 
       setState(() {
@@ -226,7 +234,7 @@ class _OrderDetailsBodyState extends State<OrderDetailsBody>
         }
       });
     } else {
-      print("You can only delete your own items.");
+      print('You can only delete your own items.');
     }
   }
 
@@ -236,19 +244,20 @@ class _OrderDetailsBodyState extends State<OrderDetailsBody>
         (currentUser!.uid == placer?.userId ||
             currentUser!.uid == receiver?.userId);
 
-    const divider = Divider(
+    const Divider divider = Divider(
       thickness: 1,
       height: 3,
     );
     return FutureBuilder<Map<String, RegisterAccountModel>>(
         future: widget.userMapFuture,
-        builder: (context, userSnapshot) {
+        builder: (BuildContext context,
+            AsyncSnapshot<Map<String, RegisterAccountModel>> userSnapshot) {
           if (userSnapshot.hasError) {
             return Center(child: Text('Error: ${userSnapshot.error}'));
           }
 
           if (!userSnapshot.hasData) {
-            return LoadingWidget();
+            return const LoadingWidget();
           }
 
           Map<String, RegisterAccountModel> userMap = userSnapshot.data!;
@@ -256,19 +265,19 @@ class _OrderDetailsBodyState extends State<OrderDetailsBody>
             padding: const EdgeInsets.all(8.0),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
+              children: <Widget>[
                 Center(
                   child: Container(
                     padding: const EdgeInsets.symmetric(
                         horizontal: 20, vertical: 10),
                     decoration: BoxDecoration(
                       gradient: const LinearGradient(
-                        colors: [Colors.blueAccent, Colors.lightBlue],
+                        colors: <Color>[Colors.blueAccent, Colors.lightBlue],
                         begin: Alignment.topLeft,
                         end: Alignment.bottomRight,
                       ),
                       borderRadius: BorderRadius.circular(12),
-                      boxShadow: const [
+                      boxShadow: const <BoxShadow>[
                         BoxShadow(
                           color: Colors.black26,
                           offset: Offset(2, 2),
@@ -277,23 +286,22 @@ class _OrderDetailsBodyState extends State<OrderDetailsBody>
                       ],
                     ),
                     child: Column(
-                      children: [
+                      children: <Widget>[
                         Text(
-                          "Created At : $createdAt",
+                          'Created At : $createdAt',
                           style: TextStyles.font18WhiteBold,
                         ),
                         Padding(
                           padding: const EdgeInsets.all(8.0),
                           child: RichText(
                             text: TextSpan(
-                              children: [
+                              children: <InlineSpan>[
                                 const TextSpan(
                                   text: 'Status : ',
                                   style: TextStyles.font18WhiteBold,
                                 ),
                                 TextSpan(
-                                  text:
-                                      '${widget.orderEntity.status?.name ?? 'Unknown'}',
+                                  text: widget.orderEntity.status.name,
                                   style: TextStyles.font18WhiteBold,
                                 ),
                               ],
@@ -309,7 +317,7 @@ class _OrderDetailsBodyState extends State<OrderDetailsBody>
                   child: ListView.separated(
                     shrinkWrap: true,
                     itemCount: widget.itemsGroupedByUser.length,
-                    itemBuilder: (context, index) {
+                    itemBuilder: (BuildContext context, int index) {
                       String userId =
                           widget.itemsGroupedByUser.keys.elementAt(index);
                       List<OrderItem> userItems =
@@ -320,20 +328,21 @@ class _OrderDetailsBodyState extends State<OrderDetailsBody>
                         items: userItems,
                         user: userMap[userId],
                         status: widget.orderEntity.status,
-                        onDeleteItem: (item) => _deleteItem(item),
+                        onDeleteItem: (OrderItem item) => _deleteItem(item),
                       );
                     },
-                    separatorBuilder: (context, index) => divider,
+                    separatorBuilder: (BuildContext context, int index) =>
+                        divider,
                   ),
                 ),
                 const SizedBox(height: 20),
                 Column(
-                  children: [
+                  children: <Widget>[
                     Visibility(
                       visible:
                           widget.orderEntity.status == OrderStatusEnum.active,
                       child: Row(
-                        children: [
+                        children: <Widget>[
                           Expanded(
                             child: TextField(
                               controller: widget.itemController,
@@ -347,7 +356,7 @@ class _OrderDetailsBodyState extends State<OrderDetailsBody>
                                   keyboardHeight = 310;
                                 });
                               },
-                              onTapOutside: (value) {
+                              onTapOutside: (PointerDownEvent value) {
                                 setState(() {
                                   keyboardHeight = 0;
                                   FocusScope.of(context).unfocus();
@@ -414,7 +423,7 @@ class _OrderDetailsBodyState extends State<OrderDetailsBody>
                           width: 100.w,
                           onPressed: () async {
                             setState(() {
-                              for (var userId
+                              for (String userId
                                   in widget.itemsGroupedByUser.keys) {
                                 PushNotificationService.sendNotificationToUser(
                                   userId,
@@ -422,20 +431,22 @@ class _OrderDetailsBodyState extends State<OrderDetailsBody>
                                 );
                                 NotificationService.saveNotification(
                                     "The Order You're Joined Is Placed Successfully",
-                                    "We Will Wait it together",
+                                    'We Will Wait it together',
                                     userId);
                                 widget.orderEntity.status =
                                     OrderStatusEnum.placed;
                               }
                             });
                             updateOrderStatus();
-                            await Future.delayed(Duration(seconds: 10));
+                            // ignore: always_specify_types
+                            await Future.delayed(const Duration(seconds: 10));
                             await assignUsersAndNotify(
                                 await widget.userMapFuture);
                             await Navigator.push(
                               context,
-                              MaterialPageRoute(
-                                builder: (context) => ViewOrderPage(
+                              MaterialPageRoute<dynamic>(
+                                builder: (BuildContext context) =>
+                                    ViewOrderPage(
                                   onCalculate: widget.onCalculatePressed,
                                 ),
                               ),

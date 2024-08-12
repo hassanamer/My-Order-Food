@@ -1,12 +1,12 @@
 import 'package:flutter/material.dart';
-
-import '../../../../../core/theming/styles.dart';
+import 'package:order/core/theming/styles.dart';
 
 class UnderlineTextWidget extends StatelessWidget {
   const UnderlineTextWidget({
-    Key? key,
     required this.text,
-  }) : super(key: key);
+    super.key,
+  });
+
   final String text;
 
   @override

@@ -6,9 +6,9 @@ class CustomRowHomePage extends StatelessWidget {
   final Function? press;
 
   const CustomRowHomePage({
-    super.key,
     required this.firstText,
     required this.secondText,
+    super.key,
     this.press,
   });
 
@@ -18,12 +18,12 @@ class CustomRowHomePage extends StatelessWidget {
       padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
       decoration: BoxDecoration(
         gradient: const LinearGradient(
-          colors: [Colors.blueAccent, Colors.lightBlue],
+          colors: <Color>[Colors.blueAccent, Colors.lightBlue],
           begin: Alignment.topLeft,
           end: Alignment.bottomRight,
         ),
         borderRadius: BorderRadius.circular(12),
-        boxShadow: const [
+        boxShadow: const <BoxShadow>[
           BoxShadow(
             color: Colors.black26,
             offset: Offset(2, 2),
@@ -33,7 +33,7 @@ class CustomRowHomePage extends StatelessWidget {
       ),
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
-        children: [
+        children: <Widget>[
           Expanded(
             child: Center(
               child: Text(
@@ -52,12 +52,12 @@ class CustomRowHomePage extends StatelessWidget {
               padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 8),
               decoration: BoxDecoration(
                 gradient: const LinearGradient(
-                  colors: [Colors.blueAccent, Colors.lightBlue],
+                  colors: <Color>[Colors.blueAccent, Colors.lightBlue],
                   begin: Alignment.topLeft,
                   end: Alignment.bottomRight,
                 ),
                 borderRadius: BorderRadius.circular(12),
-                boxShadow: const [
+                boxShadow: const <BoxShadow>[
                   BoxShadow(
                     color: Colors.black26,
                     offset: Offset(2, 2),

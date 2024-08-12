@@ -1,14 +1,14 @@
 import 'package:flutter/material.dart';
 
-const primaryColor = Color.fromARGB(255, 207, 78, 27);
+const Color primaryColor = Color.fromARGB(255, 207, 78, 27);
 const Color headline1Color = Color(0xFF247CFF);
-const secondaryColor = Color(0xFF000000);
+const Color secondaryColor = Color(0xFF000000);
 const Color onBoardingIndcatorColor = Color.fromRGBO(229, 229, 229, 1);
 const Color authTextFromFieldHintTextColor = Color.fromRGBO(194, 189, 189, 1);
 const Color authTextFromFieldPorderColor = Color.fromRGBO(214, 218, 225, 1);
 const Color authTextFromFieldFillColor = Color.fromRGBO(241, 244, 254, 1);
 const Color authTextFromFieldErrorBorderColor = Color(0xFF757575);
-final appTheme = ThemeData(
+final ThemeData appTheme = ThemeData(
   appBarTheme: const AppBarTheme(
     backgroundColor: primaryColor,
     iconTheme: IconThemeData(color: secondaryColor),

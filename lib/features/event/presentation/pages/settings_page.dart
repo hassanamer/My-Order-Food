@@ -2,39 +2,38 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_staggered_animations/flutter_staggered_animations.dart';
 import 'package:get/get.dart';
+import 'package:order/core/theming/styles.dart';
 import 'package:order/core/widgets/app_bar_widget.dart';
-
-import '../../../../core/theming/styles.dart';
-import '../../../cart/presentation/pages/view_order_page.dart';
-import '../../../login/presentation/cubit/login_cubit.dart';
-import '../../../login/presentation/pages/login_page.dart';
-import '../../../restaurant/presentation/cubit/restaurant_cubit.dart';
-import '../../../restaurant/presentation/pages/add_restaurant_page.dart';
-import '../../../restaurant/presentation/pages/get_all_restaurants_page/all_restaurants_page.dart';
-import 'widgets/settings_widgets/settings_header_widget.dart';
+import 'package:order/features/cart/presentation/pages/view_order_page.dart';
+import 'package:order/features/event/presentation/pages/widgets/settings_widgets/settings_header_widget.dart';
+import 'package:order/features/login/presentation/cubit/login_cubit.dart';
+import 'package:order/features/login/presentation/pages/login_page.dart';
+import 'package:order/features/restaurant/presentation/cubit/restaurant_cubit.dart';
+import 'package:order/features/restaurant/presentation/pages/add_restaurant_page.dart';
+import 'package:order/features/restaurant/presentation/pages/get_all_restaurants_page/all_restaurants_page.dart';
 
 class SettingsPage extends StatelessWidget {
-  const SettingsPage({Key? key}) : super(key: key);
+  const SettingsPage({super.key});
 
   @override
   Widget build(BuildContext context) {
-    const sizedBox = SizedBox(height: 16);
+    const SizedBox sizedBox = SizedBox(height: 16);
     return Scaffold(
       appBar: const AppBarWidget(
-        pageName: "Settings",
+        pageName: 'Settings',
       ),
       body: AnimationLimiter(
         child: ListView(
           padding: const EdgeInsets.all(12),
           children: AnimationConfiguration.toStaggeredList(
             duration: const Duration(milliseconds: 375),
-            childAnimationBuilder: (widget) => SlideAnimation(
+            childAnimationBuilder: (Widget widget) => SlideAnimation(
               verticalOffset: 50.0,
               child: FadeInAnimation(
                 child: widget,
               ),
             ),
-            children: [
+            children: <Widget>[
               _buildSettingsTile(
                 child: const SettingsHeaderWidget(),
                 onTap: null, // No tap action for the header
@@ -46,8 +45,9 @@ class SettingsPage extends StatelessWidget {
                 icon: Icons.text_snippet_outlined,
                 onTap: () {
                   context.read<RestaurantCubit>().getAllRestaurants();
-                  Navigator.of(context).push(MaterialPageRoute(
-                      builder: (context) => const ViewOrderPage()));
+                  Navigator.of(context).push(MaterialPageRoute<dynamic>(
+                      builder: (BuildContext context) =>
+                          const ViewOrderPage()));
                 },
               ),
               sizedBox,
@@ -57,8 +57,9 @@ class SettingsPage extends StatelessWidget {
                 icon: Icons.table_restaurant_outlined,
                 onTap: () {
                   context.read<RestaurantCubit>().getAllRestaurants();
-                  Navigator.of(context).push(MaterialPageRoute(
-                      builder: (context) => const AllRestaurantPage()));
+                  Navigator.of(context).push(MaterialPageRoute<dynamic>(
+                      builder: (BuildContext context) =>
+                          const AllRestaurantPage()));
                 },
               ),
               sizedBox,
@@ -88,13 +89,13 @@ class SettingsPage extends StatelessWidget {
                     builder: (BuildContext context) {
                       return AlertDialog(
                         title: const Text(
-                          "Logout",
+                          'Logout',
                           style: TextStyles.font18BlueSemiBold,
                         ),
                         content: const Text(
-                          "Are you sure you want to logout?",
+                          'Are you sure you want to logout?',
                         ),
-                        actions: [
+                        actions: <Widget>[
                           TextButton(
                             onPressed: () => Navigator.pop(context, 'Cancel'),
                             child: const Text(
@@ -104,14 +105,15 @@ class SettingsPage extends StatelessWidget {
                           ),
                           TextButton(
                             child: const Text(
-                              "Confirm",
+                              'Confirm',
                               style: TextStyles.font14BlueSemiBold,
                             ),
                             onPressed: () {
                               context.read<LoginCubit>().logOut();
                               Navigator.of(context).pushReplacement(
-                                MaterialPageRoute(
-                                  builder: (context) => const LoginPage(),
+                                MaterialPageRoute<dynamic>(
+                                  builder: (BuildContext context) =>
+                                      const LoginPage(),
                                 ),
                               );
                             },
@@ -142,11 +144,11 @@ class SettingsPage extends StatelessWidget {
       decoration: BoxDecoration(
         borderRadius: BorderRadius.circular(15),
         gradient: LinearGradient(
-          colors: [Colors.blue.shade400, Colors.blue.shade900],
+          colors: <Color>[Colors.blue.shade400, Colors.blue.shade900],
           begin: Alignment.topLeft,
           end: Alignment.bottomRight,
         ),
-        boxShadow: [
+        boxShadow: <BoxShadow>[
           BoxShadow(
             color: Colors.black.withOpacity(0.1),
             blurRadius: 8,

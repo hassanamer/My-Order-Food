@@ -1,7 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-
-import 'notification_model.dart';
+import 'package:order/core/services/notification_model.dart';
 
 class NotificationService {
   static final FirebaseFirestore _firestore = FirebaseFirestore.instance;
@@ -21,31 +20,34 @@ class NotificationService {
     );
 
     try {
-      DocumentReference docRef = await _firestore
+      DocumentReference<Map<String, dynamic>> docRef = await _firestore
           .collection('notifications')
           .add(notification.toMap());
+      // ignore: always_specify_types
       await docRef.update({'id': docRef.id});
-      print("Notification saved successfully");
+      print('Notification saved successfully');
     } catch (e) {
-      print("Error saving notification: $e");
+      print('Error saving notification: $e');
     }
   }
 
   static Future<List<NotificationModel>> getCurrentUserNotifications() async {
     User? user = FirebaseAuth.instance.currentUser;
     if (user == null) {
-      return [];
+      return <NotificationModel>[];
     }
     String userId = user.uid;
     try {
-      QuerySnapshot snapshot = await _firestore
+      QuerySnapshot<Map<String, dynamic>> snapshot = await _firestore
           .collection('notifications')
           .where('userId', isEqualTo: userId)
           .orderBy('timestamp', descending: true)
           .get();
 
-      List<NotificationModel> notifications = snapshot.docs.map((doc) {
-        final data = doc.data() as Map<String, dynamic>;
+      List<NotificationModel> notifications =
+          snapshot.docs.map((QueryDocumentSnapshot<Map<String, dynamic>> doc) {
+        final Map<String, dynamic> data = doc.data();
+        // ignore: always_specify_types
         return NotificationModel.fromMap({
           ...data,
           'id': doc.id,
@@ -54,15 +56,15 @@ class NotificationService {
 
       return notifications;
     } catch (e) {
-      print("Error fetching notifications: $e");
-      return [];
+      print('Error fetching notifications: $e');
+      return <NotificationModel>[];
     }
   }
 
   static Stream<List<NotificationModel>> currentUserNotificationsStream() {
     User? user = FirebaseAuth.instance.currentUser;
     if (user == null) {
-      return Stream.value([]);
+      return Stream<List<NotificationModel>>.value(<NotificationModel>[]);
     }
 
     String userId = user.uid;
@@ -72,9 +74,11 @@ class NotificationService {
         .where('userId', isEqualTo: userId)
         .orderBy('timestamp', descending: true)
         .snapshots()
-        .map((snapshot) {
-      return snapshot.docs.map((doc) {
-        final data = doc.data() as Map<String, dynamic>;
+        .map((QuerySnapshot<Map<String, dynamic>> snapshot) {
+      return snapshot.docs
+          .map((QueryDocumentSnapshot<Map<String, dynamic>> doc) {
+        final Map<String, dynamic> data = doc.data();
+        // ignore: always_specify_types
         return NotificationModel.fromMap({
           ...data,
           'id': doc.id,
@@ -86,7 +90,7 @@ class NotificationService {
   static Future<void> updateNotification(NotificationModel notification) async {
     User? user = FirebaseAuth.instance.currentUser;
     if (user == null) {
-      throw Exception("User not logged in");
+      throw Exception('User not logged in');
     }
 
     try {
@@ -94,9 +98,9 @@ class NotificationService {
           .collection('notifications')
           .doc(notification.id)
           .update(notification.toMap());
-      print("Notification updated successfully");
+      print('Notification updated successfully');
     } catch (e) {
-      print("Error updating notification: $e");
+      print('Error updating notification: $e');
     }
   }
 }

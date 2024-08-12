@@ -2,6 +2,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:order/core/widgets/handler_request_api.dart';
+import 'package:order/features/login/domain/entities/account_entites.dart';
 import 'package:order/features/login/domain/usecases/login_usecase.dart';
 import 'package:order/features/login/domain/usecases/remote_login_usecase.dart';
 import 'package:order/features/login/domain/usecases/remote_logout_usecase.dart';
@@ -19,16 +20,17 @@ class LoginCubit extends Cubit<LoginState> {
       String email, String password, BuildContext context) async {
     emit(LoginStateLoading());
 
-    final remoteLoginUsecase = RemoteLoginUsecase(sl());
+    final RemoteLoginUsecase remoteLoginUsecase = RemoteLoginUsecase(sl());
 
     try {
       emit(LoginStateLoading());
       handlerRequestApi(
         context: context,
         body: () async {
-          final loggedin = await remoteLoginUsecase.call(email, password);
+          final LoginBaseResponse loggedin =
+              await remoteLoginUsecase.call(email, password);
           if (loggedin.status) {
-            return emit(LoginSucessState("Hello,welcome back ;)"));
+            return emit(LoginSucessState('Hello,welcome back ;)'));
           } else {
             return emit(ErrorState(errorMessage: loggedin.message));
           }
@@ -45,7 +47,8 @@ class LoginCubit extends Cubit<LoginState> {
     try {
       emit(LoginStateLoading());
 
-      final logedin = await loginUsecase.call(username, password);
+      final LoginBaseResponse logedin =
+          await loginUsecase.call(username, password);
       if (logedin.status) {
         emit(SuccessState(logedin));
       } else {
@@ -58,10 +61,10 @@ class LoginCubit extends Cubit<LoginState> {
 
   Future<void> logOut() async {
     emit(LogoutLoadingState());
-    final remoteLogoutUsecase = RemoteLogoutUsecase(sl());
+    final RemoteLogoutUsecase remoteLogoutUsecase = RemoteLogoutUsecase(sl());
     try {
       emit(LogoutLoadingState());
-      final loggedout = await remoteLogoutUsecase.call();
+      final LoginBaseResponse loggedout = await remoteLogoutUsecase.call();
       if (loggedout.status) {
         emit(SuccessLogoutState(loggedout));
       } else {

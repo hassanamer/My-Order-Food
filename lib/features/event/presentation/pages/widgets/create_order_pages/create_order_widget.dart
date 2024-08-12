@@ -1,4 +1,3 @@
-import 'dart:async';
 import 'dart:math';
 
 import 'package:firebase_auth/firebase_auth.dart';
@@ -7,45 +6,37 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:order/core/theming/colors.dart';
 import 'package:order/features/event/domain/entities/order_entities.dart';
+import 'package:order/features/event/domain/remote_usecases/add_order_usecase.dart';
 import 'package:order/features/event/presentation/cubit/order_cubit.dart';
+import 'package:order/features/event/presentation/pages/widgets/create_order_pages/create_order_button.dart';
+import 'package:order/injection_container.dart';
 
-import '../../../../../../injection_container.dart';
-import '../../../../domain/remote_usecases/add_order_usecase.dart';
-import 'create_order_button.dart';
-
+// ignore: must_be_immutable
 class CreateOrderWidget extends StatefulWidget {
   OrderEntity? eventEntity;
   final bool isUpdateEvent;
 
   CreateOrderWidget({
-    Key? key,
     required this.eventEntity,
     required this.isUpdateEvent,
-  }) : super(key: key);
+    super.key,
+  });
 
   @override
   State<CreateOrderWidget> createState() => _CreateOrderWidgetState();
 }
 
 class _CreateOrderWidgetState extends State<CreateOrderWidget> {
-  final _formKey = GlobalKey<FormState>();
+  final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
   TextEditingController titleController = TextEditingController();
   TextEditingController itemController = TextEditingController();
   double vat = 0;
   int itemCount = 0;
-  Timer? _cancelTimer;
   late AddOrderUsecase addOrderUsecase;
   double keyboardHeight = 0;
-  bool _hasStartedTyping = false;
-
-  void _handleChange(String value) {
-    setState(() {
-      _hasStartedTyping = true;
-    });
-  }
 
   late String userId = FirebaseAuth.instance.currentUser?.uid ?? '';
-  List<OrderItem> itemList = [];
+  List<OrderItem> itemList = <OrderItem>[];
   Random random = Random();
 
   @override
@@ -54,7 +45,7 @@ class _CreateOrderWidgetState extends State<CreateOrderWidget> {
     addOrderUsecase = sl();
     if (widget.isUpdateEvent) {
       titleController.text = widget.eventEntity!.title!;
-      widget.eventEntity!.items?.forEach((item) {
+      widget.eventEntity!.items?.forEach((OrderItem item) {
         itemList.add(OrderItem(
           itemName: item.itemName,
           quantity: item.quantity,
@@ -70,21 +61,21 @@ class _CreateOrderWidgetState extends State<CreateOrderWidget> {
     return Form(
       key: _formKey,
       child: Column(
-        children: [
+        children: <Widget>[
           TextFormField(
             // onChanged: _handleChange,
             controller: titleController,
             decoration: const InputDecoration(
-              labelText: "Title",
+              labelText: 'Title',
               border: OutlineInputBorder(),
             ),
-            validator: (value) {
+            validator: (String? value) {
               if (itemList.isEmpty && value!.isEmpty) {
                 return "Title field can't be empty";
               }
               return null;
             },
-            onChanged: (value) {
+            onChanged: (String value) {
               _formKey.currentState?.validate();
             },
             onTap: () {
@@ -98,7 +89,7 @@ class _CreateOrderWidgetState extends State<CreateOrderWidget> {
                 FocusScope.of(context).unfocus();
               });
             },
-            onTapOutside: (event) {
+            onTapOutside: (PointerDownEvent event) {
               setState(() {
                 keyboardHeight = 0;
                 FocusScope.of(context).unfocus();
@@ -110,9 +101,9 @@ class _CreateOrderWidgetState extends State<CreateOrderWidget> {
             shrinkWrap: true,
             physics: const NeverScrollableScrollPhysics(),
             itemCount: itemList.length,
-            itemBuilder: (context, index) {
+            itemBuilder: (BuildContext context, int index) {
               return Row(
-                children: [
+                children: <Widget>[
                   Expanded(
                     child: Text(itemList[index].itemName),
                   ),
@@ -148,21 +139,21 @@ class _CreateOrderWidgetState extends State<CreateOrderWidget> {
           ),
           const SizedBox(height: 20),
           Row(
-            children: [
+            children: <Widget>[
               Expanded(
                 child: TextFormField(
                   controller: itemController,
                   decoration: const InputDecoration(
-                    labelText: "Item",
+                    labelText: 'Item',
                     border: OutlineInputBorder(),
                   ),
-                  validator: (value) {
+                  validator: (String? value) {
                     if (itemList.isEmpty && value!.isEmpty) {
                       return "Item field can't be empty";
                     }
                     return null;
                   },
-                  onChanged: (value) {
+                  onChanged: (String value) {
                     _formKey.currentState?.validate();
                   },
                   onTap: () {
@@ -176,7 +167,7 @@ class _CreateOrderWidgetState extends State<CreateOrderWidget> {
                       FocusScope.of(context).unfocus();
                     });
                   },
-                  onTapOutside: (event) {
+                  onTapOutside: (PointerDownEvent event) {
                     setState(() {
                       keyboardHeight = 0;
                       FocusScope.of(context).unfocus();
@@ -223,20 +214,21 @@ class _CreateOrderWidgetState extends State<CreateOrderWidget> {
   }
 
   void validateFormThenUpdateOrAddEvent() {
-    final isValid = _formKey.currentState!.validate();
+    final bool isValid = _formKey.currentState!.validate();
 
     if (itemList.isEmpty) {
       Fluttertoast.showToast(
-        msg: "Please Enter Your Items",
+        msg: 'Please Enter Your Items',
         backgroundColor: ColorsManager.mainBlue,
       );
       return;
     }
 
-    bool allItemsHaveQuantity = itemList.every((item) => item.quantity > 0);
+    bool allItemsHaveQuantity =
+        itemList.every((OrderItem item) => item.quantity > 0);
 
     if (isValid && allItemsHaveQuantity) {
-      final createOrderEntity = OrderEntity(
+      final OrderEntity createOrderEntity = OrderEntity(
           id: widget.isUpdateEvent
               ? widget.eventEntity!.id
               : random.nextInt(10).toString(),
@@ -245,7 +237,7 @@ class _CreateOrderWidgetState extends State<CreateOrderWidget> {
           userId: userId,
           vat: vat,
           deliveryFees: 0.0,
-          itemsTotalPricePerUser: {},
+          itemsTotalPricePerUser: <String, double>{},
           createdAt: DateTime.now(),
           status: OrderStatusEnum.active);
 
@@ -258,7 +250,7 @@ class _CreateOrderWidgetState extends State<CreateOrderWidget> {
       }
     } else if (!allItemsHaveQuantity) {
       Fluttertoast.showToast(
-        msg: "All items must have a quantity greater than zero",
+        msg: 'All items must have a quantity greater than zero',
         backgroundColor: ColorsManager.mainBlue,
       );
     }

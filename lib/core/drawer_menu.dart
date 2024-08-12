@@ -4,13 +4,12 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:order/features/event/presentation/cubit/order_cubit.dart';
 import 'package:order/features/event/presentation/pages/order_food_home_page.dart';
+import 'package:order/features/login/presentation/cubit/login_cubit.dart';
 import 'package:order/features/login/presentation/pages/login_page.dart';
 import 'package:order/features/register/data/models/register_account_model.dart';
 import 'package:order/features/restaurant/presentation/cubit/restaurant_cubit.dart';
 import 'package:order/features/restaurant/presentation/pages/add_restaurant_page.dart';
 import 'package:order/features/restaurant/presentation/pages/get_all_restaurants_page/all_restaurants_page.dart';
-
-import '../features/login/presentation/cubit/login_cubit.dart';
 
 class NavigationDrawerr extends StatefulWidget {
   const NavigationDrawerr({super.key});
@@ -29,10 +28,10 @@ class _NavigationDrawerrState extends State<NavigationDrawerr> {
     super.initState();
 
     FirebaseFirestore.instance
-        .collection("Users")
+        .collection('Users')
         .doc(user!.uid)
         .get()
-        .then((value) {
+        .then((DocumentSnapshot<Map<String, dynamic>> value) {
       loggedInUser = RegisterAccountModel.fromMap(value.data());
       setState(() {});
     });
@@ -45,7 +44,7 @@ class _NavigationDrawerrState extends State<NavigationDrawerr> {
       height: MediaQuery.of(context).size.height,
       child: Drawer(
         child: ListView(
-          children: [
+          children: <Widget>[
             SingleChildScrollView(
                 child: Column(
               children: <Widget>[
@@ -67,7 +66,7 @@ class _NavigationDrawerrState extends State<NavigationDrawerr> {
               child: Padding(
                 padding: const EdgeInsets.all(1),
                 child:
-                    ClipOval(child: Image.asset("assets/images/profile.png")),
+                    ClipOval(child: Image.asset('assets/images/profile.png')),
               ),
             ),
           ),
@@ -103,8 +102,9 @@ class _NavigationDrawerrState extends State<NavigationDrawerr> {
             leading: const Icon(Icons.home),
             onTap: () {
               context.read<OrderCubit>().getAllOrders();
-              Navigator.of(context).push(MaterialPageRoute(
-                  builder: (context) => const OrderFoodHomePage()));
+              Navigator.of(context).push(MaterialPageRoute<dynamic>(
+                  builder: (BuildContext context) =>
+                      const OrderFoodHomePage()));
             },
           ),
           ListTile(
@@ -112,8 +112,9 @@ class _NavigationDrawerrState extends State<NavigationDrawerr> {
             leading: const Icon(Icons.restaurant),
             onTap: () {
               context.read<RestaurantCubit>().getAllRestaurants();
-              Navigator.of(context).push(MaterialPageRoute(
-                  builder: (context) => const AllRestaurantPage()));
+              Navigator.of(context).push(MaterialPageRoute<dynamic>(
+                  builder: (BuildContext context) =>
+                      const AllRestaurantPage()));
             },
           ),
           ListTile(
@@ -125,8 +126,8 @@ class _NavigationDrawerrState extends State<NavigationDrawerr> {
               ),
             ),
             onTap: () {
-              Navigator.of(context).push(MaterialPageRoute(
-                  builder: (context) => const RestaurantPage()));
+              Navigator.of(context).push(MaterialPageRoute<dynamic>(
+                  builder: (BuildContext context) => const RestaurantPage()));
             },
           ),
           const Divider(
@@ -146,10 +147,10 @@ class _NavigationDrawerrState extends State<NavigationDrawerr> {
                     context: context,
                     builder: (BuildContext context) {
                       return AlertDialog(
-                          title: const Text("Logout"),
+                          title: const Text('Logout'),
                           content:
-                              const Text("Are you sure you want to logout?"),
-                          actions: [
+                              const Text('Are you sure you want to logout?'),
+                          actions: <Widget>[
                             TextButton(
                               onPressed: () => Navigator.pop(context, 'Cancel'),
                               child: const Text(
@@ -158,13 +159,13 @@ class _NavigationDrawerrState extends State<NavigationDrawerr> {
                               ),
                             ),
                             TextButton(
-                                child: const Text("Confirm"),
+                                child: const Text('Confirm'),
                                 onPressed: () {
                                   setState(() {
                                     context.read<LoginCubit>().logOut();
                                     Navigator.of(context).pushReplacement(
-                                        MaterialPageRoute(
-                                            builder: (context) =>
+                                        MaterialPageRoute<dynamic>(
+                                            builder: (BuildContext context) =>
                                                 const LoginPage()));
                                   });
                                 })

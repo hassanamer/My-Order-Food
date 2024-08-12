@@ -10,15 +10,15 @@ class TextFormFieldWidget extends StatelessWidget {
   final Function(PointerDownEvent)? onTapOutside;
 
   const TextFormFieldWidget({
-    Key? key,
     required this.name,
     required this.multiLines,
     required this.controller,
+    super.key,
     this.validator,
     this.onTap,
     this.onEditingComplete,
     this.onTapOutside,
-  }) : super(key: key);
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -26,10 +26,10 @@ class TextFormFieldWidget extends StatelessWidget {
       onTap: onTap,
       child: FocusScope(
         child: Focus(
-          onFocusChange: (hasFocus) {
+          onFocusChange: (bool hasFocus) {
             if (!hasFocus) {
               if (onTapOutside != null) {
-                onTapOutside!(PointerDownEvent());
+                onTapOutside!(const PointerDownEvent());
               }
             }
           },
@@ -38,7 +38,7 @@ class TextFormFieldWidget extends StatelessWidget {
             maxLines: multiLines ? null : 1,
             decoration: InputDecoration(
               labelText: name,
-              border: OutlineInputBorder(),
+              border: const OutlineInputBorder(),
             ),
             validator: validator,
             onEditingComplete: onEditingComplete,

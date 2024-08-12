@@ -3,19 +3,19 @@ import 'package:flutter/material.dart';
 
 class TopImage extends StatelessWidget {
   const TopImage({
-    Key? key,
-  }) : super(key: key);
+    super.key,
+  });
 
   @override
   Widget build(BuildContext context) {
-    return Container(
+    return SizedBox(
       width: double.infinity,
       child: FadeInUp(
-          duration: Duration(seconds: 1),
+          duration: const Duration(seconds: 1),
           child: Container(
             height: 205,
             width: double.infinity,
-            decoration: BoxDecoration(
+            decoration: const BoxDecoration(
               image: DecorationImage(
                 image: AssetImage(
                   'assets/images/login.png',

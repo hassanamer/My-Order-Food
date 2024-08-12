@@ -6,15 +6,15 @@ class DeleteWidget extends StatelessWidget {
   final int eventId;
 
   const DeleteWidget({
-    Key? key,
     required this.eventId,
-  }) : super(key: key);
+    super.key,
+  });
 
   @override
   Widget build(BuildContext context) {
     return AlertDialog(
       title: const Text('Are you sure ?'),
-      actions: [
+      actions: <Widget>[
         TextButton(
           onPressed: () => Navigator.of(context).pop(),
           child: const Text('No'),

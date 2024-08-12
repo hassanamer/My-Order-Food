@@ -5,11 +5,12 @@ class SettingsDetailsRow extends StatelessWidget {
   final IconData icon;
   final bool isShowEndicon;
   final VoidCallback onTap;
+
   const SettingsDetailsRow({
-    super.key,
     required this.text,
     required this.icon,
     required this.onTap,
+    super.key,
     this.isShowEndicon = true,
   });
 
@@ -18,7 +19,7 @@ class SettingsDetailsRow extends StatelessWidget {
     return InkWell(
       onTap: onTap,
       child: Row(
-        children: [
+        children: <Widget>[
           Icon(icon),
           const SizedBox(
             width: 8,

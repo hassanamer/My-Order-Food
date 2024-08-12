@@ -1,13 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-
-import '../../../../../../core/theming/styles.dart';
-import '../../../../../register/user/pages/user_profile_screen.dart';
-import '../../../../../register/user/profile_cubit.dart';
+import 'package:order/core/theming/styles.dart';
+import 'package:order/features/register/user/pages/user_profile_screen.dart';
+import 'package:order/features/register/user/profile_cubit.dart';
 
 class SettingsHeaderWidget extends StatefulWidget {
-  const SettingsHeaderWidget({Key? key}) : super(key: key);
+  const SettingsHeaderWidget({super.key});
 
   @override
   _SettingsHeaderWidgetState createState() => _SettingsHeaderWidgetState();
@@ -27,7 +26,7 @@ class _SettingsHeaderWidgetState extends State<SettingsHeaderWidget> {
   @override
   Widget build(BuildContext context) {
     return BlocConsumer<ProfileCubit, ProfileState>(
-      listener: (context, state) {
+      listener: (BuildContext context, ProfileState state) {
         if (state is ProfileLoaded) {
           setState(() {
             userName = state.userName;
@@ -36,16 +35,16 @@ class _SettingsHeaderWidgetState extends State<SettingsHeaderWidget> {
           });
         }
       },
-      builder: (context, state) {
+      builder: (BuildContext context, ProfileState state) {
         return GestureDetector(
           onTap: () {
-            Navigator.of(context).push(
-                MaterialPageRoute(builder: (context) => UserProfileScreen()));
+            Navigator.of(context).push(MaterialPageRoute<dynamic>(
+                builder: (BuildContext context) => const UserProfileScreen()));
           },
           child: Container(
             padding: const EdgeInsets.symmetric(horizontal: 5, vertical: 15),
             decoration: const BoxDecoration(
-              boxShadow: [
+              boxShadow: <BoxShadow>[
                 BoxShadow(
                     blurRadius: 9, color: Color.fromRGBO(179, 192, 195, 0.08)),
               ],
@@ -53,7 +52,7 @@ class _SettingsHeaderWidgetState extends State<SettingsHeaderWidget> {
             ),
             child: Row(
               mainAxisAlignment: MainAxisAlignment.start,
-              children: [
+              children: <Widget>[
                 GradientCircleAvatar(
                   profileImageUrl: profileImageUrl,
                   width: 140.w,
@@ -63,7 +62,7 @@ class _SettingsHeaderWidgetState extends State<SettingsHeaderWidget> {
                 Expanded(
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.stretch,
-                    children: [
+                    children: <Widget>[
                       Text(
                         userName,
                         style: TextStyles.font18DarkBlueBold,

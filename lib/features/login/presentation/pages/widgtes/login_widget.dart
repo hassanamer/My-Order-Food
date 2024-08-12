@@ -1,17 +1,15 @@
-import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:order/core/services/push_notification_service.dart';
+import 'package:order/core/theming/gradient_background.dart';
+import 'package:order/core/widgets/botton_auth_row_widget.dart';
+import 'package:order/core/widgets/common_elevated_button_widget.dart';
+import 'package:order/features/login/presentation/cubit/login_cubit.dart';
+import 'package:order/features/login/presentation/pages/widgtes/login_header_widget.dart';
+import 'package:order/features/login/presentation/pages/widgtes/login_textfield_widget.dart';
+import 'package:order/features/login/presentation/pages/widgtes/login_top_image_widget.dart';
+import 'package:order/features/register/presentation/pages/register_page.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-
-import '../../../../../core/services/push_notification_service.dart';
-import '../../../../../core/theming/gradient_background.dart';
-import '../../../../../core/widgets/botton_auth_row_widget.dart';
-import '../../../../../core/widgets/common_elevated_button_widget.dart';
-import '../../../../register/presentation/pages/register_page.dart';
-import '../../cubit/login_cubit.dart';
-import 'login_header_widget.dart'; // Make sure to import your login header widget
-import 'login_textfield_widget.dart';
-import 'login_top_image_widget.dart';
 
 class LoginWidget extends StatefulWidget {
   const LoginWidget({super.key});
@@ -26,8 +24,6 @@ class _LoginWidgetState extends State<LoginWidget> {
   late TextEditingController passwordController;
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
   bool passwordVisible = false;
-  static final FirebaseMessaging _firebaseMessaging =
-      FirebaseMessaging.instance;
 
   @override
   void initState() {
@@ -81,7 +77,7 @@ class _LoginWidgetState extends State<LoginWidget> {
       child: SingleChildScrollView(
         child: Center(
           child: Column(
-            children: [
+            children: <Widget>[
               const TopImage(),
               Padding(
                 padding: const EdgeInsets.symmetric(vertical: 50.0),
@@ -92,11 +88,11 @@ class _LoginWidgetState extends State<LoginWidget> {
                         horizontal: 15, vertical: 15),
                     child: SingleChildScrollView(
                       child: Column(
-                        children: [
+                        children: <Widget>[
                           const LoginHeaderWidget(),
                           const SizedBox(height: 15),
                           LoginTextFieldWidget(
-                            hintText: "Email",
+                            hintText: 'Email',
                             obscureText: false,
                             prefixIcon: const Icon(Icons.email),
                             controllerEmail: emailController,
@@ -108,7 +104,7 @@ class _LoginWidgetState extends State<LoginWidget> {
                           LoginTextFieldWidget(
                             obscureText: passwordVisible,
                             controllerEmail: passwordController,
-                            hintText: "Password",
+                            hintText: 'Password',
                             prefixIcon: const Icon(Icons.lock),
                             suffixIcon: IconButton(
                               onPressed: () {
@@ -125,13 +121,11 @@ class _LoginWidgetState extends State<LoginWidget> {
                           ),
                           const SizedBox(height: 12),
                           CommonElevatedButtonWidget(
-                            text: "Log in",
+                            text: 'Log in',
                             onPressed: () async {
                               final PushNotificationService
                                   pushNotificationService =
-                                  PushNotificationService(
-                                _firebaseMessaging,
-                              );
+                                  PushNotificationService();
                               pushNotificationService.updateUserFcmToken();
                               pushNotificationService.initialise();
                               setState(() {
@@ -146,11 +140,11 @@ class _LoginWidgetState extends State<LoginWidget> {
                             },
                           ),
                           Row(
-                            children: [
+                            children: <Widget>[
                               Checkbox(
                                 activeColor: Colors.blue,
                                 value: _rememberMe,
-                                onChanged: (newValue) {
+                                onChanged: (bool? newValue) {
                                   setState(() => _rememberMe = newValue!);
                                   _handleRememberMe(newValue ?? false);
                                 },
@@ -160,10 +154,11 @@ class _LoginWidgetState extends State<LoginWidget> {
                           ),
                           BottomAuthRowWidget(
                             text: "Don't have an account ?",
-                            value: "Sign up",
+                            value: 'Sign up',
                             onTap: () => Navigator.of(context).push(
-                              MaterialPageRoute(
-                                builder: (context) => const RegisterPage(),
+                              MaterialPageRoute<dynamic>(
+                                builder: (BuildContext context) =>
+                                    const RegisterPage(),
                               ),
                             ),
                           ),

@@ -12,12 +12,13 @@ class GetUserUsecase {
 
   Future<Map<String, RegisterAccountModel>> getUsers(
       List<String> userIdList) async {
-    Map<String, RegisterAccountModel> userMap = {};
+    Map<String, RegisterAccountModel> userMap =
+        <String, RegisterAccountModel>{};
 
-    List<Future<void>> futures = [];
+    List<Future<void>> futures = <Future<void>>[];
 
-    for (var userId in userIdList) {
-      futures.add(call(userId).then((user) {
+    for (String userId in userIdList) {
+      futures.add(call(userId).then((RegisterAccountModel user) {
         userMap[userId] = user;
       }));
     }

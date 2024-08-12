@@ -4,13 +4,14 @@ import 'package:order/core/services/crud_service.dart';
 import 'package:order/main.dart';
 
 class PushNotification {
-  static final _firebaseMessaging = FirebaseMessaging.instance;
+  static final FirebaseMessaging _firebaseMessaging =
+      FirebaseMessaging.instance;
   final CRUDService crudService = CRUDService();
   static final FlutterLocalNotificationsPlugin
       _flutterLocalNotificationsPlugin = FlutterLocalNotificationsPlugin();
 
 //request notification permission
-  static Future init() async {
+  static Future<void> init() async {
     await _firebaseMessaging.requestPermission(
       alert: true,
       announcement: false,
@@ -22,24 +23,25 @@ class PushNotification {
     );
   }
 
-  Future getDeviceToken() async {
+  Future<void> getDeviceToken() async {
     //device token
-    final token = await _firebaseMessaging.getToken();
-    print("device token $token");
+    final String? token = await _firebaseMessaging.getToken();
+    print('device token $token');
     await crudService.saveUserToken(token);
 
-    _firebaseMessaging.onTokenRefresh.listen((event) async {
+    _firebaseMessaging.onTokenRefresh.listen((String? token) async {
       crudService.saveUserToken(token);
     });
   }
 
-  static Future localNotificationInit() async {
+  static Future<void> localNotificationInit() async {
     const AndroidInitializationSettings initializationSettingsAndroid =
         AndroidInitializationSettings('@mipmap/ic_launcher');
     final DarwinInitializationSettings initializationSettingsDarwin =
         DarwinInitializationSettings(
-            onDidReceiveLocalNotification: (id, title, body, payload) => null);
-    final LinuxInitializationSettings initializationSettingsLinux =
+            onDidReceiveLocalNotification:
+                (int id, String? title, String? body, String? payload) {});
+    const LinuxInitializationSettings initializationSettingsLinux =
         LinuxInitializationSettings(defaultActionName: 'Open notification');
     final InitializationSettings initializationSettings =
         InitializationSettings(
@@ -57,16 +59,16 @@ class PushNotification {
 
   static void onNotificationTap(NotificationResponse notificationResponse) {
     navigatorKey.currentState!
-        .pushNamed("/notifications", arguments: notificationResponse);
+        .pushNamed('/notifications', arguments: notificationResponse);
   }
 
-  static Future showSimpleNotification(
+  static Future<void> showSimpleNotification(
       {required String title,
       required String body,
       required String payload}) async {
     const AndroidNotificationDetails androidNotificationDetails =
         AndroidNotificationDetails('channelId', 'channelName',
-            channelDescription: "",
+            channelDescription: '',
             importance: Importance.max,
             priority: Priority.max,
             ticker: 'ticker');

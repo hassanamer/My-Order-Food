@@ -25,27 +25,29 @@ class RemoteRegisterDatasourceImlp implements RemoteRegisterDatasource {
   Future<RegisterAccountEntity> remoteRegisterUser(String email,
       String password, RegisterAccountEntity registerAccountEntity) async {
     try {
-      final userData = await firebaseDB.auth.createUserWithEmailAndPassword(
+      final UserCredential userData =
+          await firebaseDB.auth.createUserWithEmailAndPassword(
         email: email,
         password: password,
       );
 
       await firebaseDB.firebaseFirestore
-          .collection("Users")
+          .collection('Users')
           .doc(userData.user!.uid)
+          // ignore: always_specify_types
           .set({
-        "userId": userData.user!.uid,
-        "email": userData.user!.email,
-        "gender": registerAccountEntity.gender,
-        "name": registerAccountEntity.name,
-        "phoneNumber": registerAccountEntity.phoneNumber,
-        "userName": registerAccountEntity.username,
-        "profileImageUrl": registerAccountEntity.profileImageUrl,
-        "fcmToken": registerAccountEntity.fcmToken,
-        "hasCar": registerAccountEntity.hasCar,
-        "deliveryPreference": registerAccountEntity.deliveryPreference,
-        "receivedOrderCount": registerAccountEntity.receivedOrderCount,
-        "placedOrderCount": registerAccountEntity.placedOrderCount,
+        'userId': userData.user!.uid,
+        'email': userData.user!.email,
+        'gender': registerAccountEntity.gender,
+        'name': registerAccountEntity.name,
+        'phoneNumber': registerAccountEntity.phoneNumber,
+        'userName': registerAccountEntity.username,
+        'profileImageUrl': registerAccountEntity.profileImageUrl,
+        'fcmToken': registerAccountEntity.fcmToken,
+        'hasCar': registerAccountEntity.hasCar,
+        'deliveryPreference': registerAccountEntity.deliveryPreference,
+        'receivedOrderCount': registerAccountEntity.receivedOrderCount,
+        'placedOrderCount': registerAccountEntity.placedOrderCount,
       });
 
       return RegisterAccountEntity(
@@ -64,24 +66,24 @@ class RemoteRegisterDatasourceImlp implements RemoteRegisterDatasource {
       );
     } on FirebaseAuthException catch (e) {
       switch (e.code) {
-        case "invalid-email":
+        case 'invalid-email':
           return RegisterAccountEntity(
-              message: "Your email address appears to be malformed.");
-        case "wrong-password":
-          return RegisterAccountEntity(message: "Your password is wrong.");
-        case "user-not-found":
+              message: 'Your email address appears to be malformed.');
+        case 'wrong-password':
+          return RegisterAccountEntity(message: 'Your password is wrong.');
+        case 'user-not-found':
           return RegisterAccountEntity(
               message: "User with this email doesn't exist.");
-        case "user-disabled":
+        case 'user-disabled':
           return RegisterAccountEntity(
-              message: "User with this email has been disabled.");
-        case "too-many-requests":
-          return RegisterAccountEntity(message: "Too many requests");
-        case "operation-not-allowed":
+              message: 'User with this email has been disabled.');
+        case 'too-many-requests':
+          return RegisterAccountEntity(message: 'Too many requests');
+        case 'operation-not-allowed':
           return RegisterAccountEntity(
-              message: "Signing in with Email and Password is not enabled.");
+              message: 'Signing in with Email and Password is not enabled.');
         default:
-          return RegisterAccountEntity(message: "An undefined Error happened.");
+          return RegisterAccountEntity(message: 'An undefined Error happened.');
       }
     } catch (e) {
       return RegisterAccountEntity(message: e.toString());
@@ -96,8 +98,9 @@ class RemoteRegisterDatasourceImlp implements RemoteRegisterDatasource {
     }
 
     try {
-      DocumentSnapshot userSnapshot = await firebaseDB.firebaseFirestore
-          .collection("Users")
+      DocumentSnapshot<Map<String, dynamic>> userSnapshot = await firebaseDB
+          .firebaseFirestore
+          .collection('Users')
           .doc(getCurrentUser.uid)
           .get();
 
@@ -106,7 +109,7 @@ class RemoteRegisterDatasourceImlp implements RemoteRegisterDatasource {
             RegisterAccountModel.fromMap(
                 userSnapshot.data() as Map<String, dynamic>);
         if (kDebugMode) {
-          print("user data ${registerAccountModel.name}");
+          print('user data ${registerAccountModel.name}');
         }
         return registerAccountModel;
       } else {
@@ -122,6 +125,6 @@ class RemoteRegisterDatasourceImlp implements RemoteRegisterDatasource {
     await FirebaseFirestore.instance
         .collection('Users')
         .doc(userId)
-        .update({'fcmToken': fcmToken});
+        .update(<Object, Object?>{'fcmToken': fcmToken});
   }
 }

@@ -1,21 +1,21 @@
 import 'package:counter_button/counter_button.dart';
 import 'package:flutter/material.dart';
 import 'package:order/core/theme_app.dart';
+import 'package:order/features/cart/presentation/pages/widgets/cart_title_card_widget.dart';
 import 'package:order/features/cart/presentation/pages/widgets/payment_summary_widget.dart';
-
-import 'cart_title_card_widget.dart';
 
 class CartItemsContainer extends StatefulWidget {
   const CartItemsContainer({
-    Key? key,
     required this.center,
     required this.title,
     required this.subTitle,
-  }) : super(key: key);
+    super.key,
+  });
 
   final Center center;
   final String title;
   final int subTitle;
+
   @override
   State<CartItemsContainer> createState() => _CartItemsContainerState();
 }
@@ -38,7 +38,7 @@ class _CartItemsContainerState extends State<CartItemsContainer> {
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: <Widget>[
               CartTitleCardWidget(
-                title: "EGP: ${widget.subTitle * count}",
+                title: 'EGP: ${widget.subTitle * count}',
                 textStyle: const TextStyle(
                   color: Colors.blue,
                   fontSize: 13,
@@ -47,7 +47,7 @@ class _CartItemsContainerState extends State<CartItemsContainer> {
               CounterButton(
                   buttonColor: appTheme.colorScheme.error,
                   count: count,
-                  onChange: (value) {
+                  onChange: (int value) {
                     setState(() {
                       count = value;
                       if (count < 1) {
@@ -60,13 +60,13 @@ class _CartItemsContainerState extends State<CartItemsContainer> {
           ),
           widget.center,
           PaymentSummaryWidget(
-              startName: "Dilevry", endName: delivartFee.toString()),
+              startName: 'Dilevry', endName: delivartFee.toString()),
           PaymentSummaryWidget(
-              startName: "service", endName: serviceFee.toString()),
+              startName: 'service', endName: serviceFee.toString()),
           PaymentSummaryWidget(
-              startName: "Total",
+              startName: 'Total',
               endName:
-                  "EGP: ${widget.subTitle * count + delivartFee + serviceFee}"),
+                  'EGP: ${widget.subTitle * count + delivartFee + serviceFee}'),
         ],
       ),
     );

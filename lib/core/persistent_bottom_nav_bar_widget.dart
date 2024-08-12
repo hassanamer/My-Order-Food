@@ -1,12 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:order/features/event/presentation/pages/order_food_home_page.dart';
 import 'package:order/features/event/presentation/pages/settings_page.dart';
+import 'package:order/features/event/presentation/pages/widgets/create_order_pages/create_order_page.dart';
 import 'package:persistent_bottom_nav_bar/persistent_bottom_nav_bar.dart';
 
-import '../features/event/presentation/pages/widgets/create_order_pages/create_order_page.dart';
-
 class NavBarWidget extends StatelessWidget {
-  const NavBarWidget({Key? key}) : super(key: key);
+  const NavBarWidget({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -43,7 +42,7 @@ class NavBarWidget extends StatelessWidget {
   }
 
   List<Widget> _buildScreens() {
-    return [
+    return <Widget>[
       const OrderFoodHomePage(),
       const CreateOrderPage(isUpdateEvent: false),
       const SettingsPage(),
@@ -51,22 +50,22 @@ class NavBarWidget extends StatelessWidget {
   }
 
   List<PersistentBottomNavBarItem> _navBarsItems() {
-    return [
+    return <PersistentBottomNavBarItem>[
       PersistentBottomNavBarItem(
         icon: const Icon(Icons.home_outlined),
-        title: "Home",
+        title: 'Home',
         activeColorPrimary: Colors.blueAccent,
         inactiveColorPrimary: Colors.grey,
       ),
       PersistentBottomNavBarItem(
         icon: const Icon(Icons.add_box_outlined),
-        title: "Add",
+        title: 'Add',
         activeColorPrimary: Colors.blueAccent,
         inactiveColorPrimary: Colors.grey,
       ),
       PersistentBottomNavBarItem(
         icon: const Icon(Icons.settings_outlined),
-        title: "Settings",
+        title: 'Settings',
         activeColorPrimary: Colors.blueAccent,
         inactiveColorPrimary: Colors.grey,
       ),

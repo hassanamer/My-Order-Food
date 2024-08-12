@@ -3,14 +3,14 @@ import 'package:order/core/theme_app.dart';
 
 class LoginTextFieldWidget extends StatelessWidget {
   const LoginTextFieldWidget({
-    Key? key,
     required this.controllerEmail,
     required this.prefixIcon,
-    this.suffixIcon,
     required this.hintText,
     required this.obscureText,
+    super.key,
+    this.suffixIcon,
     this.onChanged,
-  }) : super(key: key);
+  });
 
   final TextEditingController controllerEmail;
   final Widget prefixIcon;
@@ -34,7 +34,7 @@ class LoginTextFieldWidget extends StatelessWidget {
         prefixIcon: prefixIcon,
         suffixIcon: suffixIcon,
       ),
-      validator: (value) {
+      validator: (String? value) {
         if (value!.isNotEmpty) {
           return null;
         } else {

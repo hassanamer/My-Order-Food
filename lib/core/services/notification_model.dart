@@ -18,6 +18,7 @@ class NotificationModel {
   });
 
   Map<String, dynamic> toMap() {
+    // ignore: always_specify_types
     return {
       'id': id,
       'userId': userId,

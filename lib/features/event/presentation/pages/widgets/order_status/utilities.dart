@@ -1,5 +1,3 @@
-import 'dart:ui';
-
 import 'package:flutter/material.dart';
 
 class DashedLinePainter extends CustomPainter {
@@ -7,10 +5,11 @@ class DashedLinePainter extends CustomPainter {
   final bool isVertical;
 
   DashedLinePainter({this.color = Colors.blueGrey, this.isVertical = true});
+
   @override
   void paint(Canvas canvas, Size size) {
     double dashWidth = 9, dashSpace = 5, startX = 0;
-    final paint = Paint()
+    final Paint paint = Paint()
       ..color = color
       ..strokeWidth = 1;
 

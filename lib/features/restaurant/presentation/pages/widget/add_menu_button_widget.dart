@@ -1,20 +1,20 @@
 import 'package:flutter/material.dart';
-
-import 'header_container_add_restaurant_widget.dart';
+import 'package:order/features/restaurant/presentation/pages/widget/header_container_add_restaurant_widget.dart';
 
 class AddMenuButtonWidget extends StatelessWidget {
   const AddMenuButtonWidget({
-    Key? key,
     required this.onTap,
-  }) : super(key: key);
+    super.key,
+  });
 
   final VoidCallback onTap;
+
   @override
   Widget build(BuildContext context) {
     return Column(
-      children: [
+      children: <Widget>[
         const SizedBox(height: 12),
-        const UnderlineTextWidget(text: "Now add the menu"),
+        const UnderlineTextWidget(text: 'Now add the menu'),
         const SizedBox(height: 12),
         OutlinedButton(
           style: OutlinedButton.styleFrom(

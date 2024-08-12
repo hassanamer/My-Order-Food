@@ -1,4 +1,6 @@
-import '../../domain/entities/account_entites.dart';
+// ignore_for_file: always_specify_types
+
+import 'package:order/features/login/domain/entities/account_entites.dart';
 
 class User extends Account {
   User({

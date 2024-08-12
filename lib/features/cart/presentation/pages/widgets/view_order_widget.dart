@@ -1,12 +1,12 @@
 import 'package:flutter/material.dart';
-
-import '../../../../restaurant/data/model/menu_model.dart';
+import 'package:order/features/restaurant/data/model/menu_model.dart';
 
 class ViewOrderWidget extends StatelessWidget {
   final List<MenuModel> menuModel;
+
   const ViewOrderWidget({
-    super.key,
     required this.menuModel,
+    super.key,
   });
 
   @override
@@ -14,7 +14,7 @@ class ViewOrderWidget extends StatelessWidget {
     int totalPrice = 0;
 
     // Calculate the total price by summing up the prices of all menu items
-    for (var menu in menuModel) {
+    for (MenuModel menu in menuModel) {
       totalPrice += menu.price;
     }
 
@@ -24,7 +24,7 @@ class ViewOrderWidget extends StatelessWidget {
             color: Colors.white, borderRadius: BorderRadius.circular(12)),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
+          children: <Widget>[
             const SizedBox(width: 12),
             const Text(
               'Your Order',
@@ -40,9 +40,9 @@ class ViewOrderWidget extends StatelessWidget {
               child: ListView.builder(
                 itemCount: menuModel.length,
                 shrinkWrap: true,
-                itemBuilder: (context, index) {
+                itemBuilder: (BuildContext context, int index) {
                   return Row(
-                    children: [
+                    children: <Widget>[
                       Expanded(
                         child: Text(menuModel[index].name,
                             style:
@@ -57,7 +57,7 @@ class ViewOrderWidget extends StatelessWidget {
             ),
             const Divider(),
             Row(
-              children: [
+              children: <Widget>[
                 const Expanded(
                     child: Text(
                   'Payment total',

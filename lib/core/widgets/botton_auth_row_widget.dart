@@ -3,11 +3,11 @@ import 'package:order/core/theming/styles.dart';
 
 class BottomAuthRowWidget extends StatelessWidget {
   const BottomAuthRowWidget({
-    Key? key,
     required this.text,
     required this.value,
     required this.onTap,
-  }) : super(key: key);
+    super.key,
+  });
 
   final String text;
   final String value;

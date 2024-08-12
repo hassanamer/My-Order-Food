@@ -2,16 +2,17 @@ import 'package:flutter/material.dart';
 
 class CartTitleCardWidget extends StatelessWidget {
   const CartTitleCardWidget({
-    Key? key,
     required this.title,
+    super.key,
     this.textStyle = const TextStyle(
       color: Colors.blue,
       fontSize: 25,
     ),
-  }) : super(key: key);
+  });
 
   final String title;
   final TextStyle textStyle;
+
   @override
   Widget build(BuildContext context) {
     return Container(

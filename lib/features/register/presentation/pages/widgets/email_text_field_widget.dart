@@ -1,13 +1,12 @@
 import 'package:email_validator/email_validator.dart';
 import 'package:flutter/material.dart';
-
-import '../../../../../core/theme_app.dart';
+import 'package:order/core/theme_app.dart';
 
 class EmailTextFieldWidget extends StatelessWidget {
   const EmailTextFieldWidget({
-    Key? key,
     required this.controllerEmail,
-  }) : super(key: key);
+    super.key,
+  });
 
   final TextEditingController controllerEmail;
 
@@ -16,7 +15,7 @@ class EmailTextFieldWidget extends StatelessWidget {
     return TextFormField(
       controller: controllerEmail,
       keyboardType: TextInputType.emailAddress,
-      validator: (value) {
+      validator: (String? value) {
         if (value == null) {
           return 'Please enter your mail address.';
         }
@@ -26,7 +25,7 @@ class EmailTextFieldWidget extends StatelessWidget {
         // const String email = 'fredrik.eilertsen@gail.com';
         final bool isValid = EmailValidator.validate(value);
         if (!isValid) {
-          return "Please enter a valid email address";
+          return 'Please enter a valid email address';
         }
         return null;
       },
@@ -40,7 +39,7 @@ class EmailTextFieldWidget extends StatelessWidget {
           fontWeight: FontWeight.w500,
         ),
         prefixIcon: const Icon(Icons.email_outlined),
-        suffixIcon: const Text(""),
+        suffixIcon: const Text(''),
         filled: true,
       ),
     );

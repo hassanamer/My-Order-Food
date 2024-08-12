@@ -5,9 +5,9 @@ class GradientBackground extends StatelessWidget {
   final List<Color> colors;
 
   const GradientBackground({
-    super.key,
     required this.child,
-    this.colors = const [
+    super.key,
+    this.colors = const <Color>[
       Colors.cyanAccent,
       Colors.white
     ], // Default gradient colors

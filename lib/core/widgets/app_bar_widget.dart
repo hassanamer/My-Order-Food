@@ -1,10 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:order/core/services/notification_cubit.dart';
 import 'package:order/core/theming/colors.dart';
 import 'package:order/core/theming/styles.dart';
 import 'package:order/features/notification/notification_page.dart';
-
-import '../services/notification_cubit.dart';
 
 class AppBarWidget extends StatefulWidget implements PreferredSizeWidget {
   final String? pageName;
@@ -16,7 +15,7 @@ class AppBarWidget extends StatefulWidget implements PreferredSizeWidget {
   final Widget? leading;
 
   const AppBarWidget({
-    Key? key,
+    super.key,
     this.pageName,
     this.pageDescreption,
     this.titleWidget,
@@ -24,9 +23,8 @@ class AppBarWidget extends StatefulWidget implements PreferredSizeWidget {
     this.actions,
     this.leading,
     this.hideNotificationIcon = false,
-  })  : assert(pageName != null || titleWidget != null,
-            'Either pageName or titleWidget must be provided'),
-        super(key: key);
+  }) : assert(pageName != null || titleWidget != null,
+            'Either pageName or titleWidget must be provided');
 
   @override
   Size get preferredSize => const Size.fromHeight(kToolbarHeight);
@@ -47,8 +45,8 @@ class _AppBarWidgetState extends State<AppBarWidget> {
   }
 
   void _goToNotifications() {
-    Navigator.of(context)
-        .push(MaterialPageRoute(builder: (context) => NotificationPage()));
+    Navigator.of(context).push(MaterialPageRoute<dynamic>(
+        builder: (BuildContext context) => const NotificationPage()));
   }
 
   @override
@@ -58,7 +56,10 @@ class _AppBarWidgetState extends State<AppBarWidget> {
       flexibleSpace: Container(
         decoration: const BoxDecoration(
           gradient: LinearGradient(
-            colors: [ColorsManager.mainBlue, ColorsManager.moreLighterGray],
+            colors: <Color>[
+              ColorsManager.mainBlue,
+              ColorsManager.moreLighterGray
+            ],
             begin: Alignment.topLeft,
             end: Alignment.bottomRight,
           ),
@@ -72,7 +73,7 @@ class _AppBarWidgetState extends State<AppBarWidget> {
                 onPressed: () => Navigator.of(context).pop(),
               ),
       title: Column(
-        children: [
+        children: <Widget>[
           widget.titleWidget ??
               Text(
                 widget.pageName!,
@@ -87,16 +88,16 @@ class _AppBarWidgetState extends State<AppBarWidget> {
       actions: widget.hideNotificationIcon
           ? null
           : widget.actions ??
-              [
+              <Widget>[
                 BlocBuilder<NotificationCubit, NotificationState>(
-                  builder: (context, state) {
+                  builder: (BuildContext context, NotificationState state) {
                     bool hasUnseenNotifications = false;
 
                     if (state is NotificationLoaded) {
                       hasUnseenNotifications = state.unseenNotifications;
                     }
                     return Stack(
-                      children: [
+                      children: <Widget>[
                         IconButton(
                           icon: const Icon(Icons.notifications),
                           onPressed: _goToNotifications,
@@ -106,15 +107,15 @@ class _AppBarWidgetState extends State<AppBarWidget> {
                             right: 7,
                             child: Container(
                               padding: const EdgeInsets.all(2),
-                              decoration: BoxDecoration(
+                              decoration: const BoxDecoration(
                                 color: Colors.red,
                                 shape: BoxShape.circle,
                               ),
-                              constraints: BoxConstraints(
+                              constraints: const BoxConstraints(
                                 minWidth: 16,
                                 minHeight: 16,
                               ),
-                              child: Center(
+                              child: const Center(
                                 child: Text(
                                   '!',
                                   style: TextStyle(

@@ -1,16 +1,16 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:order/features/cart/presentation/cubit/cart_cubit.dart';
-
-import '../../../../restaurant/data/model/menu_model.dart';
-import 'bottom_container_cart_widget.dart';
-import 'cart_items_container.dart';
+import 'package:order/features/cart/presentation/pages/widgets/bottom_container_cart_widget.dart';
+import 'package:order/features/cart/presentation/pages/widgets/cart_items_container.dart';
+import 'package:order/features/restaurant/data/model/menu_model.dart';
 
 class CartWidget extends StatefulWidget {
   final List<MenuModel> menuModel;
+
   const CartWidget({
-    super.key,
     required this.menuModel,
+    super.key,
   });
 
   @override
@@ -39,7 +39,7 @@ class _CartWidgetState extends State<CartWidget> {
       double total = 0;
       double delivartFee = 25.0;
       double serviceFee = 12.0;
-      for (var item in widget.menuModel) {
+      for (MenuModel item in widget.menuModel) {
         num price = item.price;
         total += price + delivartFee + serviceFee;
       }
@@ -56,8 +56,8 @@ class _CartWidgetState extends State<CartWidget> {
             child: ListView.separated(
               padding: const EdgeInsets.all(10),
               itemCount: widget.menuModel.length,
-              itemBuilder: (context, index) {
-                const center = Center(
+              itemBuilder: (BuildContext context, int index) {
+                const Center center = Center(
                   child: Divider(
                     thickness: 1,
                     color: Colors.orange,
@@ -71,7 +71,8 @@ class _CartWidgetState extends State<CartWidget> {
                   subTitle: widget.menuModel[index].price,
                 );
               },
-              separatorBuilder: (context, index) => const Divider(thickness: 1),
+              separatorBuilder: (BuildContext context, int index) =>
+                  const Divider(thickness: 1),
             ),
           ),
         ),

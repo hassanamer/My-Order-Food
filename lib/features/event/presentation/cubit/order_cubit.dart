@@ -4,11 +4,10 @@ import 'package:order/features/event/domain/entities/order_entities.dart';
 import 'package:order/features/event/domain/remote_usecases/add_order_usecase.dart';
 import 'package:order/features/event/domain/remote_usecases/delete_ticket.dart';
 import 'package:order/features/event/domain/remote_usecases/remote_get_all_ticket.dart';
+import 'package:order/features/event/domain/remote_usecases/remote_get_user_order.dart';
 import 'package:order/features/event/domain/remote_usecases/update_ticket.dart';
 import 'package:order/features/event/presentation/cubit/order_state.dart';
 import 'package:order/injection_container.dart';
-
-import '../../domain/remote_usecases/remote_get_user_order.dart';
 
 class OrderCubit extends Cubit<OrderState> {
   late AddOrderUsecase addOrderUsecase;
@@ -23,7 +22,7 @@ class OrderCubit extends Cubit<OrderState> {
     try {
       emit(OrderLoadingState());
       getAllOrderUsecase = sl();
-      final allOrders = await getAllOrderUsecase.call();
+      final List<OrderEntity> allOrders = await getAllOrderUsecase.call();
       emit(OrderLoadedState(orderEntity: allOrders));
     } catch (e) {
       emit(OrderErrorState(errorMessage: e.toString()));
@@ -35,9 +34,9 @@ class OrderCubit extends Cubit<OrderState> {
       emit(OrderLoadingState());
       addOrderUsecase = sl();
       getUserOrderUsecase = sl();
-      final addedOrder = await addOrderUsecase.call(orderEntity);
+      final BaseResponse addedOrder = await addOrderUsecase.call(orderEntity);
       if (addedOrder.status) {
-        final allData = await getAllOrderUsecase.call();
+        final List<OrderEntity> allData = await getAllOrderUsecase.call();
 
         emit(OrderSuccessState(addedOrder));
         emit(OrderLoadedState(orderEntity: allData));
@@ -53,7 +52,8 @@ class OrderCubit extends Cubit<OrderState> {
     try {
       emit(OrderLoadingState());
       updateOrderUsecase = sl();
-      final updatedOrder = await updateOrderUsecase.call(orderEntity);
+      final BaseResponse updatedOrder =
+          await updateOrderUsecase.call(orderEntity);
       if (updatedOrder.status) {
         emit(OrderSuccessState(updatedOrder));
       } else {
@@ -67,10 +67,10 @@ class OrderCubit extends Cubit<OrderState> {
   Future<void> addOrUpdateItem(OrderEntity createOrderEntity, String itemName,
       int quantity, String userId) async {
     try {
-      createOrderEntity.items ??= [];
+      createOrderEntity.items ??= <OrderItem>[];
 
       int index = createOrderEntity.items!
-          .indexWhere((item) => item.itemName == itemName);
+          .indexWhere((OrderItem item) => item.itemName == itemName);
       if (index != -1) {
         createOrderEntity.items![index].quantity += quantity;
       } else {
@@ -87,8 +87,9 @@ class OrderCubit extends Cubit<OrderState> {
   Future<void> removeItem(
       OrderEntity createOrderEntity, String itemName) async {
     try {
-      createOrderEntity.items ??= [];
-      createOrderEntity.items!.removeWhere((item) => item.itemName == itemName);
+      createOrderEntity.items ??= <OrderItem>[];
+      createOrderEntity.items!
+          .removeWhere((OrderItem item) => item.itemName == itemName);
 
       await updateOrder(createOrderEntity);
     } catch (e) {
@@ -98,8 +99,9 @@ class OrderCubit extends Cubit<OrderState> {
 
   Stream<List<OrderEntity>> getOrdersStream() {
     return FirebaseFirestore.instance.collection('Order').snapshots().map(
-        (snapshot) => snapshot.docs
-            .map((doc) => OrderEntity.fromMap(doc.data()))
+        (QuerySnapshot<Map<String, dynamic>> snapshot) => snapshot.docs
+            .map((QueryDocumentSnapshot<Map<String, dynamic>> doc) =>
+                OrderEntity.fromMap(doc.data()))
             .toList());
   }
 
@@ -108,14 +110,15 @@ class OrderCubit extends Cubit<OrderState> {
         .collection('Order')
         .doc(orderId)
         .snapshots()
-        .map((doc) => OrderEntity.fromMap(doc.data()!));
+        .map((DocumentSnapshot<Map<String, dynamic>> doc) =>
+            OrderEntity.fromMap(doc.data()!));
   }
 
   Future<void> deleteOrder() async {
     try {
       emit(OrderLoadingState());
       deleteOrderUsecase = sl();
-      final deletedOrder = await deleteOrderUsecase.call();
+      final BaseResponse deletedOrder = await deleteOrderUsecase.call();
       if (deletedOrder.status) {
         emit(OrderDeletedSuccessState(deletedOrder));
       } else {
