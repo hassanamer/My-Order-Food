@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:order/core/theme_app.dart';
+import 'package:order/core/theming/theme_app.dart';
 
 class RegisterTextFieldWidget extends StatelessWidget {
   const RegisterTextFieldWidget({

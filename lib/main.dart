@@ -11,19 +11,18 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
 import 'package:nested/nested.dart';
 import 'package:order/core/bloc_observer/bloc_observer.dart';
-import 'package:order/core/services/awesome_notification_service.dart';
-import 'package:order/core/services/my_firebase_notification.dart';
-import 'package:order/core/services/notification_cubit.dart';
-import 'package:order/core/theme_app.dart';
+import 'package:order/core/theming/theme_app.dart';
 import 'package:order/core/widgets/welcome_splash_widget.dart';
-import 'package:order/features/cart/presentation/cubit/cart_cubit.dart';
-import 'package:order/features/event/presentation/cubit/order_cubit.dart';
-import 'package:order/features/event/presentation/pages/order_food_home_page.dart';
-import 'package:order/features/event/presentation/pages/settings_page.dart';
-import 'package:order/features/event/presentation/pages/widgets/onboarding_page.dart';
 import 'package:order/features/login/presentation/cubit/login_cubit.dart';
 import 'package:order/features/login/presentation/pages/login_page.dart';
-import 'package:order/features/notification/notification_page.dart';
+import 'package:order/features/notification/data/datasources/awesome_notification_service.dart';
+import 'package:order/features/notification/data/datasources/push_notification_service.dart';
+import 'package:order/features/notification/presentation/cubit/notification_cubit.dart';
+import 'package:order/features/notification/presentation/pages/notification_page.dart';
+import 'package:order/features/orders/presentation/cubit/order_cubit.dart';
+import 'package:order/features/orders/presentation/pages/widgets/home_widgets/home/order_food_home_page.dart';
+import 'package:order/features/orders/presentation/pages/widgets/onborading_widgets/onboarding_page.dart';
+import 'package:order/features/orders/presentation/pages/widgets/settings_widgets/settings_page.dart';
 import 'package:order/features/register/presentation/cubit/register_cubit.dart';
 import 'package:order/features/register/presentation/pages/profile_page.dart';
 import 'package:order/features/register/presentation/pages/register_page.dart';
@@ -31,7 +30,7 @@ import 'package:order/features/register/user/profile_cubit.dart';
 import 'package:order/features/restaurant/presentation/cubit/restaurant_cubit.dart';
 import 'package:order/features/restaurant/presentation/pages/add_restaurant_page.dart';
 import 'package:order/features/restaurant/presentation/pages/get_all_restaurants_page/all_restaurants_page.dart';
-import 'package:order/features/restaurant/presentation/pages/menu_page/menu_page.dart';
+import 'package:order/features/restaurant/presentation/pages/get_menu_pages/menuu_pagee.dart';
 import 'package:order/firebase_options.dart';
 import 'package:order/injection_container.dart' as di;
 import 'package:shared_preferences/shared_preferences.dart';
@@ -62,8 +61,8 @@ void main() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     isviewed = prefs.getInt('onBoard');
 
-    await PushNotification.init();
-    await PushNotification.localNotificationInit();
+    await PushNotificationService.init();
+    await PushNotificationService.localNotificationInit();
 
     FirebaseMessaging.onBackgroundMessage(_firebaseBackgroundMessage);
 
@@ -75,7 +74,7 @@ void main() async {
       String payloadData = jsonEncode(message.data);
       print('GOT MESSAGE IN THE FOREGROUND');
       if (message.notification != null) {
-        PushNotification.showSimpleNotification(
+        PushNotificationService.showSimpleNotification(
           title: message.notification!.title!,
           body: message.notification!.body!,
           payload: payloadData,
@@ -118,11 +117,11 @@ class MyApp extends StatefulWidget {
 }
 
 class _MyAppState extends State<MyApp> {
-  PushNotification pushNotification = PushNotification();
+  PushNotificationService pushNotificationService = PushNotificationService();
 
   @override
   void initState() {
-    pushNotification.getDeviceToken();
+    pushNotificationService.getDeviceToken();
     super.initState();
   }
 
@@ -140,12 +139,10 @@ class _MyAppState extends State<MyApp> {
             BlocProvider(create: (_) => di.sl<OrderCubit>()..getAllOrders()),
             BlocProvider(
                 create: (_) => di.sl<RestaurantCubit>()..getAllRestaurants()),
-            BlocProvider(create: (_) => di.sl<CartCubit>()..getAllCartItems()),
             BlocProvider(create: (_) => di.sl<ProfileCubit>()),
             BlocProvider(
                 create: (_) => di.sl<ProfileCubit>()..fetchUserProfile()),
             BlocProvider(create: (_) => di.sl<NotificationCubit>()),
-            // Add your NotificationCubit here
           ],
           child: GetMaterialApp(
             title: 'Food App',
@@ -159,7 +156,7 @@ class _MyAppState extends State<MyApp> {
               'register': (BuildContext context) => const RegisterPage(),
               'home': (BuildContext context) => const OrderFoodHomePage(),
               'restaurant': (BuildContext context) => const RestaurantPage(),
-              'menu': (BuildContext context) => const MenuPage(),
+              'menu': (BuildContext context) => MenuuPagee(),
               'allrestaurant': (BuildContext context) =>
                   const AllRestaurantPage(),
               // 'cart': (context) => const CartPage(),

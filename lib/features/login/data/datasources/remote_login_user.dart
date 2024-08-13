@@ -1,6 +1,6 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:order/core/database/firebase_db.dart';
-import 'package:order/features/login/domain/entities/account_entites.dart';
+import 'package:order/features/login/domain/entities/account_entity.dart';
 
 abstract class RemoteLoginDatasource {
   Future<LoginBaseResponse> remoteLoginUser(String email, String password);

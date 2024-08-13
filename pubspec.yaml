@@ -49,10 +49,10 @@ dependencies:
   flutter_bloc: ^8.1.6
   flutter_lints: ^4.0.0
   flutter_local_notifications: ^17.2.1+2
-  flutter_neumorphic: ^3.2.0
   flutter_screenutil: ^5.0.0+2
   flutter_svg: ^2.0.10+1
   flutter_staggered_animations: ^1.1.1
+  flutter_neumorphic: ^3.2.0
   fluttertoast: ^8.2.6
   flutter_zoom_drawer: ^3.2.0
   get: ^4.6.6
@@ -92,15 +92,6 @@ dev_dependencies:
 # The following section is specific to Flutter packages.
 flutter:
   fonts:
-    - family: Roboto
-      fonts:
-        - asset: assets/fonts/Roboto-Regular.ttf
-          weight: 400
-        - asset: assets/fonts/Roboto-Bold.ttf
-          weight: 700
-        - asset: assets/fonts/Roboto-Italic.ttf
-          style: italic
-
     - family: Spectral
       fonts:
         - asset: assets/fonts/Spectral-Regular.ttf

@@ -1,6 +1,6 @@
-import 'package:order/features/login/domain/entities/account_entites.dart';
+import 'package:order/features/login/domain/entities/account_entity.dart';
 
-class RegisterAccountEntity extends Account {
+class RegisterAccountEntity extends AccountEntity {
   RegisterAccountEntity(
       {super.userId,
       super.username,

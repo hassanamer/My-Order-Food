@@ -36,7 +36,7 @@ class _RestaurantWidgetState extends State<RestaurantWidget> {
     super.initState();
   }
 
-  // Function to pick an image from gallery
+  //pick an image from gallery
   Future<void> pickImage() async {
     final XFile? pickedFile =
         await ImagePicker().pickImage(source: ImageSource.gallery);

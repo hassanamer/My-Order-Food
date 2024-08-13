@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:order/core/persistent_bottom_nav_bar_widget.dart';
+import 'package:order/core/widgets/persistent_bottom_nav_bar_widget.dart';
 import 'package:order/core/widgets/snackbar_message.dart';
 import 'package:order/features/login/presentation/cubit/login_cubit.dart';
 import 'package:order/features/login/presentation/cubit/login_state.dart';

@@ -1,29 +1,21 @@
 import 'package:get_it/get_it.dart';
 import 'package:order/core/database/firebase_db.dart';
-import 'package:order/core/services/notification_cubit.dart';
-import 'package:order/features/cart/data/datasource/cart_datasource.dart';
-import 'package:order/features/cart/data/reporisatory_imlp/cart_reporisatory_impl.dart';
-import 'package:order/features/cart/domain/reporisatory/cart_reporisatory.dart';
-import 'package:order/features/cart/domain/usecase/add_items_to_cart_usecase.dart';
-import 'package:order/features/cart/domain/usecase/clear_cart_items_usecase.dart';
-import 'package:order/features/cart/domain/usecase/get_all_cart_items_usecase.dart';
-import 'package:order/features/cart/domain/usecase/view_orders_usecase.dart';
-import 'package:order/features/cart/presentation/cubit/cart_cubit.dart';
-import 'package:order/features/event/data/datasource/remote_order_datasource.dart';
-import 'package:order/features/event/data/reporisatory/remote_order_repository_impl.dart';
-import 'package:order/features/event/domain/remote_usecases/add_order_usecase.dart';
-import 'package:order/features/event/domain/remote_usecases/delete_ticket.dart';
-import 'package:order/features/event/domain/remote_usecases/remote_get_all_ticket.dart';
-import 'package:order/features/event/domain/remote_usecases/remote_get_user_order.dart';
-import 'package:order/features/event/domain/remote_usecases/update_ticket.dart';
-import 'package:order/features/event/domain/reporisatory/order_repository.dart';
-import 'package:order/features/event/presentation/cubit/order_cubit.dart';
 import 'package:order/features/login/data/datasources/remote_login_user.dart';
 import 'package:order/features/login/data/reporisatory/account_reporisatory_impl.dart';
 import 'package:order/features/login/domain/repositories/account_repository.dart';
 import 'package:order/features/login/domain/usecases/remote_login_usecase.dart';
 import 'package:order/features/login/domain/usecases/remote_logout_usecase.dart';
 import 'package:order/features/login/presentation/cubit/login_cubit.dart';
+import 'package:order/features/notification/presentation/cubit/notification_cubit.dart';
+import 'package:order/features/orders/data/datasource/remote_order_datasource.dart';
+import 'package:order/features/orders/data/reporisatory/remote_order_repository_impl.dart';
+import 'package:order/features/orders/domain/remote_usecases/remote_add_order_usecase.dart';
+import 'package:order/features/orders/domain/remote_usecases/remote_delete_order_useCase.dart';
+import 'package:order/features/orders/domain/remote_usecases/remote_get_all_orders.dart';
+import 'package:order/features/orders/domain/remote_usecases/remote_get_user_order.dart';
+import 'package:order/features/orders/domain/remote_usecases/remote_update_order.dart';
+import 'package:order/features/orders/domain/reporisatory/order_repository.dart';
+import 'package:order/features/orders/presentation/cubit/order_cubit.dart';
 import 'package:order/features/register/data/datasource/remote_register_user_datasource.dart';
 import 'package:order/features/register/data/reporisatory/register_repo_impl.dart';
 import 'package:order/features/register/domain/reposisatory/register_reprisatory.dart';
@@ -127,26 +119,6 @@ void init() {
 
   // Registering restaurant cubits
   sl.registerFactory(() => RestaurantCubit());
-
-  // Registering cart data source
-  sl.registerLazySingleton<CartDatasourceInterface>(() => CartDatasourceImpl());
-
-  // Registering cart repository
-  sl.registerLazySingleton<CartReporisatoryInterface>(
-      () => CartReporisatoryImpl(sl()));
-
-  // Registering cart use cases
-  sl.registerLazySingleton<AddProductToCartUsecase>(
-      () => AddProductToCartUsecase(sl<CartReporisatoryInterface>()));
-  sl.registerLazySingleton<GetAllCartItemsUsecase>(
-      () => GetAllCartItemsUsecase(sl<CartReporisatoryInterface>()));
-  sl.registerLazySingleton<ViewOrderUsecase>(
-      () => ViewOrderUsecase(sl<CartReporisatoryInterface>()));
-  sl.registerLazySingleton<ClearCartItemsUsecase>(
-      () => ClearCartItemsUsecase(sl<CartReporisatoryInterface>()));
-
-  // Registering cart cubit
-  sl.registerFactory(() => CartCubit());
 
   // Registering ProfileCubit
   sl.registerFactory(() => ProfileCubit());

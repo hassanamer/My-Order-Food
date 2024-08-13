@@ -4,17 +4,9 @@ import 'package:order/features/register/domain/entities/register_entities.dart';
 import 'package:order/features/register/domain/reposisatory/register_reprisatory.dart';
 
 class RegisterReporisatoryImpl implements RegisterAccountRepository {
-  // late RegisterDatasource dataSource;
   late RemoteRegisterDatasource remoteRegisterDatasourceImlp;
 
   RegisterReporisatoryImpl(this.remoteRegisterDatasourceImlp);
-
-  // @override
-  // Future<BaseResponse> registerAccount(
-  //     RegisterAccountEntity registerAccount) async {
-  //   return await dataSource
-  //       .insertUser(RegisterAccountModel.fromEntity(registerAccount));
-  // }
 
   @override
   Future<RegisterAccountEntity> remoteRegisterUser(String email,

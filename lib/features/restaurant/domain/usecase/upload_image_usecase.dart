@@ -1,6 +1,6 @@
 import 'dart:io';
 
-import 'package:order/features/event/domain/entities/order_entities.dart';
+import 'package:order/features/orders/domain/entities/order_entities.dart';
 import 'package:order/features/restaurant/domain/reporisatory/restaurant_reporisatory.dart';
 
 class UploadImageUsecase {

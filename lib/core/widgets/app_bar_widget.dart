@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:order/core/services/notification_cubit.dart';
 import 'package:order/core/theming/colors.dart';
 import 'package:order/core/theming/styles.dart';
-import 'package:order/features/notification/notification_page.dart';
+import 'package:order/features/notification/presentation/cubit/notification_cubit.dart';
+import 'package:order/features/notification/presentation/pages/notification_page.dart';
 
 class AppBarWidget extends StatefulWidget implements PreferredSizeWidget {
   final String? pageName;

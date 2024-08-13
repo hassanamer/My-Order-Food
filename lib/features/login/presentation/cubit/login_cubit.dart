@@ -2,15 +2,13 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:order/core/widgets/handler_request_api.dart';
-import 'package:order/features/login/domain/entities/account_entites.dart';
-import 'package:order/features/login/domain/usecases/login_usecase.dart';
+import 'package:order/features/login/domain/entities/account_entity.dart';
 import 'package:order/features/login/domain/usecases/remote_login_usecase.dart';
 import 'package:order/features/login/domain/usecases/remote_logout_usecase.dart';
 import 'package:order/features/login/presentation/cubit/login_state.dart';
 import 'package:order/injection_container.dart';
 
 class LoginCubit extends Cubit<LoginState> {
-  late LoginUsecase loginUsecase;
   late RemoteLoginUsecase remoteLoginUsecase;
   late RemoteLogoutUsecase remoteLogoutUsecase;
 
@@ -40,22 +38,6 @@ class LoginCubit extends Cubit<LoginState> {
       emit(ErrorState(
         errorMessage: e.message.toString(),
       ));
-    }
-  }
-
-  Future<void> login(String username, String password) async {
-    try {
-      emit(LoginStateLoading());
-
-      final LoginBaseResponse logedin =
-          await loginUsecase.call(username, password);
-      if (logedin.status) {
-        emit(SuccessState(logedin));
-      } else {
-        emit(ErrorState(errorMessage: logedin.message));
-      }
-    } catch (e) {
-      emit(ErrorState(errorMessage: e.toString()));
     }
   }
 
