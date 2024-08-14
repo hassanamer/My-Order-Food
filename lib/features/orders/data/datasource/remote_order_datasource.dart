@@ -37,7 +37,7 @@ abstract class RemoteOrderDatasourceInterface
   Future<BaseResponse> updateOrderStatus(
       String orderId, OrderStatusEnum newStatus);
 
-  Future<BaseResponse> deleteOrders();
+  Future<BaseResponse> deleteOrderById(String orderId);
 }
 
 class RemoteOrderDatasource extends RemoteOrderDatasourceInterface {
@@ -59,17 +59,10 @@ class RemoteOrderDatasource extends RemoteOrderDatasourceInterface {
   }
 
   @override
-  Future<BaseResponse> deleteOrders() async {
+  Future<BaseResponse> deleteOrderById(String orderId) async {
     try {
-      firebaseFirestore
-          .collection('Order')
-          .get()
-          .then((QuerySnapshot<Map<String, dynamic>> snapshot) {
-        for (DocumentSnapshot<Map<String, dynamic>> ds in snapshot.docs) {
-          ds.reference.delete();
-        }
-      });
-      return BaseResponse(status: true, message: 'Orders Deleted Successfully');
+      await firebaseFirestore.collection('Order').doc(orderId).delete();
+      return BaseResponse(status: true, message: 'Order Deleted Successfully');
     } catch (e) {
       return BaseResponse(status: false, message: e.toString());
     }

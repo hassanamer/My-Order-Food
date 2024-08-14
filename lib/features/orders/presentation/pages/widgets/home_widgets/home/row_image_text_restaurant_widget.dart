@@ -3,7 +3,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:order/core/theming/styles.dart';
 import 'package:order/features/restaurant/data/model/restaurant_model.dart';
 import 'package:order/features/restaurant/presentation/cubit/restaurant_cubit.dart';
-import 'package:order/features/restaurant/presentation/pages/get_menu_pages/menuu_pagee.dart';
+import 'package:order/features/restaurant/presentation/pages/get_menu_pages/menu_page.dart';
 
 // ignore: must_be_immutable
 class RowImageTextRestaurantWidget extends StatefulWidget {
@@ -25,21 +25,22 @@ class _RowImageTextRestaurantWidgetState
 
   @override
   Widget build(BuildContext context) {
-    return Flexible(
-      child: ListView.builder(
-          shrinkWrap: true,
-          physics: const ClampingScrollPhysics(),
-          scrollDirection: Axis.horizontal,
-          itemCount: widget.restaurantModel.length,
-          itemBuilder: (BuildContext context, int index) {
-            final RestaurantModel restaurant = widget.restaurantModel[index];
-            return InkWell(
-              onTap: () => Navigator.of(context)
+    return ListView.builder(
+        shrinkWrap: true,
+        physics: const ClampingScrollPhysics(),
+        scrollDirection: Axis.horizontal,
+        itemCount: widget.restaurantModel.length,
+        itemBuilder: (BuildContext context, int index) {
+          final RestaurantModel restaurant = widget.restaurantModel[index];
+          return InkWell(
+            onTap: () async {
+              Navigator.of(context)
                   .push(
                 MaterialPageRoute<dynamic>(
-                  builder: (BuildContext context) => MenuuPagee(
+                  builder: (BuildContext context) => MenuPage(
+                    createdBy: restaurant.createdBy,
                     restaurantName: restaurant.restaurantName,
-                    restaurantImage: restaurant.imageURL,
+                    // restaurantImages: restaurant.imageURLs,
                   ),
                 ),
               )
@@ -48,47 +49,47 @@ class _RowImageTextRestaurantWidgetState
                 setState(() {
                   context.read<RestaurantCubit>().getAllRestaurants();
                 });
-              }),
-              child: Column(children: <Widget>[
-                Container(
-                  padding: const EdgeInsets.symmetric(horizontal: 12),
-                  margin: const EdgeInsets.all(2),
-                  decoration: BoxDecoration(
-                    color: Colors.white,
-                    borderRadius: BorderRadius.circular(10),
-                  ),
-                  child: Image.asset(
-                    'assets/images/restaurant.png',
-                    width: 70,
-                    height: 80,
-                  ),
+              });
+            },
+            child: Column(children: <Widget>[
+              Container(
+                padding: const EdgeInsets.symmetric(horizontal: 12),
+                margin: const EdgeInsets.all(2),
+                decoration: BoxDecoration(
+                  color: Colors.white,
+                  borderRadius: BorderRadius.circular(10),
                 ),
-                Container(
-                  padding:
-                      const EdgeInsets.symmetric(horizontal: 10, vertical: 9),
-                  decoration: BoxDecoration(
-                    gradient: const LinearGradient(
-                      colors: <Color>[Colors.blueAccent, Colors.lightBlue],
-                      begin: Alignment.topLeft,
-                      end: Alignment.bottomRight,
+                child: Image.asset(
+                  'assets/images/restaurant.png',
+                  width: 70,
+                  height: 80,
+                ),
+              ),
+              Container(
+                padding:
+                    const EdgeInsets.symmetric(horizontal: 10, vertical: 9),
+                decoration: BoxDecoration(
+                  gradient: const LinearGradient(
+                    colors: <Color>[Colors.blueAccent, Colors.lightBlue],
+                    begin: Alignment.topLeft,
+                    end: Alignment.bottomRight,
+                  ),
+                  borderRadius: BorderRadius.circular(12),
+                  boxShadow: const <BoxShadow>[
+                    BoxShadow(
+                      color: Colors.black26,
+                      offset: Offset(2, 2),
+                      blurRadius: 4,
                     ),
-                    borderRadius: BorderRadius.circular(12),
-                    boxShadow: const <BoxShadow>[
-                      BoxShadow(
-                        color: Colors.black26,
-                        offset: Offset(2, 2),
-                        blurRadius: 4,
-                      ),
-                    ],
-                  ),
-                  child: Text(
-                    restaurant.restaurantName,
-                    style: TextStyles.font16WhiteSemiBold,
-                  ),
+                  ],
                 ),
-              ]),
-            );
-          }),
-    );
+                child: Text(
+                  restaurant.restaurantName,
+                  style: TextStyles.font16WhiteSemiBold,
+                ),
+              ),
+            ]),
+          );
+        });
   }
 }

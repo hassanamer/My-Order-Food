@@ -61,6 +61,7 @@ dependencies:
   googleapis_auth: ^1.6.0
   image_picker: ^1.1.2
   lottie: ^3.1.2
+  uuid: ^3.0.6
   meta: ^1.10.0
   overlay_support: ^2.1.0
   permission_handler: ^11.3.1

@@ -4,9 +4,9 @@ import 'package:order/features/orders/data/models/order_item_model.dart';
 import 'package:order/features/orders/domain/entities/order_entities.dart';
 import 'package:order/features/orders/domain/remote_usecases/remote_add_order_usecase.dart';
 import 'package:order/features/orders/domain/remote_usecases/remote_delete_order_useCase.dart';
-import 'package:order/features/orders/domain/remote_usecases/remote_get_all_orders.dart';
-import 'package:order/features/orders/domain/remote_usecases/remote_get_user_order.dart';
-import 'package:order/features/orders/domain/remote_usecases/remote_update_order.dart';
+import 'package:order/features/orders/domain/remote_usecases/remote_get_all_orders_usecase.dart';
+import 'package:order/features/orders/domain/remote_usecases/remote_get_user_orders_usecase.dart';
+import 'package:order/features/orders/domain/remote_usecases/remote_update_order_usecase.dart';
 import 'package:order/features/orders/presentation/cubit/order_state.dart';
 import 'package:order/injection_container.dart';
 
@@ -115,11 +115,11 @@ class OrderCubit extends Cubit<OrderState> {
             OrderEntity.fromMap(doc.data()!));
   }
 
-  Future<void> deleteOrder() async {
+  Future<void> deleteOrderById(String orderId) async {
     try {
       emit(OrderLoadingState());
       deleteOrderUsecase = sl();
-      final BaseResponse deletedOrder = await deleteOrderUsecase.call();
+      final BaseResponse deletedOrder = await deleteOrderUsecase.call(orderId);
       if (deletedOrder.status) {
         emit(OrderDeletedSuccessState(deletedOrder));
       } else {

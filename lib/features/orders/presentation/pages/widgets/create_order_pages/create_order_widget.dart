@@ -5,12 +5,13 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:order/core/theming/colors.dart';
+import 'package:order/features/notification/data/datasources/push_notification_service.dart';
 import 'package:order/features/orders/data/models/order_item_model.dart';
-import 'package:order/features/orders/presentation/pages/widgets/order_status/order_status_enum_model.dart';
 import 'package:order/features/orders/domain/entities/order_entities.dart';
 import 'package:order/features/orders/domain/remote_usecases/remote_add_order_usecase.dart';
 import 'package:order/features/orders/presentation/cubit/order_cubit.dart';
 import 'package:order/features/orders/presentation/pages/widgets/create_order_pages/create_order_button.dart';
+import 'package:order/features/orders/presentation/pages/widgets/order_status/order_status_enum_model.dart';
 import 'package:order/injection_container.dart';
 
 // ignore: must_be_immutable
@@ -203,8 +204,10 @@ class _CreateOrderWidgetState extends State<CreateOrderWidget> {
           const SizedBox(height: 20),
           CreateOrderButton(
             isUpdateEvent: widget.isUpdateEvent,
-            onPressed: () {
+            onPressed: () async {
               validateFormThenUpdateOrAddEvent();
+              await PushNotificationService.sendNotificationToAllUsers(
+                  titleController.text);
             },
           ),
           SizedBox(

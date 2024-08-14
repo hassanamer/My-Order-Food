@@ -2,11 +2,11 @@ import 'package:order/features/orders/domain/entities/order_entities.dart';
 import 'package:order/features/orders/domain/reporisatory/order_repository.dart';
 
 class DeleteOrderUsecase {
-  final OrderRepository ticketReporisatory;
+  final OrderRepository orderReporisatory;
 
-  DeleteOrderUsecase(this.ticketReporisatory);
+  DeleteOrderUsecase(this.orderReporisatory);
 
-  Future<BaseResponse> call() async {
-    return await ticketReporisatory.remoteDeleteOrders();
+  Future<BaseResponse> call(String orderId) async {
+    return await orderReporisatory.remoteDeleteOrders(orderId);
   }
 }

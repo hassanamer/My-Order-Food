@@ -8,7 +8,7 @@ import 'package:order/core/widgets/loading_widget.dart';
 import 'package:order/features/orders/data/models/order_item_model.dart';
 import 'package:order/features/orders/domain/entities/order_entities.dart';
 import 'package:order/features/orders/domain/remote_usecases/remote_add_order_usecase.dart';
-import 'package:order/features/orders/domain/remote_usecases/remote_get_user_order.dart';
+import 'package:order/features/orders/domain/remote_usecases/remote_get_user_orders_usecase.dart';
 import 'package:order/features/orders/presentation/cubit/order_cubit.dart';
 import 'package:order/features/orders/presentation/pages/widgets/order_details_page/order_details_body.dart';
 import 'package:order/features/register/data/models/register_account_model.dart';

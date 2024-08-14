@@ -1,5 +1,6 @@
 import 'dart:io';
 
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -10,6 +11,7 @@ import 'package:order/features/restaurant/presentation/cubit/restaurant_cubit.da
 import 'package:order/features/restaurant/presentation/pages/widget/header_container_add_restaurant_widget.dart';
 import 'package:order/features/restaurant/presentation/pages/widget/hotline_restaurant_textfield_widget.dart';
 import 'package:order/features/restaurant/presentation/pages/widget/restaurant_textfield_widget.dart';
+import 'package:uuid/uuid.dart'; // Add the uuid package for generating unique keys
 
 class RestaurantWidget extends StatefulWidget {
   const RestaurantWidget({super.key});
@@ -20,7 +22,8 @@ class RestaurantWidget extends StatefulWidget {
 
 class _RestaurantWidgetState extends State<RestaurantWidget> {
   bool isPressed = false;
-  File? _restaurantImage; // Variable to hold selected image file
+  Map<String, File>? _restaurantImages = <String, File>{};
+  final String CurrentuUserId = FirebaseAuth.instance.currentUser!.uid;
 
   final TextEditingController controllerRestaurantname =
       TextEditingController();
@@ -36,13 +39,16 @@ class _RestaurantWidgetState extends State<RestaurantWidget> {
     super.initState();
   }
 
-  //pick an image from gallery
   Future<void> pickImage() async {
-    final XFile? pickedFile =
-        await ImagePicker().pickImage(source: ImageSource.gallery);
-    if (pickedFile != null) {
+    final List<XFile>? pickedFiles =
+        await ImagePicker().pickMultiImage(); // Pick multiple images
+    if (pickedFiles != null) {
       setState(() {
-        _restaurantImage = File(pickedFile.path);
+        var uuid = const Uuid();
+        for (var file in pickedFiles) {
+          String key = uuid.v4(); // Generate a unique key for each image
+          _restaurantImages![key] = File(file.path); // Add image to the map
+        }
       });
     }
   }
@@ -83,9 +89,9 @@ class _RestaurantWidgetState extends State<RestaurantWidget> {
           text: 'Upload restaurant picture',
           onPressed: () async {
             await pickImage(); // Call function to pick image
-            // Optionally, you can upload the image to Firebase Storage here
           },
         ),
+        _buildImagePreview(), // Display selected images
         SizedBox(
           height: 10.h,
         ),
@@ -94,7 +100,7 @@ class _RestaurantWidgetState extends State<RestaurantWidget> {
           onPressed: () {
             setState(() {
               if (keyForm.currentState!.validate() &&
-                  _restaurantImage != null) {
+                  _restaurantImages!.isNotEmpty) {
                 ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
                     backgroundColor: Colors.green,
                     content: Text('Restaurant added successfully')));
@@ -104,8 +110,9 @@ class _RestaurantWidgetState extends State<RestaurantWidget> {
                         restaurantDescription:
                             _controllerRestaurantDescription.text,
                         hotlineNum: controllerRestaurantHotline.text,
+                        createdBy: CurrentuUserId,
                       ),
-                      _restaurantImage!, // Pass the image file to the cubit
+                      _restaurantImages, // Pass the image file to the cubit
                     );
               } else {
                 ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
@@ -117,5 +124,32 @@ class _RestaurantWidgetState extends State<RestaurantWidget> {
         )
       ]),
     );
+  }
+
+// Widget to display selected images
+  Widget _buildImagePreview() {
+    return _restaurantImages != null && _restaurantImages!.isNotEmpty
+        ? SizedBox(
+            height: 100.h,
+            child: ListView.builder(
+              scrollDirection: Axis.horizontal,
+              itemCount: _restaurantImages!.length,
+              itemBuilder: (context, index) {
+                String key = _restaurantImages!.keys.elementAt(index);
+                File imageFile = _restaurantImages![key]!;
+
+                return Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 4.0),
+                  child: Image.file(
+                    imageFile,
+                    width: 100.w,
+                    height: 100.h,
+                    fit: BoxFit.cover,
+                  ),
+                );
+              },
+            ),
+          )
+        : const SizedBox.shrink();
   }
 }

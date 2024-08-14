@@ -46,8 +46,8 @@ class MenuSuccessState extends RestaurantState {
 }
 
 class MenuImageUpdatedState extends RestaurantState {
-  final String newImageUrl;
+  final Map<String, String> newImageUrls;
   final RestaurantModel restaurantModel;
 
-  MenuImageUpdatedState(this.newImageUrl, this.restaurantModel);
+  MenuImageUpdatedState(this.newImageUrls, this.restaurantModel);
 }

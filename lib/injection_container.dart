@@ -11,9 +11,9 @@ import 'package:order/features/orders/data/datasource/remote_order_datasource.da
 import 'package:order/features/orders/data/reporisatory/remote_order_repository_impl.dart';
 import 'package:order/features/orders/domain/remote_usecases/remote_add_order_usecase.dart';
 import 'package:order/features/orders/domain/remote_usecases/remote_delete_order_useCase.dart';
-import 'package:order/features/orders/domain/remote_usecases/remote_get_all_orders.dart';
-import 'package:order/features/orders/domain/remote_usecases/remote_get_user_order.dart';
-import 'package:order/features/orders/domain/remote_usecases/remote_update_order.dart';
+import 'package:order/features/orders/domain/remote_usecases/remote_get_all_orders_usecase.dart';
+import 'package:order/features/orders/domain/remote_usecases/remote_get_user_orders_usecase.dart';
+import 'package:order/features/orders/domain/remote_usecases/remote_update_order_usecase.dart';
 import 'package:order/features/orders/domain/reporisatory/order_repository.dart';
 import 'package:order/features/orders/presentation/cubit/order_cubit.dart';
 import 'package:order/features/register/data/datasource/remote_register_user_datasource.dart';
@@ -24,9 +24,11 @@ import 'package:order/features/register/domain/usecase/remote_register_usecase.d
 import 'package:order/features/register/presentation/cubit/register_cubit.dart';
 import 'package:order/features/register/user/profile_cubit.dart';
 import 'package:order/features/restaurant/data/datasource/restaurant_datasource.dart';
+import 'package:order/features/restaurant/data/reporisatory/firebase_storage_repo.dart';
 import 'package:order/features/restaurant/data/reporisatory/restaurant_reporisatory_impl.dart';
 import 'package:order/features/restaurant/domain/reporisatory/restaurant_reporisatory.dart';
 import 'package:order/features/restaurant/domain/usecase/add_restaurant_usecase.dart';
+import 'package:order/features/restaurant/domain/usecase/delete_image_usecase.dart';
 import 'package:order/features/restaurant/domain/usecase/get_all_restaurant_usecase.dart';
 import 'package:order/features/restaurant/domain/usecase/get_uploaded_iamge_usecase.dart';
 import 'package:order/features/restaurant/domain/usecase/upload_image_usecase.dart';
@@ -113,7 +115,9 @@ void init() {
       () => UploadImageUsecase(sl<RestaurantReporisatory>()));
   sl.registerLazySingleton<GetUploadedImageUsecase>(
       () => GetUploadedImageUsecase(sl<RestaurantReporisatory>()));
-
+  sl.registerLazySingleton(() => FirebaseStorageRepository());
+  sl.registerLazySingleton(
+      () => DeleteImageUsecase(sl<RestaurantReporisatory>()));
   sl.registerLazySingleton<GetAllRestaurantUsecase>(
       () => GetAllRestaurantUsecase(sl<RestaurantReporisatory>()));
 

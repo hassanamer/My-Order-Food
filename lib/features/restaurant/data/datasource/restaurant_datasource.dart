@@ -28,9 +28,11 @@ abstract class RestaurantDatasourceInterface
 
   Future<BaseResponse> addRestaurant(RestaurantModel restaurantModel);
 
-  Future<BaseResponse> uploadImage(File imageFile);
+  Future<BaseResponse> uploadImage(Map<String, File>? imageFiles);
 
   Future<BaseResponse> getUploadedImage();
+
+  Future<BaseResponse> deleteImage(String restaurantName, String imageKey);
 
   Future<List<RestaurantModel>> getAllRestaurant();
 
@@ -53,7 +55,8 @@ class RestaurantDatasourceImpl extends RestaurantDatasourceInterface {
         'restaurantName': restaurantModel.restaurantName,
         'restaurantDescription': restaurantModel.restaurantDescription,
         'restaurantHotline': restaurantModel.hotlineNum,
-        'imageURL': restaurantModel.imageURL,
+        'imageURLs': restaurantModel.imageURLs,
+        'createdBy': restaurantModel.createdBy,
       });
       return BaseResponse(status: true, message: 'added Successfully');
     } catch (e) {
@@ -88,21 +91,31 @@ class RestaurantDatasourceImpl extends RestaurantDatasourceInterface {
   }
 
   @override
-  Future<BaseResponse> uploadImage(File imageFile) async {
-    try {
-      TaskSnapshot snapshot = await firebaseStorage
-          .ref()
-          .child('images/${imageFile.path.split('/').last}')
-          .putFile(imageFile);
+  Future<BaseResponse> uploadImage(Map<String, File>? imageFiles) async {
+    if (imageFiles != null) {
+      for (var entry in imageFiles.entries) {
+        String key = entry.key;
+        File imageFile = entry.value;
 
-      String downloadURL = await snapshot.ref.getDownloadURL();
+        try {
+          TaskSnapshot snapshot = await firebaseStorage
+              .ref()
+              .child('images/$key.jpg') // Use the map key as the file name
+              .putFile(imageFile);
 
-      return BaseResponse(
-          status: true, message: downloadURL); // Return the URL as the message
-    } catch (e) {
-      return BaseResponse(
-          status: false, message: 'You must choose an image..!');
+          String downloadURL = await snapshot.ref.getDownloadURL();
+
+          return BaseResponse(
+              status: true,
+              message: downloadURL); // Return the URL as the message
+        } catch (e) {
+          return BaseResponse(
+              status: false,
+              message: 'Failed to upload image: ${e.toString()}');
+        }
+      }
     }
+    return BaseResponse(status: false, message: 'No images to upload.');
   }
 
   @override
@@ -147,6 +160,24 @@ class RestaurantDatasourceImpl extends RestaurantDatasourceInterface {
       return null;
     } catch (e) {
       rethrow;
+    }
+  }
+
+  @override
+  Future<BaseResponse> deleteImage(
+      String restaurantName, String imageKey) async {
+    try {
+      final DocumentReference<Map<String, dynamic>> resturantDoc =
+          firebaseFirestore.collection('Restaurants').doc(restaurantName);
+
+      final DocumentSnapshot<Map<String, dynamic>> resturantSnapshot =
+          await resturantDoc.get();
+
+      final Map<String, dynamic> resturantImages =
+          Map<String, dynamic>.from(resturantSnapshot.get('imageURLs'));
+      return BaseResponse(status: true, message: 'Image deleted successfully');
+    } catch (e) {
+      return BaseResponse(status: false, message: e.toString());
     }
   }
 }

@@ -20,12 +20,12 @@ class ViewOrderPage extends StatefulWidget {
 
 class _ViewOrderPageState extends State<ViewOrderPage> {
   late Stream<List<OrderEntity>> _ordersStream;
+  late bool isCreator;
 
   @override
   void initState() {
     super.initState();
-    _ordersStream = OrderCubit()
-        .getOrdersStream(); // Assuming this returns a Stream<List<OrderEntity>>
+    _ordersStream = OrderCubit().getOrdersStream();
   }
 
   @override
@@ -55,7 +55,7 @@ class _ViewOrderPageState extends State<ViewOrderPage> {
           final List<OrderEntity> orders = snapshot.data!;
           final List<OrderEntity> filteredOrders =
               orders.where((OrderEntity orderEntity) {
-            bool isCreator = orderEntity.userId == currentUserId;
+            isCreator = orderEntity.userId == currentUserId;
             bool isParticipant = orderEntity.items
                     ?.any((OrderItem item) => item.userId == currentUserId) ??
                 false;
@@ -89,9 +89,10 @@ class _ViewOrderPageState extends State<ViewOrderPage> {
                   );
                 },
                 child: _buildOrderItem(
-                  title: 'Order ${orderEntity.title}',
-                  createdAt: createdAt,
-                ),
+                    title: 'Order ${orderEntity.title}',
+                    createdAt: createdAt,
+                    orderId: orderId,
+                    isCreator: isCreator),
               );
             },
           );
@@ -103,6 +104,8 @@ class _ViewOrderPageState extends State<ViewOrderPage> {
   Widget _buildOrderItem({
     required String title,
     required String createdAt,
+    required String orderId,
+    required bool isCreator,
   }) {
     return Card(
       shape: RoundedRectangleBorder(
@@ -112,33 +115,45 @@ class _ViewOrderPageState extends State<ViewOrderPage> {
       margin: const EdgeInsets.symmetric(vertical: 10, horizontal: 16),
       child: Padding(
         padding: const EdgeInsets.all(16.0),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: <Widget>[
-            Row(
+            Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
               children: <Widget>[
-                const Icon(Icons.shopping_cart, color: Colors.blue),
-                const SizedBox(width: 10),
-                Text(
-                  title,
-                  style: const TextStyle(
-                    fontSize: 18,
-                    fontWeight: FontWeight.bold,
-                  ),
+                Row(
+                  children: <Widget>[
+                    const Icon(Icons.shopping_cart, color: Colors.blue),
+                    const SizedBox(width: 10),
+                    Text(
+                      title,
+                      style: const TextStyle(
+                        fontSize: 18,
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
+                  ],
+                ),
+                const SizedBox(height: 10),
+                Row(
+                  children: <Widget>[
+                    const Icon(Icons.date_range, color: Colors.grey),
+                    const SizedBox(width: 10),
+                    Text(
+                      createdAt.toString(),
+                      style: const TextStyle(fontSize: 16),
+                    ),
+                  ],
                 ),
               ],
             ),
-            const SizedBox(height: 10),
-            Row(
-              children: <Widget>[
-                const Icon(Icons.date_range, color: Colors.grey),
-                const SizedBox(width: 10),
-                Text(
-                  createdAt.toString(),
-                  style: const TextStyle(fontSize: 16),
-                ),
-              ],
-            ),
+            if (isCreator)
+              IconButton(
+                icon: const Icon(Icons.delete, color: Colors.red),
+                onPressed: () async {
+                  await OrderCubit().deleteOrderById(orderId);
+                },
+              ),
           ],
         ),
       ),

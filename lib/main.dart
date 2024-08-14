@@ -30,7 +30,7 @@ import 'package:order/features/register/user/profile_cubit.dart';
 import 'package:order/features/restaurant/presentation/cubit/restaurant_cubit.dart';
 import 'package:order/features/restaurant/presentation/pages/add_restaurant_page.dart';
 import 'package:order/features/restaurant/presentation/pages/get_all_restaurants_page/all_restaurants_page.dart';
-import 'package:order/features/restaurant/presentation/pages/get_menu_pages/menuu_pagee.dart';
+import 'package:order/features/restaurant/presentation/pages/get_menu_pages/menu_page.dart';
 import 'package:order/firebase_options.dart';
 import 'package:order/injection_container.dart' as di;
 import 'package:shared_preferences/shared_preferences.dart';
@@ -156,7 +156,7 @@ class _MyAppState extends State<MyApp> {
               'register': (BuildContext context) => const RegisterPage(),
               'home': (BuildContext context) => const OrderFoodHomePage(),
               'restaurant': (BuildContext context) => const RestaurantPage(),
-              'menu': (BuildContext context) => MenuuPagee(),
+              'menu': (BuildContext context) => MenuPage(),
               'allrestaurant': (BuildContext context) =>
                   const AllRestaurantPage(),
               // 'cart': (context) => const CartPage(),

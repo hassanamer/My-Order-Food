@@ -70,9 +70,9 @@ class _CreateOrderButtonState extends State<CreateOrderButton> {
                   : const Icon(Icons.border_color_outlined,
                       color: Colors.white),
               const SizedBox(width: 8),
-              Text(
-                widget.isUpdateEvent ? 'Update' : 'Start Order',
-                style: const TextStyle(
+              const Text(
+                'Start Order',
+                style: TextStyle(
                   color: Colors.white,
                   fontSize: 18,
                   fontWeight: FontWeight.bold,

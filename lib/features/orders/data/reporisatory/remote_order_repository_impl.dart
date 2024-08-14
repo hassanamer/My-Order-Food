@@ -1,8 +1,8 @@
 import 'package:order/features/orders/data/datasource/remote_order_datasource.dart';
 import 'package:order/features/orders/data/models/order_model.dart';
-import 'package:order/features/orders/presentation/pages/widgets/order_status/order_status_enum_model.dart';
 import 'package:order/features/orders/domain/entities/order_entities.dart';
 import 'package:order/features/orders/domain/reporisatory/order_repository.dart';
+import 'package:order/features/orders/presentation/pages/widgets/order_status/order_status_enum_model.dart';
 import 'package:order/features/register/data/models/register_account_model.dart';
 
 class OrderRepositoryImpl implements OrderRepository {
@@ -17,8 +17,8 @@ class OrderRepositoryImpl implements OrderRepository {
   }
 
   @override
-  Future<BaseResponse> remoteDeleteOrders() async {
-    return await remoteOrderDatasource.deleteOrders();
+  Future<BaseResponse> remoteDeleteOrders(String orderId) async {
+    return await remoteOrderDatasource.deleteOrderById(orderId);
   }
 
   @override

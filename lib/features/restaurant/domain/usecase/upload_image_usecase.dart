@@ -8,7 +8,7 @@ class UploadImageUsecase {
 
   UploadImageUsecase(this.restaurantReporisatory);
 
-  Future<BaseResponse> call(File imageFile) async {
-    return await restaurantReporisatory.uploadImage(imageFile);
+  Future<BaseResponse> call(Map<String, File>? imageFiles) async {
+    return await restaurantReporisatory.uploadImage(imageFiles);
   }
 }

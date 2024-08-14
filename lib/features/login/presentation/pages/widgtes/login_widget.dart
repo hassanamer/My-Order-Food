@@ -70,8 +70,8 @@ class _LoginWidgetState extends State<LoginWidget> {
   @override
   Widget build(BuildContext context) {
     // if (kDebugMode) {
-    //   emailController.text = "hassanamer281@gmail.com";
-    //   passwordController.text = "P@ssw0rd";
+    emailController.text = "hassanamer281@gmail.com";
+    passwordController.text = "P@ssw0rd";
     // }
     return GradientBackground(
       child: SingleChildScrollView(

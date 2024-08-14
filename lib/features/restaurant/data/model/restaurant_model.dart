@@ -6,30 +6,33 @@ class RestaurantModel {
   String restaurantName;
   String restaurantDescription;
   String hotlineNum;
-  String? imageURL;
+  Map<String, String>? imageURLs = {};
+  String createdBy;
 
-  RestaurantModel({
-    required this.restaurantName,
-    required this.hotlineNum,
-    required this.restaurantDescription,
-    this.imageURL,
-  });
+  RestaurantModel(
+      {required this.restaurantName,
+      required this.hotlineNum,
+      required this.restaurantDescription,
+      this.imageURLs,
+      required this.createdBy});
 
   Map<String, dynamic> toMap() {
     return {
       'restaurantName': restaurantName,
       'hotlineNum': hotlineNum,
       'restaurantDescription': restaurantDescription,
-      'imageURL': imageURL,
+      'imageURLs': imageURLs,
     };
   }
 
   factory RestaurantModel.fromMap(Map<String, dynamic> map) {
     return RestaurantModel(
       restaurantName: map['restaurantName'],
+      createdBy: map['createdBy'],
       hotlineNum: map['hotlineNum'],
       restaurantDescription: map['restaurantDescription'],
-      imageURL: map['imageURL'],
+      imageURLs: (map['imageURLs'] as Map<String, dynamic>)
+          .map((String key, value) => MapEntry(key, value)),
     );
   }
 
@@ -37,9 +40,11 @@ class RestaurantModel {
       DocumentSnapshot<Map<String, dynamic>> documentSnapshot) {
     return RestaurantModel(
       restaurantName: documentSnapshot.data()!['restaurantName'],
+      createdBy: documentSnapshot.data()!['createdBy'],
       restaurantDescription: documentSnapshot.data()!['restaurantDescription'],
       hotlineNum: documentSnapshot.data()!['restaurantHotline'],
-      imageURL: documentSnapshot.data()!['imageURL'],
+      imageURLs: (documentSnapshot.data()!['imageURLs'] as Map<String, dynamic>)
+          .map((String key, value) => MapEntry(key, value)),
     );
   }
 }

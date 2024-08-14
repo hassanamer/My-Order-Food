@@ -8,7 +8,7 @@ import 'package:order/core/widgets/common_elevated_button_widget.dart';
 import 'package:order/features/notification/data/datasources/push_notification_service.dart';
 import 'package:order/features/orders/data/models/order_item_model.dart';
 import 'package:order/features/orders/domain/entities/order_entities.dart';
-import 'package:order/features/orders/domain/remote_usecases/remote_get_user_order.dart';
+import 'package:order/features/orders/domain/remote_usecases/remote_get_user_orders_usecase.dart';
 import 'package:order/features/register/data/models/register_account_model.dart';
 import 'package:order/features/register/user/pages/user_profile_screen.dart';
 

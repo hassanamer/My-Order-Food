@@ -8,9 +8,11 @@ abstract class RestaurantReporisatory {
 
   Future<BaseResponse> updateResturantMenu(RestaurantModel restaurantModel);
 
-  Future<BaseResponse> uploadImage(File imageFile);
+  Future<BaseResponse> uploadImage(Map<String, File>? imageFiles);
 
   Future<BaseResponse> getUploadedImage();
+
+  Future<BaseResponse> deleteImage(String restaurantName, String imageKey);
 
   Future<List<RestaurantModel>> getAllRestaurant();
 }

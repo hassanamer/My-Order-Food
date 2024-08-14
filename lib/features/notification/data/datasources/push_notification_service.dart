@@ -383,4 +383,47 @@ class PushNotificationService {
       print('Response body: ${response.body}');
     }
   }
+
+  static Future<void> sendNotificationToAllUsers(String body) async {
+    final String serverKey = await getAccessToken();
+    const String endPointFirebaseCloudingMessaging =
+        'https://fcm.googleapis.com/v1/projects/food-order-a2d6c/messages:send';
+    FirebaseFirestore firestore = FirebaseFirestore.instance;
+
+    QuerySnapshot<Map<String, dynamic>> usersSnapshot =
+        await firestore.collection('Users').get();
+
+    for (var userDoc in usersSnapshot.docs) {
+      String? userFcmToken = userDoc['fcmToken'];
+
+      if (userFcmToken != null && userFcmToken.isNotEmpty) {
+        final Map<String, dynamic> message = {
+          'message': {
+            'token': userFcmToken,
+            'notification': {
+              'title': 'let\'s, New Order Created',
+              'body': '$body',
+            },
+            'data': {}
+          },
+        };
+
+        final http.Response response = await http.post(
+          Uri.parse(endPointFirebaseCloudingMessaging),
+          headers: <String, String>{
+            'Content-Type': 'application/json',
+            'Authorization': 'Bearer $serverKey',
+          },
+          body: jsonEncode(message),
+        );
+
+        if (response.statusCode == 200) {
+          print('Notification sent successfully to ${userDoc.id}');
+        } else {
+          print(
+              'Failed to send notification to ${userDoc.id}: ${response.statusCode}');
+        }
+      }
+    }
+  }
 }

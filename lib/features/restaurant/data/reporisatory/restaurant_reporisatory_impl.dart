@@ -16,8 +16,8 @@ class RestaurantReporisatoryImpl implements RestaurantReporisatory {
   }
 
   @override
-  Future<BaseResponse> uploadImage(File imageFile) async {
-    return await restaurantDatasourceInterface.uploadImage(imageFile);
+  Future<BaseResponse> uploadImage(Map<String, File>? imageFiles) async {
+    return await restaurantDatasourceInterface.uploadImage(imageFiles);
   }
 
   @override
@@ -35,5 +35,12 @@ class RestaurantReporisatoryImpl implements RestaurantReporisatory {
   @override
   Future<BaseResponse> getUploadedImage() async {
     return await restaurantDatasourceInterface.getUploadedImage();
+  }
+
+  @override
+  Future<BaseResponse> deleteImage(
+      String restaurantName, String imageKey) async {
+    return await restaurantDatasourceInterface.deleteImage(
+        restaurantName, imageKey);
   }
 }

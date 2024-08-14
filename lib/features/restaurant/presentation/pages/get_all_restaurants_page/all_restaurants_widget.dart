@@ -6,7 +6,7 @@ import 'package:flutter_staggered_animations/flutter_staggered_animations.dart';
 import 'package:order/core/theming/styles.dart';
 import 'package:order/features/restaurant/data/model/restaurant_model.dart';
 import 'package:order/features/restaurant/presentation/cubit/restaurant_cubit.dart';
-import 'package:order/features/restaurant/presentation/pages/get_menu_pages/menuu_pagee.dart';
+import 'package:order/features/restaurant/presentation/pages/get_menu_pages/menu_page.dart';
 
 class AllRestaurantWidget extends StatefulWidget {
   final List<RestaurantModel> restaurantModel;
@@ -31,6 +31,15 @@ class _AllRestaurantWidgetState extends State<AllRestaurantWidget> {
     return Future.delayed(
       const Duration(seconds: 0),
     );
+  }
+
+  Map<String, File> convertToFileMap(Map<String, String> urlMap) {
+    final Map<String, File> fileMap = {};
+    for (var entry in urlMap.entries) {
+      fileMap[entry.key] =
+          File(entry.value); // Convert URL to File if necessary
+    }
+    return fileMap;
   }
 
   @override
@@ -74,9 +83,11 @@ class _AllRestaurantWidgetState extends State<AllRestaurantWidget> {
                         onTap: () {
                           Navigator.of(context)
                               .push(MaterialPageRoute<dynamic>(
-                            builder: (BuildContext context) => MenuuPagee(
-                              restaurantImage:
-                                  widget.restaurantModel[index].imageURL,
+                            builder: (BuildContext context) => MenuPage(
+                              createdBy:
+                                  widget.restaurantModel[index].createdBy,
+                              // restaurantImages:
+                              //     widget.restaurantModel[index].imageURLs!,
                               restaurantName:
                                   widget.restaurantModel[index].restaurantName,
                             ),

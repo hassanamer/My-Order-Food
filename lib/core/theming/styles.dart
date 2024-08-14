@@ -186,6 +186,12 @@ class TextStyles {
     color: ColorsManager.mainBlue,
     fontFamily: 'Spectral',
   );
+  static const TextStyle font18BlueBold = TextStyle(
+    fontSize: 18,
+    fontWeight: FontWeightHelper.bold,
+    color: ColorsManager.mainBlue,
+    fontFamily: 'Spectral',
+  );
 
   static const TextStyle font18WhiteMedium = TextStyle(
     fontSize: 18,
