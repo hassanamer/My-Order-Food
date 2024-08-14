@@ -1,5 +1,6 @@
 import 'package:email_validator/email_validator.dart';
 import 'package:flutter/material.dart';
+import 'package:order/core/theming/colors.dart';
 import 'package:order/core/theming/theme_app.dart';
 
 class EmailTextFieldWidget extends StatelessWidget {
@@ -33,8 +34,8 @@ class EmailTextFieldWidget extends StatelessWidget {
       decoration: InputDecoration(
         fillColor: authTextFromFieldFillColor.withOpacity(.3),
         hintText: 'Example@gmail.com',
-        hintStyle: const TextStyle(
-          color: authTextFromFieldHintTextColor,
+        hintStyle: TextStyle(
+          color: ColorsManager.darkBlue.withOpacity(.2),
           fontSize: 17,
           fontWeight: FontWeight.w500,
         ),

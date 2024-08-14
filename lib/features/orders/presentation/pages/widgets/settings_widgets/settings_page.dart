@@ -4,9 +4,10 @@ import 'package:flutter_staggered_animations/flutter_staggered_animations.dart';
 import 'package:get/get.dart';
 import 'package:order/core/theming/styles.dart';
 import 'package:order/core/widgets/app_bar_widget.dart';
-import 'package:order/features/orders/presentation/pages/widgets/order_details_page/view_order_page.dart';
 import 'package:order/features/login/presentation/cubit/login_cubit.dart';
 import 'package:order/features/login/presentation/pages/login_page.dart';
+import 'package:order/features/orders/presentation/pages/widgets/order_details_page/view_order_page.dart';
+import 'package:order/features/orders/presentation/pages/widgets/settings_widgets/about_page.dart';
 import 'package:order/features/orders/presentation/pages/widgets/settings_widgets/settings_header_widget.dart';
 import 'package:order/features/restaurant/presentation/cubit/restaurant_cubit.dart';
 import 'package:order/features/restaurant/presentation/pages/add_restaurant_page.dart';
@@ -69,6 +70,15 @@ class SettingsPage extends StatelessWidget {
                 icon: Icons.add_box_outlined,
                 onTap: () {
                   Get.to(() => const RestaurantPage());
+                },
+              ),
+              sizedBox,
+              _buildSettingsTile(
+                context: context,
+                text: 'About',
+                icon: Icons.info_outline_rounded,
+                onTap: () {
+                  Get.to(() => AboutPage());
                 },
               ),
               sizedBox,

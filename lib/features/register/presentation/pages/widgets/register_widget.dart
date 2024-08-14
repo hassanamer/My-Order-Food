@@ -13,6 +13,10 @@ import 'package:order/features/login/presentation/pages/login_page.dart';
 import 'package:order/features/login/presentation/pages/widgtes/login_top_image_widget.dart';
 import 'package:order/features/register/domain/entities/register_entities.dart';
 import 'package:order/features/register/presentation/cubit/register_cubit.dart';
+import 'package:order/features/register/presentation/pages/widgets/email_text_field_widget.dart';
+import 'package:order/features/register/presentation/pages/widgets/mobile_text_field_widget.dart';
+import 'package:order/features/register/presentation/pages/widgets/password_text_field_widget.dart';
+import 'package:order/features/register/presentation/pages/widgets/register_text_field_widget.dart';
 import 'package:order/features/register/presentation/pages/widgets/register_top_title_widget.dart';
 
 class RegisterWidget extends StatefulWidget {
@@ -158,95 +162,30 @@ class _RegisterWidgetState extends State<RegisterWidget> {
                     const SizedBox(
                       height: 10,
                     ),
-                    TextFormField(
+                    RegisterTextFieldWidget(
                       controller: controllerUsername,
-                      decoration: const InputDecoration(
-                        labelText: 'Username',
-                        labelStyle: TextStyle(
-                          color: Colors.black,
-                        ),
-                      ),
-                      validator: (String? value) {
-                        if (value == null || value.isEmpty) {
-                          return 'Please enter a username';
-                        }
-                        return null;
-                      },
+                      hintText: 'Username',
+                      icon: Icons.title_outlined,
+                      validatorWord: 'Username',
                     ),
                     sizedBox,
-                    TextFormField(
+                    RegisterTextFieldWidget(
                       controller: controllerName,
-                      decoration: const InputDecoration(
-                        labelText: 'Name',
-                        labelStyle: TextStyle(
-                          color: Colors.black,
-                        ),
-                      ),
-                      validator: (String? value) {
-                        if (value == null || value.isEmpty) {
-                          return 'Please enter your name';
-                        }
-                        return null;
-                      },
+                      hintText: 'Name',
+                      icon: Icons.person_outline_rounded,
+                      validatorWord: 'Name',
                     ),
                     sizedBox,
-                    TextFormField(
-                      controller: controllerEmail,
-                      keyboardType: TextInputType.emailAddress,
-                      decoration: const InputDecoration(
-                        labelText: 'Email',
-                        labelStyle: TextStyle(
-                          color: Colors.black,
-                        ),
-                        hintText: 'Email',
-                        hintStyle: TextStyle(color: Colors.black),
-                      ),
-                      validator: (String? value) {
-                        if (value == null || value.isEmpty) {
-                          return 'Please enter an email';
-                        }
-                        return null;
-                      },
-                    ),
+                    EmailTextFieldWidget(controllerEmail: controllerEmail),
                     sizedBox,
-                    TextFormField(
-                      controller: controllerPassword,
-                      obscureText: !isPasswordVisible,
-                      decoration: InputDecoration(
-                        labelText: 'Password',
-                        labelStyle: const TextStyle(
-                          color: Colors.black,
-                        ),
-                        hintText: 'Password',
-                        hintStyle: const TextStyle(color: Colors.black),
-                        suffixIcon: IconButton(
-                          icon: Icon(
-                            isPasswordVisible
-                                ? Icons.visibility
-                                : Icons.visibility_off,
-                          ),
-                          onPressed: () {
-                            setState(() {
-                              isPasswordVisible = !isPasswordVisible;
-                            });
-                          },
-                        ),
-                      ),
-                      validator: (String? value) {
-                        if (value == null || value.isEmpty) {
-                          return 'Please enter a password';
-                        }
-                        return null;
-                      },
-                    ),
+                    PasswordTextFieldWidget(
+                        controllerPassword: controllerPassword),
                     sizedBox,
                     DropdownButtonFormField<String?>(
                       borderRadius: BorderRadius.circular(12),
                       decoration: InputDecoration(
                         labelText: 'Gender',
-                        labelStyle: const TextStyle(
-                          color: Colors.black,
-                        ),
+                        labelStyle: TextStyles.font16BlackSemiBold,
                         fillColor: authTextFromFieldFillColor.withOpacity(.3),
                         prefixIcon: const Icon(
                           Icons.person_outline,
@@ -254,11 +193,7 @@ class _RegisterWidgetState extends State<RegisterWidget> {
                           color: Colors.black,
                         ),
                         hintText: 'Gender',
-                        hintStyle: const TextStyle(
-                          color: Colors.black,
-                          fontSize: 17,
-                          fontWeight: FontWeight.w500,
-                        ),
+                        hintStyle: TextStyles.font16BlackSemiBold,
                         filled: true,
                         enabledBorder: OutlineInputBorder(
                           borderSide: BorderSide(
@@ -312,11 +247,13 @@ class _RegisterWidgetState extends State<RegisterWidget> {
                     DropdownButtonFormField<String?>(
                       borderRadius: BorderRadius.circular(12),
                       decoration: InputDecoration(
+                        labelText: 'Do you have a car?',
+                        labelStyle: TextStyles.font16BlackSemiBold,
                         hintText: 'Do you have a car?',
                         hintStyle: TextStyles.font16BlackSemiBold,
                         fillColor: authTextFromFieldFillColor.withOpacity(.3),
                         prefixIcon: const Icon(
-                          Icons.directions_car,
+                          Icons.directions_car_outlined,
                           size: 24,
                           color: Colors.black,
                         ),
@@ -377,9 +314,7 @@ class _RegisterWidgetState extends State<RegisterWidget> {
                       decoration: InputDecoration(
                         labelText:
                             'Do you want to place the order or receive it at the gate?',
-                        labelStyle: const TextStyle(
-                          color: Colors.black,
-                        ),
+                        labelStyle: TextStyles.font16BlackSemiBold,
                         fillColor: authTextFromFieldFillColor.withOpacity(.3),
                         prefixIcon: deliveryPreference == 'Place the order'
                             ? const Icon(
@@ -394,11 +329,7 @@ class _RegisterWidgetState extends State<RegisterWidget> {
                               ),
                         hintText:
                             'Do you want to place the order or receive it at the gate?',
-                        hintStyle: const TextStyle(
-                          color: Colors.black,
-                          fontSize: 17,
-                          fontWeight: FontWeight.w500,
-                        ),
+                        hintStyle: TextStyles.font16BlackSemiBold,
                         filled: true,
                         enabledBorder: OutlineInputBorder(
                           borderSide: BorderSide(
@@ -448,22 +379,7 @@ class _RegisterWidgetState extends State<RegisterWidget> {
                       },
                     ),
                     sizedBox,
-                    TextFormField(
-                      controller: controllerPhone,
-                      keyboardType: TextInputType.number,
-                      decoration: const InputDecoration(
-                        labelText: 'Phone Number',
-                        labelStyle: TextStyle(
-                          color: Colors.black,
-                        ),
-                      ),
-                      validator: (String? value) {
-                        if (value == null || value.isEmpty) {
-                          return 'Please enter your phone number';
-                        }
-                        return null;
-                      },
-                    ),
+                    MobileTextFieldWidget(controllerPhone: controllerPhone),
                     sizedBox,
                     CommonElevatedButtonWidget(
                       text: 'Sign up',

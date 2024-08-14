@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:order/core/theming/colors.dart';
 import 'package:order/core/theming/theme_app.dart';
 
 class MobileTextFieldWidget extends StatelessWidget {
@@ -18,8 +19,8 @@ class MobileTextFieldWidget extends StatelessWidget {
       decoration: InputDecoration(
         fillColor: authTextFromFieldFillColor.withOpacity(.3),
         hintText: 'Phone Number',
-        hintStyle: const TextStyle(
-          color: authTextFromFieldHintTextColor,
+        hintStyle: TextStyle(
+          color: ColorsManager.darkBlue.withOpacity(.2),
           fontSize: 17,
           fontWeight: FontWeight.w500,
         ),
