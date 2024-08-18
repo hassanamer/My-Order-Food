@@ -42,13 +42,7 @@ class _CreateOrderButtonState extends State<CreateOrderButton> {
         height: 50,
         margin: const EdgeInsets.symmetric(vertical: 16),
         decoration: BoxDecoration(
-          gradient: LinearGradient(
-            colors: _isPressed
-                ? <Color>[Colors.blue[800]!, Colors.blue[600]!]
-                : <Color>[Colors.blue[600]!, Colors.blue[400]!],
-            begin: Alignment.topLeft,
-            end: Alignment.bottomRight,
-          ),
+          color: Colors.blue[300],
           borderRadius: BorderRadius.circular(8),
           boxShadow: _isPressed
               ? <BoxShadow>[]

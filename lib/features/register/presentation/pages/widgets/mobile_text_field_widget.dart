@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:order/core/theming/colors.dart';
-import 'package:order/core/theming/theme_app.dart';
+import 'package:order/core/theming/styles.dart';
 
 class MobileTextFieldWidget extends StatelessWidget {
   const MobileTextFieldWidget({
@@ -15,16 +14,23 @@ class MobileTextFieldWidget extends StatelessWidget {
     return TextFormField(
       controller: controllerPhone,
       keyboardType: TextInputType.number,
-      style: const TextStyle(fontSize: 20),
+      style: TextStyles.font20BlueGradienteBoldForItemsList,
       decoration: InputDecoration(
-        fillColor: authTextFromFieldFillColor.withOpacity(.3),
+        fillColor: Colors.white.withOpacity(.9),
         hintText: 'Phone Number',
-        hintStyle: TextStyle(
-          color: ColorsManager.darkBlue.withOpacity(.2),
-          fontSize: 17,
-          fontWeight: FontWeight.w500,
+        hintStyle: TextStyles.font20BlueGradienteBoldForItemsList.copyWith(
+          color: Colors.blue.shade900.withOpacity(.3),
         ),
-        prefixIcon: const Icon(Icons.phone_outlined),
+        label: Text(
+          'Phone Number',
+          style: TextStyles.font20BlueGradienteBoldForItemsList.copyWith(
+            color: Colors.blue.shade900.withOpacity(.3),
+          ),
+        ),
+        prefixIcon: Icon(
+          Icons.phone_outlined,
+          color: Colors.blue.shade900,
+        ),
         suffixIcon: const Text(''),
         filled: true,
       ),

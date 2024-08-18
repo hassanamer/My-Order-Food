@@ -26,6 +26,7 @@ class CreateOrderPage extends StatelessWidget {
       appBar: const AppBarWidget(
         pageName: 'Start A New Order',
       ),
+      backgroundColor: Colors.blue[600],
       body: _buildBody(context),
     );
   }

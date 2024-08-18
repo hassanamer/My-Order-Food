@@ -32,26 +32,29 @@ class _OrderFoodHomePageState extends State<OrderFoodHomePage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: Colors.blue[600],
       appBar: const AppBarWidget(
         titleWidget: HomePageAppBarTitleWidget(),
         hideBackButton: true,
       ),
-      body: StreamBuilder<List<OrderEntity>>(
-          stream: _ordersStream,
-          builder: (BuildContext context,
-              AsyncSnapshot<List<OrderEntity>> snapshot) {
-            if (snapshot.connectionState == ConnectionState.waiting) {
-              return const Center(child: LoadingWidget());
-            } else if (snapshot.hasError) {
-              return Center(child: Text('Error: ${snapshot.error}'));
-            } else if (!snapshot.hasData || snapshot.data!.isEmpty) {
-              return const OrdersEmptyListWidget();
-            }
-            final List<OrderEntity> orders = snapshot.data!;
-            return HomePageOrdersWidget(
-              orderEntity: orders,
-            );
-          }),
+      body: SafeArea(
+        child: StreamBuilder<List<OrderEntity>>(
+            stream: _ordersStream,
+            builder: (BuildContext context,
+                AsyncSnapshot<List<OrderEntity>> snapshot) {
+              if (snapshot.connectionState == ConnectionState.waiting) {
+                return const Center(child: LoadingWidget());
+              } else if (snapshot.hasError) {
+                return Center(child: Text('Error: ${snapshot.error}'));
+              } else if (!snapshot.hasData || snapshot.data!.isEmpty) {
+                return const OrdersEmptyListWidget();
+              }
+              final List<OrderEntity> orders = snapshot.data!;
+              return HomePageOrdersWidget(
+                orderEntity: orders,
+              );
+            }),
+      ),
     );
   }
 }

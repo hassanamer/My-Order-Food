@@ -13,14 +13,14 @@ class TopImage extends StatelessWidget {
       child: FadeInUp(
           duration: const Duration(seconds: 1),
           child: Container(
-            height: 205,
+            height: 209,
             width: double.infinity,
             decoration: const BoxDecoration(
               image: DecorationImage(
-                image: AssetImage(
-                  'assets/images/login.png',
-                ),
-              ),
+                  image: AssetImage(
+                    'assets/images/login.png',
+                  ),
+                  fit: BoxFit.cover),
             ),
           )),
     );

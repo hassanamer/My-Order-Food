@@ -32,63 +32,56 @@ class _RowImageTextRestaurantWidgetState
         itemCount: widget.restaurantModel.length,
         itemBuilder: (BuildContext context, int index) {
           final RestaurantModel restaurant = widget.restaurantModel[index];
-          return InkWell(
-            onTap: () async {
-              Navigator.of(context)
-                  .push(
-                MaterialPageRoute<dynamic>(
-                  builder: (BuildContext context) => MenuPage(
-                    createdBy: restaurant.createdBy,
-                    restaurantName: restaurant.restaurantName,
-                    // restaurantImages: restaurant.imageURLs,
-                  ),
-                ),
-              )
-                  // ignore: always_specify_types
-                  .then((value) {
-                setState(() {
-                  context.read<RestaurantCubit>().getAllRestaurants();
-                });
-              });
-            },
-            child: Column(children: <Widget>[
-              Container(
-                padding: const EdgeInsets.symmetric(horizontal: 12),
-                margin: const EdgeInsets.all(2),
-                decoration: BoxDecoration(
-                  color: Colors.white,
-                  borderRadius: BorderRadius.circular(10),
-                ),
-                child: Image.asset(
-                  'assets/images/restaurant.png',
-                  width: 70,
-                  height: 80,
-                ),
-              ),
-              Container(
-                padding:
-                    const EdgeInsets.symmetric(horizontal: 10, vertical: 9),
-                decoration: BoxDecoration(
-                  gradient: const LinearGradient(
-                    colors: <Color>[Colors.blueAccent, Colors.lightBlue],
-                    begin: Alignment.topLeft,
-                    end: Alignment.bottomRight,
-                  ),
-                  borderRadius: BorderRadius.circular(12),
-                  boxShadow: const <BoxShadow>[
-                    BoxShadow(
-                      color: Colors.black26,
-                      offset: Offset(2, 2),
-                      blurRadius: 4,
+          return Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 10.0),
+            child: InkWell(
+              onTap: () async {
+                Navigator.of(context)
+                    .push(
+                  MaterialPageRoute<dynamic>(
+                    builder: (BuildContext context) => MenuPage(
+                      createdBy: restaurant.createdBy,
+                      restaurantName: restaurant.restaurantName,
+                      // restaurantImages: restaurant.imageURLs,
                     ),
-                  ],
-                ),
-                child: Text(
-                  restaurant.restaurantName,
-                  style: TextStyles.font16WhiteSemiBold,
-                ),
-              ),
-            ]),
+                  ),
+                )
+                    // ignore: always_specify_types
+                    .then((value) {
+                  setState(() {
+                    context.read<RestaurantCubit>().getAllRestaurants();
+                  });
+                });
+              },
+              child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  children: <Widget>[
+                    Expanded(
+                      flex: 3,
+                      child: Container(
+                        decoration: BoxDecoration(
+                            color: Colors.blue[400],
+                            borderRadius: BorderRadius.circular(12)),
+                        padding: EdgeInsets.all(12),
+                        child: Image.asset(
+                          'assets/images/restaurant.png',
+                          width: 70,
+                          height: 80,
+                        ),
+                      ),
+                    ),
+                    const SizedBox(
+                      height: 8,
+                    ),
+                    Expanded(
+                      flex: 1,
+                      child: Text(
+                        restaurant.restaurantName,
+                        style: TextStyles.font18WhiteBold,
+                      ),
+                    ),
+                  ]),
+            ),
           );
         });
   }

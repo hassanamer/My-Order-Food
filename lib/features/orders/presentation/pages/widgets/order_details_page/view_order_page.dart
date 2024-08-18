@@ -1,6 +1,7 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
+import 'package:order/core/theming/font_weight_helper.dart';
 import 'package:order/core/theming/styles.dart';
 import 'package:order/core/widgets/app_bar_widget.dart';
 import 'package:order/core/widgets/loading_widget.dart';
@@ -33,6 +34,7 @@ class _ViewOrderPageState extends State<ViewOrderPage> {
     final String currentUserId = FirebaseAuth.instance.currentUser?.uid ?? '';
 
     return Scaffold(
+      backgroundColor: Colors.blue[600],
       appBar: const AppBarWidget(
         pageName: 'Your Orders',
       ),
@@ -113,48 +115,74 @@ class _ViewOrderPageState extends State<ViewOrderPage> {
       ),
       elevation: 5,
       margin: const EdgeInsets.symmetric(vertical: 10, horizontal: 16),
-      child: Padding(
-        padding: const EdgeInsets.all(16.0),
-        child: Row(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          children: <Widget>[
-            Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: <Widget>[
-                Row(
-                  children: <Widget>[
-                    const Icon(Icons.shopping_cart, color: Colors.blue),
-                    const SizedBox(width: 10),
-                    Text(
-                      title,
-                      style: const TextStyle(
-                        fontSize: 18,
-                        fontWeight: FontWeight.bold,
-                      ),
-                    ),
-                  ],
-                ),
-                const SizedBox(height: 10),
-                Row(
-                  children: <Widget>[
-                    const Icon(Icons.date_range, color: Colors.grey),
-                    const SizedBox(width: 10),
-                    Text(
-                      createdAt.toString(),
-                      style: const TextStyle(fontSize: 16),
-                    ),
-                  ],
-                ),
-              ],
+      child: Container(
+        decoration: BoxDecoration(
+          borderRadius: BorderRadius.circular(15),
+          gradient: LinearGradient(
+            colors: <Color>[Colors.white, Colors.white70, Colors.blue[200]!],
+            begin: Alignment.topLeft,
+            end: Alignment.bottomRight,
+          ),
+          boxShadow: <BoxShadow>[
+            BoxShadow(
+              color: Colors.black.withOpacity(0.1),
+              blurRadius: 8,
+              offset: const Offset(0, 4),
             ),
-            if (isCreator)
-              IconButton(
-                icon: const Icon(Icons.delete, color: Colors.red),
-                onPressed: () async {
-                  await OrderCubit().deleteOrderById(orderId);
-                },
-              ),
           ],
+        ),
+        child: Padding(
+          padding: const EdgeInsets.all(16.0),
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: <Widget>[
+              Expanded(
+                flex: 9,
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: <Widget>[
+                    Row(
+                      children: <Widget>[
+                        Icon(Icons.shopping_cart, color: Colors.blue.shade900),
+                        const SizedBox(width: 10),
+                        Text(
+                          title,
+                          style: TextStyle(
+                            fontSize: 20,
+                            fontWeight: FontWeightHelper.bold,
+                            fontFamily: 'Spectral',
+                            color: Colors.blue.shade900,
+                          ),
+                          maxLines: 1,
+                        ),
+                      ],
+                    ),
+                    const SizedBox(height: 10),
+                    Row(
+                      children: <Widget>[
+                        Icon(Icons.date_range, color: Colors.blue.shade900),
+                        const SizedBox(width: 10),
+                        Text(
+                          createdAt.toString(),
+                          style: TextStyles.font16BlueGradienteBoldForItemsList,
+                        ),
+                      ],
+                    ),
+                  ],
+                ),
+              ),
+              if (isCreator)
+                Expanded(
+                  flex: 1,
+                  child: IconButton(
+                    icon: const Icon(Icons.delete, color: Colors.red),
+                    onPressed: () async {
+                      await OrderCubit().deleteOrderById(orderId);
+                    },
+                  ),
+                ),
+            ],
+          ),
         ),
       ),
     );

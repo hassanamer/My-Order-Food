@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:order/core/theming/colors.dart';
+import 'package:order/core/theming/styles.dart';
 import 'package:order/features/notification/data/datasources/push_notification_service.dart';
 import 'package:order/features/orders/data/models/order_item_model.dart';
 import 'package:order/features/orders/domain/entities/order_entities.dart';
@@ -70,8 +71,20 @@ class _CreateOrderWidgetState extends State<CreateOrderWidget> {
             controller: titleController,
             decoration: const InputDecoration(
               labelText: 'Title',
+              labelStyle: TextStyle(color: Colors.white),
+              hintText: 'Title',
+              hintStyle: TextStyles.font16WhiteSemiBold,
               border: OutlineInputBorder(),
+              focusedBorder: OutlineInputBorder(
+                borderSide: BorderSide(
+                    color: Colors.white), // Border color when focused
+              ),
+              focusedErrorBorder: OutlineInputBorder(
+                borderSide: BorderSide(
+                    color: Colors.red), // Border color when there's an error
+              ),
             ),
+            style: const TextStyle(color: Colors.white),
             validator: (String? value) {
               if (itemList.isEmpty && value!.isEmpty) {
                 return "Title field can't be empty";
@@ -105,38 +118,71 @@ class _CreateOrderWidgetState extends State<CreateOrderWidget> {
             physics: const NeverScrollableScrollPhysics(),
             itemCount: itemList.length,
             itemBuilder: (BuildContext context, int index) {
-              return Row(
-                children: <Widget>[
-                  Expanded(
-                    child: Text(itemList[index].itemName),
+              return Container(
+                margin: const EdgeInsets.symmetric(vertical: 5, horizontal: 10),
+                padding: EdgeInsets.symmetric(vertical: 6, horizontal: 10),
+                decoration: BoxDecoration(
+                  borderRadius: BorderRadius.circular(15),
+                  gradient: const LinearGradient(
+                    colors: <Color>[
+                      Colors.white,
+                      Colors.white70,
+                    ],
+                    begin: Alignment.topLeft,
+                    end: Alignment.bottomRight,
                   ),
-                  IconButton(
-                    icon: const Icon(Icons.remove),
-                    onPressed: () {
-                      if (itemList[index].quantity > 0) {
+                  boxShadow: <BoxShadow>[
+                    BoxShadow(
+                      color: Colors.black.withOpacity(0.1),
+                      blurRadius: 8,
+                      offset: const Offset(0, 4),
+                    ),
+                  ],
+                ),
+                child: Row(
+                  children: <Widget>[
+                    Expanded(
+                      child: Text(itemList[index].itemName,
+                          style:
+                              TextStyles.font20BlueGradienteBoldForItemsList),
+                    ),
+                    IconButton(
+                      icon: Icon(
+                        Icons.remove,
+                        color: Colors.blue.shade900,
+                      ),
+                      onPressed: () {
+                        if (itemList[index].quantity > 0) {
+                          setState(
+                            () {
+                              itemList[index].quantity--;
+                            },
+                          );
+                        }
+                      },
+                    ),
+                    Text('${itemList[index].quantity}',
+                        style: TextStyles.font20BlueGradienteBoldForItemsList),
+                    IconButton(
+                      icon: Icon(
+                        Icons.add,
+                        color: Colors.blue.shade900,
+                      ),
+                      onPressed: () {
                         setState(() {
-                          itemList[index].quantity--;
+                          itemList[index].quantity++;
                         });
-                      }
-                    },
-                  ),
-                  Text('${itemList[index].quantity}'),
-                  IconButton(
-                    icon: const Icon(Icons.add),
-                    onPressed: () {
-                      setState(() {
-                        itemList[index].quantity++;
-                      });
-                    },
-                  ),
-                  IconButton(
-                      icon: const Icon(Icons.delete, color: Colors.red),
-                      onPressed: () async {
-                        setState(() {
-                          itemList.removeAt(index);
-                        });
-                      })
-                ],
+                      },
+                    ),
+                    IconButton(
+                        icon: const Icon(Icons.delete, color: Colors.red),
+                        onPressed: () async {
+                          setState(() {
+                            itemList.removeAt(index);
+                          });
+                        })
+                  ],
+                ),
               );
             },
           ),
@@ -148,8 +194,21 @@ class _CreateOrderWidgetState extends State<CreateOrderWidget> {
                   controller: itemController,
                   decoration: const InputDecoration(
                     labelText: 'Item',
+                    labelStyle: TextStyles.font16WhiteSemiBold,
+                    hintText: 'Item',
+                    hintStyle: TextStyles.font16WhiteSemiBold,
                     border: OutlineInputBorder(),
+                    focusedBorder: OutlineInputBorder(
+                      borderSide: BorderSide(
+                          color: Colors.white), // Border color when focused
+                    ),
+                    focusedErrorBorder: OutlineInputBorder(
+                      borderSide: BorderSide(
+                          color:
+                              Colors.red), // Border color when there's an error
+                    ),
                   ),
+                  style: const TextStyle(color: Colors.white),
                   validator: (String? value) {
                     if (itemList.isEmpty && value!.isEmpty) {
                       return "Item field can't be empty";
@@ -178,26 +237,37 @@ class _CreateOrderWidgetState extends State<CreateOrderWidget> {
                   },
                 ),
               ),
-              IconButton(
-                icon: const Icon(Icons.add),
-                onPressed: () {
-                  if (itemController.text.isNotEmpty) {
-                    setState(() {
-                      itemList.add(OrderItem(
-                        itemName: itemController.text,
-                        quantity: itemCount,
-                        userId: userId,
-                      ));
-                      itemController.clear();
-                      itemCount = 0;
-                    });
-                  } else {
-                    Fluttertoast.showToast(
-                      msg: "Item field can't be empty",
-                      backgroundColor: ColorsManager.mainBlue,
-                    );
-                  }
-                },
+              Container(
+                decoration: BoxDecoration(
+                    color: Colors.blue[300],
+                    borderRadius: BorderRadius.circular(12)),
+                padding: const EdgeInsets.all(2),
+                margin: EdgeInsets.fromLTRB(12, 0, 0, 0),
+                child: IconButton(
+                  icon: const Icon(
+                    Icons.add,
+                    color: Colors.white,
+                    size: 30,
+                  ),
+                  onPressed: () {
+                    if (itemController.text.isNotEmpty) {
+                      setState(() {
+                        itemList.add(OrderItem(
+                          itemName: itemController.text,
+                          quantity: itemCount,
+                          userId: userId,
+                        ));
+                        itemController.clear();
+                        itemCount = 0;
+                      });
+                    } else {
+                      Fluttertoast.showToast(
+                        msg: "Item field can't be empty",
+                        backgroundColor: ColorsManager.mainBlue,
+                      );
+                    }
+                  },
+                ),
               ),
             ],
           ),

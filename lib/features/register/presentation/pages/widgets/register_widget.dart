@@ -4,7 +4,6 @@ import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:image_picker/image_picker.dart';
-import 'package:order/core/theming/gradient_background.dart';
 import 'package:order/core/theming/styles.dart';
 import 'package:order/core/theming/theme_app.dart';
 import 'package:order/core/widgets/botton_auth_row_widget.dart';
@@ -93,8 +92,9 @@ class _RegisterWidgetState extends State<RegisterWidget> {
   @override
   Widget build(BuildContext context) {
     const SizedBox sizedBox = SizedBox(height: 12);
-    return GradientBackground(
-      child: SingleChildScrollView(
+    return Scaffold(
+      backgroundColor: Colors.blue[600],
+      body: SingleChildScrollView(
         child: Column(
           children: <Widget>[
             const TopImage(),
@@ -115,18 +115,18 @@ class _RegisterWidgetState extends State<RegisterWidget> {
                               const Icon(Icons.camera_alt, color: Colors.white),
                           label: const Text(
                             'Pick Profile Image',
-                            style: TextStyle(color: Colors.white),
+                            style: TextStyle(color: Colors.white, fontSize: 18),
                           ),
                           style: ElevatedButton.styleFrom(
                             foregroundColor: Colors.white,
-                            backgroundColor: Colors.blueAccent,
+                            backgroundColor: Colors.blue[300],
                             // Text color
                             shape: RoundedRectangleBorder(
                               borderRadius: BorderRadius.circular(
-                                  30.0), // Rounded corners
+                                  20.0), // Rounded corners
                             ),
                             padding: const EdgeInsets.symmetric(
-                                horizontal: 20.0, vertical: 12.0),
+                                horizontal: 90, vertical: 12.0),
                             elevation: 5, // Shadow
                           ),
                         ),
@@ -160,7 +160,7 @@ class _RegisterWidgetState extends State<RegisterWidget> {
                       ],
                     ),
                     const SizedBox(
-                      height: 10,
+                      height: 20,
                     ),
                     RegisterTextFieldWidget(
                       controller: controllerUsername,
@@ -184,16 +184,25 @@ class _RegisterWidgetState extends State<RegisterWidget> {
                     DropdownButtonFormField<String?>(
                       borderRadius: BorderRadius.circular(12),
                       decoration: InputDecoration(
-                        labelText: 'Gender',
-                        labelStyle: TextStyles.font16BlackSemiBold,
-                        fillColor: authTextFromFieldFillColor.withOpacity(.3),
-                        prefixIcon: const Icon(
+                        fillColor: Colors.white.withOpacity(.9),
+                        prefixIcon: Icon(
                           Icons.person_outline,
                           size: 24,
-                          color: Colors.black,
+                          color: Colors.blue.shade900,
                         ),
                         hintText: 'Gender',
-                        hintStyle: TextStyles.font16BlackSemiBold,
+                        hintStyle: TextStyles
+                            .font20BlueGradienteBoldForItemsList
+                            .copyWith(
+                          color: Colors.blue.shade900.withOpacity(.3),
+                        ),
+                        label: Text(
+                          'Gender',
+                          style: TextStyles.font20BlueGradienteBoldForItemsList
+                              .copyWith(
+                            color: Colors.blue.shade900.withOpacity(.3),
+                          ),
+                        ),
                         filled: true,
                         enabledBorder: OutlineInputBorder(
                           borderSide: BorderSide(
@@ -220,13 +229,17 @@ class _RegisterWidgetState extends State<RegisterWidget> {
                         ),
                       ),
                       value: selectedGender,
-                      icon: const Icon(Icons.keyboard_arrow_down),
+                      icon: Icon(
+                        Icons.keyboard_arrow_down,
+                        color: Colors.blue.shade900,
+                      ),
                       items: genderItems.map((String item) {
                         return DropdownMenuItem<String>(
                           value: item,
                           child: Text(
                             item,
-                            style: const TextStyle(fontSize: 16),
+                            style:
+                                TextStyles.font20BlueGradienteBoldForItemsList,
                           ),
                         );
                       }).toList(),
@@ -247,15 +260,24 @@ class _RegisterWidgetState extends State<RegisterWidget> {
                     DropdownButtonFormField<String?>(
                       borderRadius: BorderRadius.circular(12),
                       decoration: InputDecoration(
-                        labelText: 'Do you have a car?',
-                        labelStyle: TextStyles.font16BlackSemiBold,
                         hintText: 'Do you have a car?',
-                        hintStyle: TextStyles.font16BlackSemiBold,
-                        fillColor: authTextFromFieldFillColor.withOpacity(.3),
-                        prefixIcon: const Icon(
+                        hintStyle: TextStyles
+                            .font20BlueGradienteBoldForItemsList
+                            .copyWith(
+                          color: Colors.blue.shade900.withOpacity(.3),
+                        ),
+                        label: Text(
+                          'Do you have a car?',
+                          style: TextStyles.font20BlueGradienteBoldForItemsList
+                              .copyWith(
+                            color: Colors.blue.shade900.withOpacity(.3),
+                          ),
+                        ),
+                        fillColor: Colors.white.withOpacity(.9),
+                        prefixIcon: Icon(
                           Icons.directions_car_outlined,
                           size: 24,
-                          color: Colors.black,
+                          color: Colors.blue.shade900,
                         ),
                         filled: true,
                         enabledBorder: OutlineInputBorder(
@@ -283,16 +305,17 @@ class _RegisterWidgetState extends State<RegisterWidget> {
                         ),
                       ),
                       value: hasCar,
-                      icon: const Icon(
+                      icon: Icon(
                         Icons.keyboard_arrow_down,
-                        color: Colors.black,
+                        color: Colors.blue.shade900,
                       ),
                       items: carItems.map((String item) {
                         return DropdownMenuItem<String>(
                           value: item,
                           child: Text(
                             item,
-                            style: const TextStyle(fontSize: 16),
+                            style:
+                                TextStyles.font20BlueGradienteBoldForItemsList,
                           ),
                         );
                       }).toList(),
@@ -312,24 +335,32 @@ class _RegisterWidgetState extends State<RegisterWidget> {
                     DropdownButtonFormField<String?>(
                       borderRadius: BorderRadius.circular(12),
                       decoration: InputDecoration(
-                        labelText:
-                            'Do you want to place the order or receive it at the gate?',
-                        labelStyle: TextStyles.font16BlackSemiBold,
-                        fillColor: authTextFromFieldFillColor.withOpacity(.3),
+                        fillColor: Colors.white.withOpacity(.9),
                         prefixIcon: deliveryPreference == 'Place the order'
-                            ? const Icon(
+                            ? Icon(
                                 Icons.phone,
-                                color: Colors.black,
+                                color: Colors.blue.shade900,
                                 size: 24,
                               )
-                            : const Icon(
+                            : Icon(
                                 Icons.local_shipping,
                                 size: 24,
-                                color: Colors.black,
+                                color: Colors.blue.shade900,
                               ),
                         hintText:
                             'Do you want to place the order or receive it at the gate?',
-                        hintStyle: TextStyles.font16BlackSemiBold,
+                        hintStyle: TextStyles
+                            .font20BlueGradienteBoldForItemsList
+                            .copyWith(
+                          color: Colors.blue.shade900.withOpacity(.3),
+                        ),
+                        label: Text(
+                          'Do you want to place the order or receive it...',
+                          style: TextStyles.font20BlueGradienteBoldForItemsList
+                              .copyWith(
+                            color: Colors.blue.shade900.withOpacity(.3),
+                          ),
+                        ),
                         filled: true,
                         enabledBorder: OutlineInputBorder(
                           borderSide: BorderSide(
@@ -356,13 +387,17 @@ class _RegisterWidgetState extends State<RegisterWidget> {
                         ),
                       ),
                       value: deliveryPreference,
-                      icon: const Icon(Icons.keyboard_arrow_down),
+                      icon: Icon(
+                        Icons.keyboard_arrow_down,
+                        color: Colors.blue.shade900,
+                      ),
                       items: deliveryItems.map((String item) {
                         return DropdownMenuItem<String>(
                           value: item,
                           child: Text(
                             item,
-                            style: const TextStyle(fontSize: 16),
+                            style:
+                                TextStyles.font20BlueGradienteBoldForItemsList,
                           ),
                         );
                       }).toList(),
@@ -382,7 +417,9 @@ class _RegisterWidgetState extends State<RegisterWidget> {
                     MobileTextFieldWidget(controllerPhone: controllerPhone),
                     sizedBox,
                     CommonElevatedButtonWidget(
+                      width: MediaQuery.of(context).size.width * 0.9,
                       text: 'Sign up',
+                      color: Colors.blue.shade300,
                       onPressed: () async {
                         if (_keyform.currentState!.validate()) {
                           context

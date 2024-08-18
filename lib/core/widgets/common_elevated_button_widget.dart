@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:order/core/theming/styles.dart';
+import 'package:order/core/theming/font_weight_helper.dart';
 
 class CommonElevatedButtonWidget extends StatelessWidget {
   final String text;
@@ -16,13 +16,13 @@ class CommonElevatedButtonWidget extends StatelessWidget {
   const CommonElevatedButtonWidget({
     required this.text,
     required this.onPressed,
+    required this.width,
     super.key,
     this.color = Colors.blue,
     this.fontSize = 18.0,
     this.borderRadius = 15.0,
     this.elevation = 5.0,
     this.padding = const EdgeInsets.all(15),
-    this.width = 300,
     this.height = 55,
   });
 
@@ -50,8 +50,14 @@ class CommonElevatedButtonWidget extends StatelessWidget {
           ),
         ),
         child: Text(
+          maxLines: 1,
           text,
-          style: TextStyles.font20WhiteBold,
+          style: const TextStyle(
+            fontSize: 16,
+            fontWeight: FontWeightHelper.bold,
+            fontFamily: 'Spectral',
+            color: Colors.white,
+          ),
         ),
       ),
     );

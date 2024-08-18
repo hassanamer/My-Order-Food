@@ -18,6 +18,7 @@ class _AllRestaurantPageState extends State<AllRestaurantPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: Colors.blue[600],
       appBar: const AppBarWidget(
         pageName: 'Restaurants',
       ),

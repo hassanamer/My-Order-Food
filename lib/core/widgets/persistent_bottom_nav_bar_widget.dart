@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:order/features/orders/presentation/pages/widgets/create_order_pages/create_order_page.dart';
 import 'package:order/features/orders/presentation/pages/widgets/home_widgets/home/order_food_home_page.dart';
 import 'package:order/features/orders/presentation/pages/widgets/settings_widgets/settings_page.dart';
-import 'package:order/features/orders/presentation/pages/widgets/create_order_pages/create_order_page.dart';
 import 'package:persistent_bottom_nav_bar/persistent_bottom_nav_bar.dart';
 
 class NavBarWidget extends StatelessWidget {
@@ -17,26 +17,11 @@ class NavBarWidget extends StatelessWidget {
       controller: controller,
       screens: _buildScreens(),
       items: _navBarsItems(),
-      backgroundColor: Colors.white,
+      backgroundColor: Colors.blue[600]!,
       handleAndroidBackButtonPress: true,
       resizeToAvoidBottomInset: true,
       stateManagement: true,
-      decoration: NavBarDecoration(
-        borderRadius: BorderRadius.circular(10.0),
-        colorBehindNavBar: Colors.white,
-      ),
-      // Updated parameters
-      // Remove deprecated or renamed parameters
-      // confineInSafeArea: true,
-      // itemAnimationProperties: const ItemAnimationProperties(
-      //   duration: Duration(milliseconds: 300),
-      //   curve: Curves.easeInOut,
-      // ),
-      // screenTransitionAnimation: const ScreenTransitionAnimation(
-      //   animateTabTransition: true,
-      //   curve: Curves.easeInOut,
-      //   duration: Duration(milliseconds: 300),
-      // ),
+      confineToSafeArea: true,
       navBarStyle: NavBarStyle.style1,
     );
   }
@@ -54,20 +39,20 @@ class NavBarWidget extends StatelessWidget {
       PersistentBottomNavBarItem(
         icon: const Icon(Icons.home_outlined),
         title: 'Home',
-        activeColorPrimary: Colors.blueAccent,
-        inactiveColorPrimary: Colors.grey,
+        activeColorPrimary: Colors.white,
+        inactiveColorPrimary: Colors.white,
       ),
       PersistentBottomNavBarItem(
         icon: const Icon(Icons.add_box_outlined),
         title: 'Add',
-        activeColorPrimary: Colors.blueAccent,
-        inactiveColorPrimary: Colors.grey,
+        activeColorPrimary: Colors.white,
+        inactiveColorPrimary: Colors.white,
       ),
       PersistentBottomNavBarItem(
         icon: const Icon(Icons.settings_outlined),
         title: 'Settings',
-        activeColorPrimary: Colors.blueAccent,
-        inactiveColorPrimary: Colors.grey,
+        activeColorPrimary: Colors.white,
+        inactiveColorPrimary: Colors.white,
       ),
     ];
   }

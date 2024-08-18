@@ -42,13 +42,25 @@ class _SettingsHeaderWidgetState extends State<SettingsHeaderWidget> {
                 builder: (BuildContext context) => const UserProfileScreen()));
           },
           child: Container(
-            padding: const EdgeInsets.symmetric(horizontal: 5, vertical: 15),
-            decoration: const BoxDecoration(
+            margin: const EdgeInsets.fromLTRB(0, 30, 0, 30),
+            padding: const EdgeInsets.symmetric(vertical: 12, horizontal: 5),
+            decoration: BoxDecoration(
+              borderRadius: BorderRadius.circular(15),
+              gradient: const LinearGradient(
+                colors: <Color>[
+                  Colors.white,
+                  Colors.white70,
+                ],
+                begin: Alignment.topLeft,
+                end: Alignment.bottomRight,
+              ),
               boxShadow: <BoxShadow>[
                 BoxShadow(
-                    blurRadius: 9, color: Color.fromRGBO(179, 192, 195, 0.08)),
+                  color: Colors.black.withOpacity(0.1),
+                  blurRadius: 8,
+                  offset: const Offset(0, 4),
+                ),
               ],
-              color: Color.fromRGBO(255, 255, 255, 1),
             ),
             child: Row(
               mainAxisAlignment: MainAxisAlignment.start,
@@ -65,12 +77,15 @@ class _SettingsHeaderWidgetState extends State<SettingsHeaderWidget> {
                     children: <Widget>[
                       Text(
                         userName,
-                        style: TextStyles.font18DarkBlueBold,
+                        maxLines: 1,
+                        overflow: TextOverflow.ellipsis,
+                        style: TextStyles.font20BlueGradienteBoldForItemsList,
                       ),
                       Text(
                         email,
                         maxLines: 1,
-                        style: TextStyles.font14DarkBlueBold,
+                        overflow: TextOverflow.ellipsis,
+                        style: TextStyles.font16BlueGradienteBoldForItemsList,
                       ),
                     ],
                   ),

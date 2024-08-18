@@ -9,14 +9,69 @@ class TextStyles {
     fontFamily: 'Spectral',
     color: Colors.black,
   );
+
+  static const TextStyle font34WhiteBold = TextStyle(
+    fontSize: 34,
+    fontWeight: FontWeightHelper.bold,
+    fontFamily: 'Spectral',
+    color: Colors.white,
+  );
   static const TextStyle font22WhiteBold = TextStyle(
     fontSize: 22,
     fontWeight: FontWeightHelper.bold,
     fontFamily: 'Spectral',
     color: Colors.white,
   );
+
+  static const TextStyle font25WhiteBold = TextStyle(
+    fontSize: 25,
+    fontWeight: FontWeightHelper.bold,
+    fontFamily: 'Spectral',
+    color: Colors.white,
+  );
+
+  static const TextStyle font27WhiteBold = TextStyle(
+    fontSize: 27,
+    fontWeight: FontWeightHelper.bold,
+    fontFamily: 'Spectral',
+    color: Colors.white,
+  );
+
+  static TextStyle font20BlueGradienteBoldForItemsList = TextStyle(
+    fontSize: 20,
+    fontWeight: FontWeightHelper.bold,
+    fontFamily: 'Spectral',
+    color: Colors.blue.shade900,
+  );
+
+  static TextStyle font18BlueGradienteBoldForItemsList = TextStyle(
+    fontSize: 18,
+    fontWeight: FontWeightHelper.bold,
+    fontFamily: 'Spectral',
+    color: Colors.blue.shade900,
+  );
+
+  static TextStyle font16BlueGradienteBoldForItemsList = TextStyle(
+    fontSize: 16,
+    fontWeight: FontWeightHelper.bold,
+    fontFamily: 'Spectral',
+    color: Colors.blue.shade900,
+  );
+
+  static TextStyle font14BlueGradienteBoldForItemsList = TextStyle(
+    fontSize: 14,
+    fontWeight: FontWeightHelper.bold,
+    fontFamily: 'Spectral',
+    color: Colors.blue.shade900,
+  );
   static const TextStyle font20WhiteBold = TextStyle(
     fontSize: 20,
+    fontWeight: FontWeightHelper.bold,
+    fontFamily: 'Spectral',
+    color: Colors.white,
+  );
+  static const TextStyle font18WhiteBold = TextStyle(
+    fontSize: 18,
     fontWeight: FontWeightHelper.bold,
     fontFamily: 'Spectral',
     color: Colors.white,
@@ -139,8 +194,22 @@ class TextStyles {
     fontFamily: 'Spectral',
   );
 
+  static const TextStyle font14WhiteBold = TextStyle(
+    fontSize: 14,
+    fontWeight: FontWeightHelper.medium,
+    color: ColorsManager.white,
+    fontFamily: 'Spectral',
+  );
+
   static const TextStyle font14DarkBlueBold = TextStyle(
     fontSize: 14,
+    fontWeight: FontWeightHelper.bold,
+    color: ColorsManager.darkBlue,
+    fontFamily: 'Spectral',
+  );
+
+  static const TextStyle font20DarkBlueBold = TextStyle(
+    fontSize: 20,
     fontWeight: FontWeightHelper.bold,
     color: ColorsManager.darkBlue,
     fontFamily: 'Spectral',
@@ -171,12 +240,6 @@ class TextStyles {
     fontSize: 18,
     fontWeight: FontWeightHelper.bold,
     color: ColorsManager.darkBlue,
-    fontFamily: 'Spectral',
-  );
-  static const TextStyle font18WhiteBold = TextStyle(
-    fontSize: 18,
-    fontWeight: FontWeightHelper.bold,
-    color: ColorsManager.white,
     fontFamily: 'Spectral',
   );
 

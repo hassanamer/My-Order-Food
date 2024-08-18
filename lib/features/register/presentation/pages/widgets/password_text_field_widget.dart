@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:order/core/theming/colors.dart';
-import 'package:order/core/theming/theme_app.dart';
+import 'package:order/core/theming/styles.dart';
 
 class PasswordTextFieldWidget extends StatefulWidget {
   const PasswordTextFieldWidget({
@@ -24,21 +23,29 @@ class _PasswordTextFieldWidgetState extends State<PasswordTextFieldWidget> {
       obscureText: _obscureText,
       keyboardType: TextInputType.text,
       controller: widget.controllerPassword,
-      style: const TextStyle(fontSize: 20),
+      style: TextStyles.font20BlueGradienteBoldForItemsList,
       decoration: InputDecoration(
-        fillColor: authTextFromFieldFillColor.withOpacity(.3),
+        fillColor: Colors.white.withOpacity(.9),
         filled: true,
         hintText: 'Password',
-        hintStyle: TextStyle(
-          color: ColorsManager.darkBlue.withOpacity(.2),
-          fontSize: 17,
-          fontWeight: FontWeight.w500,
+        hintStyle: TextStyles.font20BlueGradienteBoldForItemsList.copyWith(
+          color: Colors.blue.shade900.withOpacity(.3),
         ),
-        prefixIcon: const Icon(Icons.lock_outline),
+        label: Text(
+          'Password',
+          style: TextStyles.font20BlueGradienteBoldForItemsList.copyWith(
+            color: Colors.blue.shade900.withOpacity(.3),
+          ),
+        ),
+        prefixIcon: Icon(
+          Icons.lock_outline,
+          size: 24,
+          color: Colors.blue.shade900,
+        ),
         suffixIcon: IconButton(
           icon: Icon(
             _obscureText ? Icons.visibility_off : Icons.visibility,
-            color: ColorsManager.darkBlue.withOpacity(.7),
+            color: Colors.blue.shade900,
           ),
           onPressed: () {
             setState(() {

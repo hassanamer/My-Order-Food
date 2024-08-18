@@ -13,11 +13,14 @@ class RestaurantTextFieldWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return TextFormField(
-      style: const TextStyle(fontSize: 20),
+      style: const TextStyle(fontSize: 20, color: Colors.white),
       decoration: InputDecoration(
-        border: const UnderlineInputBorder(),
-        labelText: labelText,
-        prefixIcon: const Icon(Icons.restaurant_outlined),
+        label: Text(labelText),
+        labelStyle: const TextStyle(color: Colors.white),
+        prefixIcon: const Icon(
+          Icons.restaurant_outlined,
+          color: Colors.white,
+        ),
       ),
       validator: (String? value) {
         if (value!.isNotEmpty) {

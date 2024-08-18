@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:order/core/theming/gradient_background.dart';
+import 'package:order/core/theming/styles.dart';
 import 'package:order/core/widgets/botton_auth_row_widget.dart';
 import 'package:order/core/widgets/common_elevated_button_widget.dart';
 import 'package:order/features/login/presentation/cubit/login_cubit.dart';
@@ -70,17 +70,18 @@ class _LoginWidgetState extends State<LoginWidget> {
   @override
   Widget build(BuildContext context) {
     // if (kDebugMode) {
-    emailController.text = "hassanamer281@gmail.com";
-    passwordController.text = "P@ssw0rd";
+    // emailController.text = "hassanamer281@gmail.com";
+    // passwordController.text = "P@ssw0rd";
     // }
-    return GradientBackground(
-      child: SingleChildScrollView(
+    return Scaffold(
+      backgroundColor: Colors.blue[600],
+      body: SingleChildScrollView(
         child: Center(
           child: Column(
             children: <Widget>[
               const TopImage(),
               Padding(
-                padding: const EdgeInsets.symmetric(vertical: 50.0),
+                padding: const EdgeInsets.symmetric(vertical: 10.0),
                 child: Form(
                   key: _formKey,
                   child: Padding(
@@ -90,22 +91,26 @@ class _LoginWidgetState extends State<LoginWidget> {
                       child: Column(
                         children: <Widget>[
                           const LoginHeaderWidget(),
-                          const SizedBox(height: 15),
+                          const SizedBox(height: 20),
                           LoginTextFieldWidget(
                             hintText: 'Email',
                             obscureText: false,
-                            prefixIcon: const Icon(Icons.email),
+                            prefixIcon: Icon(
+                              Icons.email,
+                              color: Colors.blue.shade900,
+                            ),
                             controllerEmail: emailController,
                             onChanged: () {
                               _formKey.currentState?.validate();
                             },
                           ),
-                          const SizedBox(height: 12),
+                          const SizedBox(height: 18),
                           LoginTextFieldWidget(
                             obscureText: passwordVisible,
                             controllerEmail: passwordController,
                             hintText: 'Password',
-                            prefixIcon: const Icon(Icons.lock),
+                            prefixIcon:
+                                Icon(Icons.lock, color: Colors.blue.shade900),
                             suffixIcon: IconButton(
                               onPressed: () {
                                 setState(() {
@@ -113,14 +118,16 @@ class _LoginWidgetState extends State<LoginWidget> {
                                 });
                               },
                               icon: Icon(
+                                color: Colors.blue.shade900,
                                 passwordVisible
                                     ? Icons.visibility_off
                                     : Icons.visibility,
                               ),
                             ),
                           ),
-                          const SizedBox(height: 12),
+                          const SizedBox(height: 18),
                           CommonElevatedButtonWidget(
+                            width: MediaQuery.of(context).size.width * 0.9,
                             text: 'Log in',
                             onPressed: () async {
                               final PushNotificationService
@@ -149,7 +156,10 @@ class _LoginWidgetState extends State<LoginWidget> {
                                   _handleRememberMe(newValue ?? false);
                                 },
                               ),
-                              const Text('Remember Me'),
+                              Text(
+                                'Remember Me',
+                                style: TextStyles.font18WhiteBold,
+                              ),
                             ],
                           ),
                           BottomAuthRowWidget(

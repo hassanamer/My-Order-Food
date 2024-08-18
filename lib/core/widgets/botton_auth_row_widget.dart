@@ -20,13 +20,13 @@ class BottomAuthRowWidget extends StatelessWidget {
       children: <Widget>[
         Text(
           text,
-          style: TextStyles.font18BlueSemiBold,
+          style: TextStyles.font20WhiteBold,
         ),
         TextButton(
           onPressed: onTap,
           child: Text(
             value,
-            style: TextStyles.font16BlackSemiBold,
+            style: TextStyles.font20DarkBlueBold,
           ),
         )
       ],

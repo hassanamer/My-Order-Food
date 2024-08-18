@@ -95,6 +95,7 @@ class _OrderDetailsPageState extends State<OrderDetailsPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: Colors.blue[600],
       appBar: AppBarWidget(
         pageName: widget.orderEntity.title ?? '',
       ),

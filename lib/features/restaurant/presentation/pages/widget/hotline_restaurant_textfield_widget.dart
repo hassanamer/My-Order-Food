@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:order/core/theming/styles.dart';
 
 class HotLineRestaurantTextFieldWidget extends StatelessWidget {
   const HotLineRestaurantTextFieldWidget({
@@ -12,11 +13,17 @@ class HotLineRestaurantTextFieldWidget extends StatelessWidget {
   Widget build(BuildContext context) {
     return TextFormField(
       keyboardType: TextInputType.number,
-      style: const TextStyle(fontSize: 20),
+      style: const TextStyle(fontSize: 20, color: Colors.white),
       decoration: const InputDecoration(
         border: UnderlineInputBorder(),
-        labelText: 'Hotline',
-        prefixIcon: Icon(Icons.phone),
+        labelStyle: TextStyles.font16WhiteSemiBold,
+        label: Text('Hotline'),
+        hintText: 'Hotline',
+        hintStyle: TextStyles.font16WhiteSemiBold,
+        prefixIcon: Icon(
+          Icons.phone,
+          color: Colors.white,
+        ),
       ),
       controller: controllerRestaurantHotline,
     );

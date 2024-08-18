@@ -62,19 +62,12 @@ class _AllRestaurantWidgetState extends State<AllRestaurantWidget> {
                       borderRadius: BorderRadius.circular(15),
                       gradient: LinearGradient(
                         colors: <Color>[
-                          Colors.blue.shade400,
-                          Colors.blue.shade900
+                          Colors.white,
+                          Colors.blue.shade200,
                         ],
                         begin: Alignment.topLeft,
                         end: Alignment.bottomRight,
                       ),
-                      boxShadow: <BoxShadow>[
-                        BoxShadow(
-                          color: Colors.black.withOpacity(0.2),
-                          blurRadius: 6,
-                          offset: const Offset(0, 3),
-                        ),
-                      ],
                     ),
                     child: Material(
                       color: Colors.transparent,
@@ -86,8 +79,6 @@ class _AllRestaurantWidgetState extends State<AllRestaurantWidget> {
                             builder: (BuildContext context) => MenuPage(
                               createdBy:
                                   widget.restaurantModel[index].createdBy,
-                              // restaurantImages:
-                              //     widget.restaurantModel[index].imageURLs!,
                               restaurantName:
                                   widget.restaurantModel[index].restaurantName,
                             ),
@@ -103,52 +94,59 @@ class _AllRestaurantWidgetState extends State<AllRestaurantWidget> {
                         },
                         child: Padding(
                           padding: const EdgeInsets.all(16.0),
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: <Widget>[
-                              Row(
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: [
+                              Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
                                 children: <Widget>[
-                                  const Icon(Icons.restaurant_menu,
-                                      color: Colors.white),
-                                  const SizedBox(width: 8),
-                                  Text(
-                                    widget
-                                        .restaurantModel[index].restaurantName,
-                                    style: const TextStyle(
-                                      fontSize: 18,
-                                      fontWeight: FontWeight.bold,
-                                      color: Colors.white,
-                                    ),
+                                  Row(
+                                    children: <Widget>[
+                                      Icon(Icons.restaurant_menu,
+                                          color: Colors.blue.shade900),
+                                      const SizedBox(width: 8),
+                                      Text(
+                                        widget.restaurantModel[index]
+                                            .restaurantName,
+                                        style: TextStyles
+                                            .font20BlueGradienteBoldForItemsList,
+                                      ),
+                                    ],
+                                  ),
+                                  const SizedBox(height: 8),
+                                  Row(
+                                    children: <Widget>[
+                                      Icon(Icons.description,
+                                          color: Colors.blue.shade900),
+                                      const SizedBox(width: 8),
+                                      Text(
+                                        widget.restaurantModel[index]
+                                            .restaurantDescription,
+                                        style: TextStyles
+                                            .font20BlueGradienteBoldForItemsList,
+                                      ),
+                                    ],
+                                  ),
+                                  const SizedBox(height: 8),
+                                  Row(
+                                    children: <Widget>[
+                                      Icon(Icons.phone,
+                                          color: Colors.blue.shade900),
+                                      const SizedBox(width: 8),
+                                      Text(
+                                        widget
+                                            .restaurantModel[index].hotlineNum,
+                                        style: TextStyles
+                                            .font20BlueGradienteBoldForItemsList,
+                                      ),
+                                    ],
                                   ),
                                 ],
                               ),
-                              const SizedBox(height: 8),
-                              Row(
-                                children: <Widget>[
-                                  const Icon(Icons.description,
-                                      color: Colors.white70),
-                                  const SizedBox(width: 8),
-                                  Text(
-                                    widget.restaurantModel[index]
-                                        .restaurantDescription,
-                                    style: const TextStyle(
-                                      fontSize: 16,
-                                      color: Colors.white70,
-                                    ),
-                                  ),
-                                ],
-                              ),
-                              const SizedBox(height: 8),
-                              Row(
-                                children: <Widget>[
-                                  const Icon(Icons.phone,
-                                      color: Colors.white70),
-                                  const SizedBox(width: 8),
-                                  Text(
-                                    widget.restaurantModel[index].hotlineNum,
-                                    style: TextStyles.font18WhiteBold,
-                                  ),
-                                ],
+                              Icon(
+                                Icons.arrow_circle_right,
+                                color: Colors.blue.shade900,
+                                size: 40,
                               ),
                             ],
                           ),

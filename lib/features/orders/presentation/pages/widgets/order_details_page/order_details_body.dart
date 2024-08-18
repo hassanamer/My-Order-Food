@@ -274,17 +274,21 @@ class _OrderDetailsBodyState extends State<OrderDetailsBody>
                     padding: const EdgeInsets.symmetric(
                         horizontal: 20, vertical: 10),
                     decoration: BoxDecoration(
-                      gradient: const LinearGradient(
-                        colors: <Color>[Colors.blueAccent, Colors.lightBlue],
+                      borderRadius: BorderRadius.circular(15),
+                      gradient: LinearGradient(
+                        colors: <Color>[
+                          Colors.white,
+                          Colors.white70,
+                          Colors.blue[200]!
+                        ],
                         begin: Alignment.topLeft,
                         end: Alignment.bottomRight,
                       ),
-                      borderRadius: BorderRadius.circular(12),
-                      boxShadow: const <BoxShadow>[
+                      boxShadow: <BoxShadow>[
                         BoxShadow(
-                          color: Colors.black26,
-                          offset: Offset(2, 2),
-                          blurRadius: 4,
+                          color: Colors.black.withOpacity(0.1),
+                          blurRadius: 8,
+                          offset: const Offset(0, 4),
                         ),
                       ],
                     ),
@@ -292,20 +296,22 @@ class _OrderDetailsBodyState extends State<OrderDetailsBody>
                       children: <Widget>[
                         Text(
                           'Created At : $createdAt',
-                          style: TextStyles.font18WhiteBold,
+                          style: TextStyles.font20BlueGradienteBoldForItemsList,
                         ),
                         Padding(
                           padding: const EdgeInsets.all(8.0),
                           child: RichText(
                             text: TextSpan(
                               children: <InlineSpan>[
-                                const TextSpan(
+                                TextSpan(
                                   text: 'Status : ',
-                                  style: TextStyles.font18WhiteBold,
+                                  style: TextStyles
+                                      .font20BlueGradienteBoldForItemsList,
                                 ),
                                 TextSpan(
                                   text: widget.orderEntity.status.name,
-                                  style: TextStyles.font18WhiteBold,
+                                  style: TextStyles
+                                      .font20BlueGradienteBoldForItemsList,
                                 ),
                               ],
                             ),
@@ -349,9 +355,14 @@ class _OrderDetailsBodyState extends State<OrderDetailsBody>
                           Expanded(
                             child: TextField(
                               controller: widget.itemController,
-                              decoration: const InputDecoration(
-                                labelText: 'Add Item',
-                                border: OutlineInputBorder(),
+                              decoration: InputDecoration(
+                                fillColor: Colors.white,
+                                label: Text(
+                                  'Add Item',
+                                  style: TextStyles
+                                      .font16BlueGradienteBoldForItemsList,
+                                ),
+                                border: const OutlineInputBorder(),
                               ),
                               onChanged: widget.setItemName,
                               onTap: () {
@@ -382,11 +393,12 @@ class _OrderDetailsBodyState extends State<OrderDetailsBody>
                                   : 0); // });
                             },
                             icon: const Icon(Icons.remove),
-                            color: Colors.red,
+                            color: Colors.white,
                           ),
                           Text(
                             '${widget.itemCount}',
-                            style: const TextStyle(fontSize: 18),
+                            style: const TextStyle(
+                                fontSize: 22, color: Colors.white),
                           ),
                           IconButton(
                             onPressed: () {
@@ -394,13 +406,15 @@ class _OrderDetailsBodyState extends State<OrderDetailsBody>
                               widget.setItemCount(widget.itemCount + 1); // });
                             },
                             icon: const Icon(Icons.add),
-                            color: Colors.blue,
+                            color: Colors.white,
                           ),
                           const SizedBox(width: 10),
                           SizedBox(
                             width: 100,
                             child: CommonElevatedButtonWidget(
+                                width: 100.w,
                                 text: 'Add',
+                                color: Colors.blue.shade300,
                                 onPressed: () async {
                                   await addItem(
                                       widget.itemName, widget.itemCount);
@@ -423,7 +437,8 @@ class _OrderDetailsBodyState extends State<OrderDetailsBody>
                             (widget.isCreator || isCurrentUserPlacerOrReceiver),
                         child: CommonElevatedButtonWidget(
                           text: 'Place Your Order...',
-                          width: 100.w,
+                          color: Colors.blue.shade300,
+                          width: MediaQuery.of(context).size.width * 0.9,
                           onPressed: () async {
                             setState(() {
                               for (String userId

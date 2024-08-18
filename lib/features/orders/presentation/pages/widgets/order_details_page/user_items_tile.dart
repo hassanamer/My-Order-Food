@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_staggered_animations/flutter_staggered_animations.dart';
-import 'package:order/core/theming/colors.dart';
 import 'package:order/core/theming/styles.dart';
 import 'package:order/core/widgets/common_elevated_button_widget.dart';
 import 'package:order/features/notification/data/datasources/push_notification_service.dart';
@@ -54,8 +53,8 @@ class _UserItemsTileState extends State<UserItemsTile> {
   }
 
   Widget getDivider() {
-    return const Divider(
-      color: Colors.white,
+    return Divider(
+      color: Colors.blue[900],
       thickness: 1,
       indent: 10,
       endIndent: 30,
@@ -98,7 +97,11 @@ class _UserItemsTileState extends State<UserItemsTile> {
             decoration: BoxDecoration(
               borderRadius: BorderRadius.circular(15),
               gradient: LinearGradient(
-                colors: <Color>[Colors.blue.shade400, Colors.blue.shade900],
+                colors: <Color>[
+                  Colors.white,
+                  Colors.blue[100]!,
+                  Colors.white70,
+                ],
                 begin: Alignment.topLeft,
                 end: Alignment.bottomRight,
               ),
@@ -140,8 +143,13 @@ class _UserItemsTileState extends State<UserItemsTile> {
                                 width: 100.w,
                                 height: 100.h),
                             const SizedBox(width: 20),
-                            Text(widget.user.name!.toUpperCase(),
-                                style: TextStyles.font20WhiteBold),
+                            Text(
+                              widget.user.name!.toUpperCase(),
+                              style: TextStyles
+                                  .font20BlueGradienteBoldForItemsList,
+                              maxLines: 1,
+                              overflow: TextOverflow.ellipsis,
+                            ),
                           ],
                         ),
                       ),
@@ -157,10 +165,11 @@ class _UserItemsTileState extends State<UserItemsTile> {
                               // mainAxisAlignment:
                               // MainAxisAlignment.spaceEvenly,
                               children: <Widget>[
-                                const Expanded(
+                                Expanded(
                                   flex: 1,
                                   child: Text('Item :',
-                                      style: TextStyles.font20WhiteBold),
+                                      style: TextStyles
+                                          .font20BlueGradienteBoldForItemsList),
                                 ),
                                 // const Spacer(),
                                 Expanded(
@@ -168,7 +177,8 @@ class _UserItemsTileState extends State<UserItemsTile> {
                                   child: Text(item.itemName,
                                       maxLines: 5,
                                       overflow: TextOverflow.ellipsis,
-                                      style: TextStyles.font20WhiteBold),
+                                      style: TextStyles
+                                          .font20BlueGradienteBoldForItemsList),
                                 ),
                               ],
                             ),
@@ -179,17 +189,19 @@ class _UserItemsTileState extends State<UserItemsTile> {
                               // mainAxisAlignment:
                               //     MainAxisAlignment.spaceBetween,
                               children: <Widget>[
-                                const Expanded(
+                                Expanded(
                                   flex: 1,
                                   child: Text('Qty :',
-                                      style: TextStyles.font20WhiteBold),
+                                      style: TextStyles
+                                          .font20BlueGradienteBoldForItemsList),
                                 ),
                                 // const Spacer(),
                                 Expanded(
                                   flex: 3,
                                   child: Text('${item.quantity}',
                                       overflow: TextOverflow.ellipsis,
-                                      style: TextStyles.font20WhiteBold),
+                                      style: TextStyles
+                                          .font20BlueGradienteBoldForItemsList),
                                 ),
                               ],
                             ),
@@ -227,12 +239,9 @@ class _UserItemsTileState extends State<UserItemsTile> {
                                           ],
                                           keyboardType: TextInputType.number,
                                           decoration: InputDecoration(
-                                            label: Text(
-                                              '${item.price ?? 'Price'}',
-                                              style: const TextStyle(
-                                                color: ColorsManager.darkBlue,
-                                              ),
-                                            ),
+                                            label: Text('Price',
+                                                style: TextStyles
+                                                    .font16BlueGradienteBoldForItemsList),
                                             hintText:
                                                 '${item.price ?? 'Price'}',
                                             border: const OutlineInputBorder(),
@@ -250,7 +259,8 @@ class _UserItemsTileState extends State<UserItemsTile> {
                                     constraints:
                                         const BoxConstraints(minWidth: 60),
                                     child: Text('${item.itemTotalPrice ?? ""}',
-                                        style: TextStyles.font20WhiteBold),
+                                        style: TextStyles
+                                            .font20BlueGradienteBoldForItemsList),
                                   ),
                                 ),
                               ],
@@ -269,7 +279,8 @@ class _UserItemsTileState extends State<UserItemsTile> {
                             maxLines: 1,
                             overflow: TextOverflow.ellipsis,
                             "${widget.user.name}'s total price is: ${totalPrice.toStringAsFixed(2)} L.E",
-                            style: TextStyles.font18WhiteBold,
+                            style:
+                                TextStyles.font20BlueGradienteBoldForItemsList,
                           ),
                         ),
                         const SizedBox(
@@ -282,7 +293,7 @@ class _UserItemsTileState extends State<UserItemsTile> {
                       visible: (widget.isCurrentUserPlacerOrReceiver),
                       child: Center(
                         child: CommonElevatedButtonWidget(
-                          width: 280.w,
+                          width: MediaQuery.of(context).size.width * 0.7,
                           text: 'Update Prices & Notify',
                           onPressed: () {
                             setState(

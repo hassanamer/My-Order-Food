@@ -40,7 +40,7 @@ class _UserProfileScreenState extends State<UserProfileScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Colors.white,
+      backgroundColor: Colors.blue[600],
       appBar: const AppBarWidget(
         pageName: 'Profile',
       ),
@@ -81,14 +81,10 @@ class _UserProfileScreenState extends State<UserProfileScreen> {
                         'Phone', phoneNumber, _isEditing, true),
                     const SizedBox(height: 5),
                     _buildProfileInfoItem('Gender', gender, _isEditing, true),
-                    const SizedBox(height: 5),
-                    const Divider(
-                      thickness: 1,
-                      indent: 30,
-                      endIndent: 30,
-                    ),
                     const SizedBox(height: 30),
                     CommonElevatedButtonWidget(
+                      width: MediaQuery.of(context).size.width * 0.9,
+                      color: Colors.blue.shade400,
                       text: _isEditing ? 'Done' : 'Edit Profile',
                       onPressed: () {
                         if (_isEditing &&
@@ -209,11 +205,26 @@ class _UserProfileScreenState extends State<UserProfileScreen> {
           isEditing && isEditable
               ? Expanded(
                   child: TextFormField(
-                    style: const TextStyle(fontSize: 20),
+                    style: TextStyles.font20BlueGradienteBoldForItemsList,
                     decoration: InputDecoration(
+                      fillColor: Colors.white.withOpacity(.9),
                       border: const UnderlineInputBorder(),
-                      labelText: label,
-                      prefixIcon: Icon(getIconForLabel(label, value)),
+                      hintStyle: TextStyles.font20BlueGradienteBoldForItemsList
+                          .copyWith(
+                        color: Colors.blue.shade900.withOpacity(.3),
+                      ),
+                      hintText: label,
+                      label: Text(
+                        '$label',
+                        style: TextStyles.font20BlueGradienteBoldForItemsList
+                            .copyWith(
+                          color: Colors.blue.shade900.withOpacity(.3),
+                        ),
+                      ),
+                      prefixIcon: Icon(
+                        getIconForLabel(label, value),
+                        color: Colors.blue.shade900,
+                      ),
                     ),
                     initialValue: value,
                     onChanged: (String newValue) {
@@ -253,16 +264,12 @@ class _UserProfileScreenState extends State<UserProfileScreen> {
 
 class GradientTile extends StatelessWidget {
   final String value;
-  final Color gradientStartColor;
-  final Color gradientEndColor;
   final double fontSize;
   final double borderRadius;
 
   const GradientTile({
     required this.value,
     super.key,
-    this.gradientStartColor = Colors.blue,
-    this.gradientEndColor = Colors.blueAccent,
     this.fontSize = 20.0,
     this.borderRadius = 15.0,
   });
@@ -274,19 +281,29 @@ class GradientTile extends StatelessWidget {
       height: 55.h,
       margin: const EdgeInsets.all(8.0),
       decoration: BoxDecoration(
-        gradient: LinearGradient(
-          colors: <Color>[gradientStartColor, gradientEndColor],
+        borderRadius: BorderRadius.circular(15),
+        gradient: const LinearGradient(
+          colors: <Color>[
+            Colors.white,
+            Colors.white70,
+          ],
           begin: Alignment.topLeft,
           end: Alignment.bottomRight,
         ),
-        borderRadius: BorderRadius.circular(borderRadius),
+        boxShadow: <BoxShadow>[
+          BoxShadow(
+            color: Colors.black.withOpacity(0.1),
+            blurRadius: 8,
+            offset: const Offset(0, 4),
+          ),
+        ],
       ),
       alignment: Alignment.center,
       child: Padding(
         padding: const EdgeInsets.all(15.0),
         child: Text(
           value.toUpperCase(),
-          style: TextStyles.font18WhiteBold,
+          style: TextStyles.font20BlueGradienteBoldForItemsList,
         ),
       ),
     );
@@ -309,12 +326,10 @@ class GradientCircleAvatar extends StatelessWidget {
   Widget build(BuildContext context) {
     return Container(
       width: width,
-      // Adjust size as needed
       height: height,
-      // Adjust size as needed
       decoration: BoxDecoration(
         gradient: LinearGradient(
-          colors: <Color>[Colors.blue.shade400, Colors.blue.shade900],
+          colors: <Color>[Colors.white, Colors.blue.shade900],
           begin: Alignment.topLeft,
           end: Alignment.bottomRight,
         ),

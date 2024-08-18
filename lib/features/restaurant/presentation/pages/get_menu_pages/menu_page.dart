@@ -44,6 +44,7 @@ class _MenuPageState extends State<MenuPage> {
     return BlocProvider(
       create: (BuildContext context) => _restaurantCubit,
       child: Scaffold(
+        backgroundColor: Colors.blue[600],
         appBar: AppBarWidget(
           pageName: '${widget.restaurantName} Menu',
         ),
@@ -59,7 +60,7 @@ class _MenuPageState extends State<MenuPage> {
               return const Center(child: Text('No images available'));
             }
 
-            final restaurantImages = snapshot.data!;
+            final Map<String, String> restaurantImages = snapshot.data!;
 
             return Stack(
               children: <Widget>[
@@ -75,9 +76,19 @@ class _MenuPageState extends State<MenuPage> {
                           itemCount: restaurantImages.length,
                           itemBuilder: (BuildContext context, int index) {
                             String key = restaurantImages.keys.elementAt(index);
-                            return Row(
+                            return Stack(
                               children: <Widget>[
-                                Expanded(
+                                Container(
+                                  decoration: BoxDecoration(
+                                    borderRadius: BorderRadius.circular(18),
+                                    boxShadow: const <BoxShadow>[
+                                      BoxShadow(
+                                        color: Colors.black26,
+                                        offset: Offset(0, 4),
+                                        blurRadius: 10,
+                                      ),
+                                    ],
+                                  ),
                                   child: InteractiveViewer(
                                     panEnabled: true,
                                     boundaryMargin: const EdgeInsets.all(20.0),
@@ -86,25 +97,40 @@ class _MenuPageState extends State<MenuPage> {
                                     clipBehavior: Clip.hardEdge,
                                     child: Padding(
                                       padding: const EdgeInsets.all(8.0),
-                                      child: Image.network(
-                                        restaurantImages[key]!,
-                                        fit: BoxFit.cover,
+                                      child: ClipRRect(
+                                        borderRadius: BorderRadius.circular(18),
+                                        child: Image.network(
+                                          restaurantImages[key]!,
+                                          fit: BoxFit.cover,
+                                        ),
                                       ),
                                     ),
                                   ),
                                 ),
                                 if (currentUserId == widget.createdBy)
-                                  IconButton(
-                                    icon: const Icon(Icons.delete,
-                                        color: Colors.red),
-                                    onPressed: () async {
-                                      bool confirm =
-                                          await _confirmDelete(context);
-                                      if (confirm) {
-                                        _restaurantCubit.deleteMenuImage(
-                                            widget.restaurantName!, key);
-                                      }
-                                    },
+                                  Positioned(
+                                    top: 15,
+                                    right: 15,
+                                    child: Container(
+                                      decoration: BoxDecoration(
+                                          color: Colors.blue[300],
+                                          shape: BoxShape.circle),
+                                      child: IconButton(
+                                        icon: const Icon(
+                                          Icons.delete,
+                                          color: Colors.red,
+                                          size: 30,
+                                        ),
+                                        onPressed: () async {
+                                          bool confirm =
+                                              await _confirmDelete(context);
+                                          if (confirm) {
+                                            _restaurantCubit.deleteMenuImage(
+                                                widget.restaurantName!, key);
+                                          }
+                                        },
+                                      ),
+                                    ),
                                   ),
                               ],
                             );
@@ -120,11 +146,15 @@ class _MenuPageState extends State<MenuPage> {
                   left: 20.0,
                   right: 20.0,
                   child: CommonElevatedButtonWidget(
+                    width: MediaQuery.of(context).size.width / 7,
+                    color: Colors.blue.shade300,
                     text: 'Update The Menu',
                     onPressed: () async {
-                      setState(() {
-                        _isLoading = true;
-                      });
+                      setState(
+                        () {
+                          _isLoading = true;
+                        },
+                      );
 
                       final List<XFile>? pickedImages =
                           await _picker.pickMultiImage();

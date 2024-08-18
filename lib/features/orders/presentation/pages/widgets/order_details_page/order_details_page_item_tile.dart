@@ -2,9 +2,10 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_staggered_animations/flutter_staggered_animations.dart';
+import 'package:order/core/theming/styles.dart';
 import 'package:order/features/orders/data/models/order_item_model.dart';
-import 'package:order/features/orders/presentation/pages/widgets/order_status/order_status_enum_model.dart';
 import 'package:order/features/orders/domain/entities/order_entities.dart';
+import 'package:order/features/orders/presentation/pages/widgets/order_status/order_status_enum_model.dart';
 import 'package:order/features/register/data/models/register_account_model.dart';
 
 // ignore: must_be_immutable
@@ -73,7 +74,11 @@ class _EventDetailPageItemTileState extends State<EventDetailPageItemTile> {
             decoration: BoxDecoration(
               borderRadius: BorderRadius.circular(15),
               gradient: LinearGradient(
-                colors: <Color>[Colors.blue.shade400, Colors.blue.shade900],
+                colors: <Color>[
+                  Colors.white,
+                  Colors.white70,
+                  Colors.blue[200]!
+                ],
                 begin: Alignment.topLeft,
                 end: Alignment.bottomRight,
               ),
@@ -115,13 +120,9 @@ class _EventDetailPageItemTileState extends State<EventDetailPageItemTile> {
                         Padding(
                           padding: const EdgeInsets.all(5.0),
                           child: Text(
-                            '${widget.user?.name?.toUpperCase() ?? ''} ',
-                            style: const TextStyle(
-                              fontSize: 18,
-                              fontWeight: FontWeight.bold,
-                              color: Colors.white,
-                            ),
-                          ),
+                              '${widget.user?.name?.toUpperCase() ?? ''} ',
+                              style: TextStyles
+                                  .font20BlueGradienteBoldForItemsList),
                         ),
                       ],
                     ),
@@ -134,21 +135,17 @@ class _EventDetailPageItemTileState extends State<EventDetailPageItemTile> {
                           children: <Widget>[
                             Expanded(
                               flex: 4,
-                              child: Text(
-                                item.itemName,
-                                style: const TextStyle(
-                                  fontSize: 16,
-                                  color: Colors.white,
-                                ),
-                              ),
+                              child: Text(item.itemName,
+                                  style: TextStyles
+                                      .font20BlueGradienteBoldForItemsList),
                             ),
                             Expanded(
                               flex: 1,
                               child: Visibility(
                                 visible: item.userId == widget.currentUser!.uid,
                                 child: IconButton(
-                                  icon: const Icon(Icons.remove,
-                                      color: Colors.white),
+                                  icon: Icon(Icons.remove,
+                                      color: Colors.blue.shade900),
                                   onPressed: () async {
                                     setState(() {
                                       if (item.quantity > 1) {
@@ -163,13 +160,9 @@ class _EventDetailPageItemTileState extends State<EventDetailPageItemTile> {
                             Expanded(
                               flex: 1,
                               child: Center(
-                                child: Text(
-                                  'x ${item.quantity}',
-                                  style: const TextStyle(
-                                    fontSize: 16,
-                                    color: Colors.white,
-                                  ),
-                                ),
+                                child: Text('x ${item.quantity}',
+                                    style: TextStyles
+                                        .font20BlueGradienteBoldForItemsList),
                               ),
                             ),
                             Expanded(
@@ -177,8 +170,8 @@ class _EventDetailPageItemTileState extends State<EventDetailPageItemTile> {
                               child: Visibility(
                                 visible: item.userId == widget.currentUser!.uid,
                                 child: IconButton(
-                                  icon: const Icon(Icons.add,
-                                      color: Colors.white),
+                                  icon: Icon(Icons.add,
+                                      color: Colors.blue.shade900),
                                   onPressed: () async {
                                     setState(() {
                                       item.quantity++;

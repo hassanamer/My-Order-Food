@@ -48,7 +48,7 @@ class AboutPage extends StatelessWidget {
                 ),
               ),
             ),
-            const SizedBox(height: 16),
+            const SizedBox(height: 40),
             // Summary Header with Decoration
             DecoratedBox(
               decoration: BoxDecoration(
@@ -76,7 +76,7 @@ class AboutPage extends StatelessWidget {
               'Our app is designed to streamline the food ordering process at work, \nmaking it more efficient and convenient. With features like real-time updates, notifications, and a user-friendly interface, we aim to enhance your ordering experience and save you time.',
               style: TextStyles.font18DarkBlueBold,
             ),
-            const SizedBox(height: 24),
+            const SizedBox(height: 30),
             // Version Header with Decoration
             DecoratedBox(
               decoration: BoxDecoration(
@@ -104,38 +104,7 @@ class AboutPage extends StatelessWidget {
                 style: TextStyles.font18DarkBlueBold),
             const SizedBox(height: 24),
             // Contact Us Text
-            const Text(
-              'Contact Us:',
-              style: TextStyle(
-                fontSize: 18,
-                fontWeight: FontWeight.bold,
-                color: Colors.black87,
-              ),
-            ),
-            const SizedBox(height: 8),
-            const Text(
-              'If you have any questions or feedback, please reach out to us at support@yourapp.com.',
-              style: TextStyle(
-                fontSize: 16,
-                color: Colors.black54,
-              ),
-            ),
             const Spacer(),
-            Center(
-              child: ElevatedButton(
-                onPressed: () {
-                  // Add action for button press if needed
-                },
-                style: ElevatedButton.styleFrom(
-                  foregroundColor: Colors.white,
-                  backgroundColor: Colors.blue,
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(12),
-                  ),
-                ),
-                child: const Text('Learn More'),
-              ),
-            ),
           ],
         ),
       ),

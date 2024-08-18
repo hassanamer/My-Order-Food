@@ -1,7 +1,6 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:intl/intl.dart';
 import 'package:order/core/theming/styles.dart';
 import 'package:order/core/widgets/app_bar_widget.dart';
@@ -152,6 +151,7 @@ class _OrderSummaryPageState extends State<OrderSummaryPage> {
                   currentUser!.uid == orderEntity.userId);
 
           return Scaffold(
+            backgroundColor: Colors.blue[600],
             resizeToAvoidBottomInset: true,
             appBar: AppBarWidget(
               pageName: 'Order ${widget.orderEntity.title} Summary',
@@ -236,12 +236,20 @@ class _OrderSummaryPageState extends State<OrderSummaryPage> {
                       child: Row(
                         children: <Widget>[
                           Checkbox(
-                              value: vat != 0, onChanged: _onCheckBoxChanged),
+                              shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(8.0),
+                              ),
+                              side: const BorderSide(color: Colors.white),
+                              // fillColor: WidgetStateProperty.all(Colors.white),
+                              activeColor: Colors.white,
+                              checkColor: Colors.black,
+                              value: vat != 0,
+                              onChanged: _onCheckBoxChanged),
                           const Text(
                             maxLines: 1,
                             overflow: TextOverflow.ellipsis,
                             'Including VAT 14 %',
-                            style: TextStyles.font14WhiteMedium,
+                            style: TextStyles.font16WhiteSemiBold,
                           ),
                         ],
                       ),
@@ -251,7 +259,8 @@ class _OrderSummaryPageState extends State<OrderSummaryPage> {
                     visible: (isCurrentUserPlacerOrReceiver),
                     child: Center(
                       child: CommonElevatedButtonWidget(
-                        height: 60.h,
+                        width: MediaQuery.of(context).size.width * 0.9,
+                        height: MediaQuery.of(context).size.height / 12,
                         text: 'Order Arrived',
                         onPressed: () {
                           setState(() {

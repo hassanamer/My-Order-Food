@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:order/core/theming/colors.dart';
 import 'package:order/core/theming/styles.dart';
 import 'package:order/features/notification/presentation/cubit/notification_cubit.dart';
 import 'package:order/features/notification/presentation/pages/notification_page.dart';
@@ -53,23 +52,15 @@ class _AppBarWidgetState extends State<AppBarWidget> {
   Widget build(BuildContext context) {
     return AppBar(
       elevation: 0,
-      flexibleSpace: Container(
-        decoration: const BoxDecoration(
-          gradient: LinearGradient(
-            colors: <Color>[
-              ColorsManager.mainBlue,
-              ColorsManager.moreLighterGray
-            ],
-            begin: Alignment.topLeft,
-            end: Alignment.bottomRight,
-          ),
-        ),
-      ),
+      backgroundColor: Colors.blue[600],
       leading: widget.hideBackButton
           ? null
           : widget.leading ??
               IconButton(
-                icon: const Icon(Icons.arrow_back),
+                icon: const Icon(
+                  Icons.arrow_back,
+                  color: Colors.white,
+                ),
                 onPressed: () => Navigator.of(context).pop(),
               ),
       title: Column(
@@ -79,10 +70,10 @@ class _AppBarWidgetState extends State<AppBarWidget> {
                 widget.pageName!,
                 style: TextStyles.font22WhiteBold.copyWith(color: Colors.white),
               ),
-          Text(
-            widget.pageDescreption ?? '',
-            style: TextStyles.font14DarkBlueMedium,
-          ),
+          // Text(
+          //   widget.pageDescreption ?? '',
+          //   style: TextStyles.font14DarkBlueMedium,
+          // ),
         ],
       ),
       actions: widget.hideNotificationIcon
@@ -96,37 +87,49 @@ class _AppBarWidgetState extends State<AppBarWidget> {
                     if (state is NotificationLoaded) {
                       hasUnseenNotifications = state.unseenNotifications;
                     }
-                    return Stack(
-                      children: <Widget>[
-                        IconButton(
-                          icon: const Icon(Icons.notifications),
-                          onPressed: _goToNotifications,
-                        ),
-                        if (hasUnseenNotifications)
-                          Positioned(
-                            right: 7,
-                            child: Container(
-                              padding: const EdgeInsets.all(2),
-                              decoration: const BoxDecoration(
-                                color: Colors.red,
-                                shape: BoxShape.circle,
+                    return Padding(
+                      padding: const EdgeInsets.all(8.0),
+                      child: Container(
+                        decoration: BoxDecoration(
+                            color: Colors.blue[400],
+                            borderRadius: BorderRadius.circular(14)),
+                        padding: EdgeInsets.all(2),
+                        child: Stack(
+                          children: <Widget>[
+                            IconButton(
+                              icon: const Icon(
+                                Icons.notifications,
+                                color: Colors.white,
                               ),
-                              constraints: const BoxConstraints(
-                                minWidth: 16,
-                                minHeight: 16,
-                              ),
-                              child: const Center(
-                                child: Text(
-                                  '!',
-                                  style: TextStyle(
-                                    color: Colors.white,
-                                    fontSize: 12,
+                              onPressed: _goToNotifications,
+                            ),
+                            if (hasUnseenNotifications)
+                              Positioned(
+                                right: 7,
+                                child: Container(
+                                  padding: const EdgeInsets.all(2),
+                                  decoration: const BoxDecoration(
+                                    color: Colors.red,
+                                    shape: BoxShape.circle,
+                                  ),
+                                  constraints: const BoxConstraints(
+                                    minWidth: 16,
+                                    minHeight: 16,
+                                  ),
+                                  child: const Center(
+                                    child: Text(
+                                      '!',
+                                      style: TextStyle(
+                                        color: Colors.white,
+                                        fontSize: 12,
+                                      ),
+                                    ),
                                   ),
                                 ),
                               ),
-                            ),
-                          ),
-                      ],
+                          ],
+                        ),
+                      ),
                     );
                   },
                 ),

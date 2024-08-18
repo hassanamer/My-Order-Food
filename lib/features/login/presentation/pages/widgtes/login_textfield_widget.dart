@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:order/core/theming/theme_app.dart';
+import 'package:order/core/theming/styles.dart';
 
 class LoginTextFieldWidget extends StatelessWidget {
   const LoginTextFieldWidget({
@@ -24,10 +24,10 @@ class LoginTextFieldWidget extends StatelessWidget {
     return TextFormField(
       obscureText: obscureText,
       keyboardType: TextInputType.emailAddress,
-      style: const TextStyle(fontSize: 20),
+      style: TextStyles.font20BlueGradienteBoldForItemsList,
       decoration: InputDecoration(
         filled: true,
-        fillColor: authTextFromFieldHintTextColor.withOpacity(.3),
+        fillColor: Colors.white.withOpacity(0.7),
         border: const OutlineInputBorder(
             borderRadius: BorderRadius.all(Radius.circular(12))),
         hintText: hintText,

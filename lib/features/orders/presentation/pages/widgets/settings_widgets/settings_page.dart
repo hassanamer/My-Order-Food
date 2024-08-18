@@ -23,6 +23,7 @@ class SettingsPage extends StatelessWidget {
       appBar: const AppBarWidget(
         pageName: 'Settings',
       ),
+      backgroundColor: Colors.blue[600],
       body: AnimationLimiter(
         child: ListView(
           padding: const EdgeInsets.all(12),
@@ -35,10 +36,7 @@ class SettingsPage extends StatelessWidget {
               ),
             ),
             children: <Widget>[
-              _buildSettingsTile(
-                child: const SettingsHeaderWidget(),
-                onTap: null, // No tap action for the header
-              ),
+              const SettingsHeaderWidget(),
               sizedBox,
               _buildSettingsTile(
                 context: context,
@@ -78,14 +76,8 @@ class SettingsPage extends StatelessWidget {
                 text: 'About',
                 icon: Icons.info_outline_rounded,
                 onTap: () {
-                  Get.to(() => AboutPage());
+                  Get.to(() => const AboutPage());
                 },
-              ),
-              sizedBox,
-              const Divider(
-                thickness: 1,
-                indent: 30,
-                endIndent: 30,
               ),
               sizedBox,
               _buildSettingsTile(
@@ -150,11 +142,14 @@ class SettingsPage extends StatelessWidget {
     bool isShowEndIcon = true,
   }) {
     return Container(
-      margin: const EdgeInsets.symmetric(vertical: 5, horizontal: 10),
+      padding: const EdgeInsets.symmetric(vertical: 6, horizontal: 10),
       decoration: BoxDecoration(
         borderRadius: BorderRadius.circular(15),
-        gradient: LinearGradient(
-          colors: <Color>[Colors.blue.shade400, Colors.blue.shade900],
+        gradient: const LinearGradient(
+          colors: <Color>[
+            Colors.white,
+            Colors.white70,
+          ],
           begin: Alignment.topLeft,
           end: Alignment.bottomRight,
         ),
@@ -173,17 +168,17 @@ class SettingsPage extends StatelessWidget {
           onTap: onTap,
           child: child ??
               ListTile(
-                leading: Icon(icon, color: Colors.white),
+                leading: Icon(
+                  icon,
+                  color: Colors.blue.shade900,
+                ),
                 trailing: isShowEndIcon
-                    ? const Icon(Icons.arrow_circle_right, color: Colors.white)
+                    ? Icon(Icons.arrow_circle_right,
+                        color: Colors.blue.shade900)
                     : null,
                 title: Text(
                   text ?? '',
-                  style: const TextStyle(
-                    fontSize: 18,
-                    fontWeight: FontWeight.bold,
-                    color: Colors.white,
-                  ),
+                  style: TextStyles.font20BlueGradienteBoldForItemsList,
                 ),
                 contentPadding: const EdgeInsets.symmetric(horizontal: 20),
               ),

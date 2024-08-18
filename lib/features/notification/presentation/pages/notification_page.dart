@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:order/core/theming/styles.dart';
 import 'package:order/core/widgets/app_bar_widget.dart';
 import 'package:order/features/notification/data/datasources/push_notification_service.dart';
 import 'package:order/features/notification/data/model/notification_model.dart';
@@ -26,6 +27,7 @@ class _NotificationPageState extends State<NotificationPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: Colors.blue[600],
       appBar: const AppBarWidget(
         pageName: 'Notifications',
         hideNotificationIcon: true,
@@ -48,12 +50,38 @@ class _NotificationPageState extends State<NotificationPage> {
             itemCount: notifications.length,
             itemBuilder: (BuildContext context, int index) {
               final NotificationModel notification = notifications[index];
-              return ListTile(
-                title: Text(notification.title),
-                subtitle: Text(notification.message),
-                trailing: Text(
-                  _formatTimestamp(notification.timestamp),
-                  style: const TextStyle(fontSize: 12, color: Colors.grey),
+              return Padding(
+                padding:
+                    const EdgeInsets.symmetric(horizontal: 10.0, vertical: 5.0),
+                child: Container(
+                  decoration: BoxDecoration(
+                    borderRadius: BorderRadius.circular(15),
+                    gradient: const LinearGradient(
+                      colors: <Color>[
+                        Colors.white,
+                        Colors.white70,
+                      ],
+                      begin: Alignment.topLeft,
+                      end: Alignment.bottomRight,
+                    ),
+                    boxShadow: <BoxShadow>[
+                      BoxShadow(
+                        color: Colors.black.withOpacity(0.1),
+                        blurRadius: 8,
+                        offset: const Offset(0, 4),
+                      ),
+                    ],
+                  ),
+                  child: ListTile(
+                    contentPadding: const EdgeInsets.symmetric(
+                        horizontal: 15.0, vertical: 10.0),
+                    title: Text(notification.title,
+                        style: TextStyles.font18BlueGradienteBoldForItemsList),
+                    subtitle: Text(notification.message,
+                        style: TextStyles.font14BlueGradienteBoldForItemsList),
+                    trailing: Text(_formatTimestamp(notification.timestamp),
+                        style: TextStyles.font14BlueGradienteBoldForItemsList),
+                  ),
                 ),
               );
             },
