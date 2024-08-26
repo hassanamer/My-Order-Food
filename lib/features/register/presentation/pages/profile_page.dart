@@ -3,10 +3,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:order/core/widgets/app_bar_widget.dart';
 import 'package:order/features/register/data/models/register_account_model.dart';
-
-import '../cubit/register_cubit.dart';
-import '../cubit/register_state.dart';
-import 'widgets/profile_widget.dart';
+import 'package:order/features/register/presentation/cubit/register_cubit.dart';
+import 'package:order/features/register/presentation/cubit/register_state.dart';
+import 'package:order/features/register/presentation/pages/widgets/profile_widget.dart';
 
 class ProfilePage extends StatefulWidget {
   const ProfilePage({super.key});
@@ -21,13 +20,14 @@ class _ProfilePageState extends State<ProfilePage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: Colors.blue[600],
       appBar: const AppBarWidget(
-        pageName: "Profile",
+        pageName: 'Profile',
       ),
       body: BlocProvider<RegisterCubit>(
         create: (_) => RegisterCubit()..getUserInfo(registerAccountModel),
         child: BlocConsumer<RegisterCubit, RegisterState>(
-          listener: (context, state) {
+          listener: (BuildContext context, RegisterState state) {
             if (state is ProfileSuccessState) {
               registerAccountModel = state.registerAccountModel;
             } else if (state is ProfileErrorState) {
@@ -36,7 +36,7 @@ class _ProfilePageState extends State<ProfilePage> {
               }
             }
           },
-          builder: (context, state) {
+          builder: (BuildContext context, RegisterState state) {
             return ProfileWidget(registerAccountModel: registerAccountModel);
           },
         ),

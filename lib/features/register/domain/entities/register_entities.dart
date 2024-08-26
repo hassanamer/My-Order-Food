@@ -1,25 +1,20 @@
-import 'package:order/features/login/domain/entities/account_entites.dart';
+import 'package:order/features/login/domain/entities/account_entity.dart';
 
-class RegisterAccountEntity extends Account {
-  RegisterAccountEntity({
-    String? idUser,
-    String? username,
-    String? password,
-    String? name,
-    String? email,
-    String? phoneNumber,
-    String? gender,
-    String? message,
-    int? replyCode,
-  }) : super(
-    message: message,
-    replyCode: replyCode,
-    idUser: idUser,
-    username: username,
-    password: password,
-    email: email,
-    gender: gender,
-    name: name,
-    phoneNumber: phoneNumber,
-  );
+class RegisterAccountEntity extends AccountEntity {
+  RegisterAccountEntity(
+      {super.userId,
+      super.username,
+      super.password,
+      super.name,
+      super.email,
+      super.phoneNumber,
+      super.gender,
+      super.message,
+      super.replyCode,
+      super.profileImageUrl,
+      super.fcmToken,
+      super.hasCar,
+      super.deliveryPreference,
+      super.placedOrderCount = 0,
+      super.receivedOrderCount = 0});
 }

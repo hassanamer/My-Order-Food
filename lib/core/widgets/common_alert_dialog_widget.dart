@@ -3,21 +3,22 @@ import 'package:flutter/material.dart';
 class AlertDialogHandlerWidget extends StatelessWidget {
   final String text;
   final VoidCallback onTap;
+
   const AlertDialogHandlerWidget({
-    Key? key,
     required this.text,
     required this.onTap,
-  }) : super(key: key);
+    super.key,
+  });
 
   @override
   Widget build(BuildContext context) {
     return AlertDialog(
       title: Text(text),
-      actions: [
+      actions: <Widget>[
         TextButton(
           onPressed: () => Navigator.of(context).pop(),
           child: const Text(
-            "No",
+            'No',
             style: TextStyle(fontWeight: FontWeight.bold),
           ),
         ),

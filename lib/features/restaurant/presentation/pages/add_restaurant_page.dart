@@ -20,25 +20,26 @@ class _RestaurantPageState extends State<RestaurantPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: Colors.blue[600],
       appBar: const AppBarWidget(
-        pageName: "Add restaurants",
+        pageName: 'Add restaurants',
       ),
       body: BlocProvider<RestaurantCubit>(
-        create: (context) => RestaurantCubit(),
+        create: (BuildContext context) => RestaurantCubit(),
         child: BlocConsumer<RestaurantCubit, RestaurantState>(
-          listener: (context, state) {
+          listener: (BuildContext context, RestaurantState state) {
             if (state is CreateRestaurantSuccessfully) {
               FlutterToastMessageWidget().showSuccessFlutterToast(
-                  message: "Restaurant added seccessfuly :)", context: context);
+                  message: 'Restaurant added seccessfuly :)', context: context);
               registerAccountEntity = state.registerAccountEntity;
             }
 
             if (state is RestaurantError) {
               FlutterToastMessageWidget().showErrorFlutterToast(
-                  message: "You must choose an image..!", context: context);
+                  message: 'You must choose an image..!', context: context);
             }
           },
-          builder: (context, state) {
+          builder: (BuildContext context, RestaurantState state) {
             return const RestaurantWidget();
           },
         ),

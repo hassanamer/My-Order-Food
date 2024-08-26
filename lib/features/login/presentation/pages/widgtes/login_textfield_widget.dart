@@ -1,38 +1,40 @@
 import 'package:flutter/material.dart';
-import 'package:order/core/theme_app.dart';
+import 'package:order/core/theming/styles.dart';
 
 class LoginTextFieldWidget extends StatelessWidget {
   const LoginTextFieldWidget({
-    Key? key,
     required this.controllerEmail,
     required this.prefixIcon,
-    this.suffixIcon,
     required this.hintText,
     required this.obscureText,
-  }) : super(key: key);
+    super.key,
+    this.suffixIcon,
+    this.onChanged,
+  });
 
   final TextEditingController controllerEmail;
   final Widget prefixIcon;
   final Widget? suffixIcon;
   final String hintText;
   final bool obscureText;
+  final VoidCallback? onChanged;
 
   @override
   Widget build(BuildContext context) {
     return TextFormField(
       obscureText: obscureText,
       keyboardType: TextInputType.emailAddress,
-      style: const TextStyle(fontSize: 20),
+      style: TextStyles.font20BlueGradienteBoldForItemsList,
       decoration: InputDecoration(
         filled: true,
-        fillColor: authTextFromFieldHintTextColor.withOpacity(.3),
+        fillColor: Colors.white.withOpacity(0.7),
         border: const OutlineInputBorder(
             borderRadius: BorderRadius.all(Radius.circular(12))),
         hintText: hintText,
         prefixIcon: prefixIcon,
         suffixIcon: suffixIcon,
       ),
-      validator: (value) {
+      validator: (String? value) {
         if (value!.isNotEmpty) {
           return null;
         } else {

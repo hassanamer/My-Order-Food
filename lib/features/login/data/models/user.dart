@@ -1,27 +1,21 @@
-import '../../domain/entities/account_entites.dart';
+// ignore_for_file: always_specify_types
 
-class User extends Account {
+import 'package:order/features/login/domain/entities/account_entity.dart';
+
+class User extends AccountEntity {
   User({
-    String? idUser,
-    required String username,
-    required String password,
-    final String? name,
-    final String? email,
-    final String? phoneNumber,
-    final String? gender,
-  }) : super(
-          idUser: idUser,
-          username: username,
-          password: password,
-          email: email,
-          gender: gender,
-          name: name,
-          phoneNumber: phoneNumber,
-        );
+    required String super.userId,
+    required String super.username,
+    required String super.password,
+    super.name,
+    super.email,
+    super.phoneNumber,
+    super.gender,
+  });
 
   Map<String, dynamic> toMap() {
     return {
-      'idUser': idUser,
+      'userId': userId,
       'username': username,
       'password': password,
     };
@@ -29,7 +23,7 @@ class User extends Account {
 
   factory User.fromMap(map) {
     return User(
-      idUser: map['idUser'],
+      userId: map['userId'],
       name: map['name'],
       username: map['username'],
       password: map['password'],

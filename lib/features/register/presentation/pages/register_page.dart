@@ -30,23 +30,23 @@ class _RegisterPageState extends State<RegisterPage> {
     return BlocProvider<RegisterCubit>(
       create: (_) => RegisterCubit(),
       child: BlocConsumer<RegisterCubit, RegisterState>(
-        listener: (context, state) {
+        listener: (BuildContext context, RegisterState state) {
           if (state is CreateUserSuccessfully) {
             registerAccountEntity = state.registerAccountEntity;
             FlutterToastMessageWidget().showSuccessFlutterToast(
-                message: "You created an account successfully",
+                message: 'You created an account successfully',
                 context: context);
             Navigator.push(
                 context,
-                MaterialPageRoute(
-                  builder: (context) => const LoginPage(),
+                MaterialPageRoute<dynamic>(
+                  builder: (BuildContext context) => const LoginPage(),
                 ));
           } else if (state is RegisterErrorState) {
             FlutterToastMessageWidget().showSuccessFlutterToast(
                 message: state.errorMessage, context: context);
           }
         },
-        builder: (context, state) {
+        builder: (BuildContext context, RegisterState state) {
           return RegisterWidget(registerAccountEntity: registerAccountEntity);
         },
       ),

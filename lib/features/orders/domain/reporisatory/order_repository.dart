@@ -1,0 +1,20 @@
+import 'package:order/features/orders/domain/entities/order_entities.dart';
+import 'package:order/features/orders/presentation/pages/widgets/order_status/order_status_enum_model.dart';
+import 'package:order/features/register/data/models/register_account_model.dart';
+
+abstract class OrderRepository {
+  Future<List<OrderEntity>> remoteGetAllOrders();
+
+  Future<RegisterAccountModel> remoteGetUser(String userId);
+
+  Future<BaseResponse> remoteAddOrders(OrderEntity eventEntity);
+
+  Future<BaseResponse> remoteUpdateOrder(OrderEntity orderEntity);
+
+  Future<BaseResponse> remoteUpdateOrderStatus(
+      String orderId, OrderStatusEnum newStatus);
+
+  Future<BaseResponse> remoteDeleteOrders(String orderId);
+
+  Future<OrderEntity> remoteGetOrder(String orderId);
+}

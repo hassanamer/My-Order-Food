@@ -1,13 +1,13 @@
 import 'package:flutter/material.dart';
-import 'package:order/core/theme_app.dart';
+import 'package:order/core/theming/styles.dart';
 
 class BottomAuthRowWidget extends StatelessWidget {
   const BottomAuthRowWidget({
-    Key? key,
     required this.text,
     required this.value,
     required this.onTap,
-  }) : super(key: key);
+    super.key,
+  });
 
   final String text;
   final String value;
@@ -20,13 +20,13 @@ class BottomAuthRowWidget extends StatelessWidget {
       children: <Widget>[
         Text(
           text,
-          style: const TextStyle(color: primaryColor),
+          style: TextStyles.font20WhiteBold,
         ),
         TextButton(
           onPressed: onTap,
           child: Text(
             value,
-            style: const TextStyle(color: headline1Color),
+            style: TextStyles.font20DarkBlueBold,
           ),
         )
       ],

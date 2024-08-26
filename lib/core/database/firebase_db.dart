@@ -9,7 +9,7 @@ class FirebaseDatabseProvider {
 }
 
 class FirebaseDatasourceProvider {
-  static final _firebaseDatasourceProvider =
+  static final FirebaseDatasourceProvider _firebaseDatasourceProvider =
       FirebaseDatasourceProvider._internal();
 
   factory FirebaseDatasourceProvider() {

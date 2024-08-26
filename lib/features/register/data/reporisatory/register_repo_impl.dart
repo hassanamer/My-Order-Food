@@ -1,20 +1,12 @@
 import 'package:order/features/register/data/datasource/remote_register_user_datasource.dart';
 import 'package:order/features/register/data/models/register_account_model.dart';
 import 'package:order/features/register/domain/entities/register_entities.dart';
-
-import '../../domain/reposisatory/register_reprisatory.dart';
+import 'package:order/features/register/domain/reposisatory/register_reprisatory.dart';
 
 class RegisterReporisatoryImpl implements RegisterAccountRepository {
-  // late RegisterDatasource dataSource;
   late RemoteRegisterDatasource remoteRegisterDatasourceImlp;
 
   RegisterReporisatoryImpl(this.remoteRegisterDatasourceImlp);
-  // @override
-  // Future<BaseResponse> registerAccount(
-  //     RegisterAccountEntity registerAccount) async {
-  //   return await dataSource
-  //       .insertUser(RegisterAccountModel.fromEntity(registerAccount));
-  // }
 
   @override
   Future<RegisterAccountEntity> remoteRegisterUser(String email,
@@ -26,5 +18,11 @@ class RegisterReporisatoryImpl implements RegisterAccountRepository {
   @override
   Future<RegisterAccountModel> getUserInfo() async {
     return await remoteRegisterDatasourceImlp.getUserInfo();
+  }
+
+  @override
+  Future<void> updateUserFcmToken(String userId, String fcmToken) async {
+    return await remoteRegisterDatasourceImlp.updateUserFcmToken(
+        userId, fcmToken);
   }
 }

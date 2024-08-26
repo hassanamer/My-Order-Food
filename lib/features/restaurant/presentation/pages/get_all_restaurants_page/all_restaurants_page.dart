@@ -18,15 +18,22 @@ class _AllRestaurantPageState extends State<AllRestaurantPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: Colors.blue[600],
       appBar: const AppBarWidget(
-        pageName: "Restaurants",
+        pageName: 'Restaurants',
       ),
       body: Padding(
         padding: const EdgeInsets.all(10),
         child: BlocConsumer<RestaurantCubit, RestaurantState>(
-          builder: (context, state) {
+          builder: (BuildContext context, RestaurantState state) {
             if (state is RestaurantLoading) {
-              return const LoadingWidget();
+              return Stack(
+                children: <Widget>[
+                  Container(
+                      color: Colors.white.withOpacity(0.5),
+                      child: const LoadingWidget()),
+                ],
+              );
             } else if (state is RestaurantLoadedState) {
               return AllRestaurantWidget(
                   restaurantModel: state.restaurantModel);
@@ -35,9 +42,21 @@ class _AllRestaurantPageState extends State<AllRestaurantPage> {
                 print(state.errorMessage);
               }
             }
-            return const LoadingWidget();
+            return Stack(
+              children: <Widget>[
+                Positioned(
+                  top: 0,
+                  left: 0,
+                  right: 0,
+                  bottom: 0,
+                  child: Container(
+                      color: Colors.white.withOpacity(0.5),
+                      child: const LoadingWidget()),
+                ),
+              ],
+            );
           },
-          listener: (context, state) {
+          listener: (BuildContext context, RestaurantState state) {
             if (state is RestaurantError) {
               if (kDebugMode) {
                 print(state.errorMessage);

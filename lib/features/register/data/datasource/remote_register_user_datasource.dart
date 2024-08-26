@@ -6,58 +6,84 @@ import 'package:order/features/register/data/models/register_account_model.dart'
 import 'package:order/features/register/domain/entities/register_entities.dart';
 
 abstract class RemoteRegisterDatasource {
-  Future<RegisterAccountEntity> remoteRegisterUser(String email, String password, RegisterAccountEntity registerAccountEntity);
+  Future<RegisterAccountEntity> remoteRegisterUser(String email,
+      String password, RegisterAccountEntity registerAccountEntity);
+
   Future<RegisterAccountModel> getUserInfo();
+
+  Future<void> updateUserFcmToken(String userId, String fcmToken);
 }
 
 class RemoteRegisterDatasourceImlp implements RemoteRegisterDatasource {
   late FirebaseDatabseProvider firebaseDB;
 
-  String? idUser;
+  String? userId;
+
   RemoteRegisterDatasourceImlp(this.firebaseDB);
 
   @override
-  Future<RegisterAccountEntity> remoteRegisterUser(String email, String password, RegisterAccountEntity registerAccountEntity) async {
+  Future<RegisterAccountEntity> remoteRegisterUser(String email,
+      String password, RegisterAccountEntity registerAccountEntity) async {
     try {
-      final userData = await firebaseDB.auth.createUserWithEmailAndPassword(
+      final UserCredential userData =
+          await firebaseDB.auth.createUserWithEmailAndPassword(
         email: email,
         password: password,
       );
 
-      await firebaseDB.firebaseFirestore.collection("Users").doc(userData.user!.uid).set({
-        "idUser": userData.user!.uid,
-        "email": userData.user!.email,
-        "gender": registerAccountEntity.gender,
-        "name": registerAccountEntity.name,
-        "phoneNumber": registerAccountEntity.phoneNumber,
-        "userName": registerAccountEntity.username,
+      await firebaseDB.firebaseFirestore
+          .collection('Users')
+          .doc(userData.user!.uid)
+          // ignore: always_specify_types
+          .set({
+        'userId': userData.user!.uid,
+        'email': userData.user!.email,
+        'gender': registerAccountEntity.gender,
+        'name': registerAccountEntity.name,
+        'phoneNumber': registerAccountEntity.phoneNumber,
+        'userName': registerAccountEntity.username,
+        'profileImageUrl': registerAccountEntity.profileImageUrl,
+        'fcmToken': registerAccountEntity.fcmToken,
+        'hasCar': registerAccountEntity.hasCar,
+        'deliveryPreference': registerAccountEntity.deliveryPreference,
+        'receivedOrderCount': registerAccountEntity.receivedOrderCount,
+        'placedOrderCount': registerAccountEntity.placedOrderCount,
       });
 
       return RegisterAccountEntity(
-        idUser: idUser,
+        userId: userId,
         email: email,
         gender: registerAccountEntity.gender,
         name: registerAccountEntity.name,
         phoneNumber: registerAccountEntity.phoneNumber,
         username: registerAccountEntity.username,
         message: registerAccountEntity.message,
+        profileImageUrl: registerAccountEntity.profileImageUrl,
+        hasCar: registerAccountEntity.hasCar,
+        deliveryPreference: registerAccountEntity.deliveryPreference,
+        placedOrderCount: registerAccountEntity.placedOrderCount,
+        receivedOrderCount: registerAccountEntity.receivedOrderCount,
       );
     } on FirebaseAuthException catch (e) {
       switch (e.code) {
-        case "invalid-email":
-          return RegisterAccountEntity(message: "Your email address appears to be malformed.");
-        case "wrong-password":
-          return RegisterAccountEntity(message: "Your password is wrong.");
-        case "user-not-found":
-          return RegisterAccountEntity(message: "User with this email doesn't exist.");
-        case "user-disabled":
-          return RegisterAccountEntity(message: "User with this email has been disabled.");
-        case "too-many-requests":
-          return RegisterAccountEntity(message: "Too many requests");
-        case "operation-not-allowed":
-          return RegisterAccountEntity(message: "Signing in with Email and Password is not enabled.");
+        case 'invalid-email':
+          return RegisterAccountEntity(
+              message: 'Your email address appears to be malformed.');
+        case 'wrong-password':
+          return RegisterAccountEntity(message: 'Your password is wrong.');
+        case 'user-not-found':
+          return RegisterAccountEntity(
+              message: "User with this email doesn't exist.");
+        case 'user-disabled':
+          return RegisterAccountEntity(
+              message: 'User with this email has been disabled.');
+        case 'too-many-requests':
+          return RegisterAccountEntity(message: 'Too many requests');
+        case 'operation-not-allowed':
+          return RegisterAccountEntity(
+              message: 'Signing in with Email and Password is not enabled.');
         default:
-          return RegisterAccountEntity(message: "An undefined Error happened.");
+          return RegisterAccountEntity(message: 'An undefined Error happened.');
       }
     } catch (e) {
       return RegisterAccountEntity(message: e.toString());
@@ -72,15 +98,18 @@ class RemoteRegisterDatasourceImlp implements RemoteRegisterDatasource {
     }
 
     try {
-      DocumentSnapshot userSnapshot = await firebaseDB.firebaseFirestore
-          .collection("Users")
+      DocumentSnapshot<Map<String, dynamic>> userSnapshot = await firebaseDB
+          .firebaseFirestore
+          .collection('Users')
           .doc(getCurrentUser.uid)
           .get();
 
       if (userSnapshot.exists) {
-        RegisterAccountModel registerAccountModel = RegisterAccountModel.fromMap(userSnapshot.data() as Map<String, dynamic>?);
+        RegisterAccountModel registerAccountModel =
+            RegisterAccountModel.fromMap(
+                userSnapshot.data() as Map<String, dynamic>);
         if (kDebugMode) {
-          print("user data ${registerAccountModel.name}");
+          print('user data ${registerAccountModel.name}');
         }
         return registerAccountModel;
       } else {
@@ -89,5 +118,13 @@ class RemoteRegisterDatasourceImlp implements RemoteRegisterDatasource {
     } catch (e) {
       return RegisterAccountModel(message: e.toString(), replyCode: 500);
     }
+  }
+
+  @override
+  Future<void> updateUserFcmToken(String userId, String fcmToken) async {
+    await FirebaseFirestore.instance
+        .collection('Users')
+        .doc(userId)
+        .update(<Object, Object?>{'fcmToken': fcmToken});
   }
 }

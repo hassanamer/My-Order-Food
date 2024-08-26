@@ -1,13 +1,18 @@
-import 'package:order/features/event/domain/entities/event_entities.dart';
-import 'package:order/features/restaurant/data/model/restaurant_model.dart';
+import 'dart:io';
 
-import '../../data/model/menu_model.dart';
+import 'package:order/features/orders/domain/entities/order_entities.dart';
+import 'package:order/features/restaurant/data/model/restaurant_model.dart';
 
 abstract class RestaurantReporisatory {
   Future<BaseResponse> addRestaurant(RestaurantModel restaurantModel);
-  Future<BaseResponse> uploadImage();
+
+  Future<BaseResponse> updateResturantMenu(RestaurantModel restaurantModel);
+
+  Future<BaseResponse> uploadImage(Map<String, File>? imageFiles);
+
   Future<BaseResponse> getUploadedImage();
-  Future<BaseResponse> addMenuItems(MenuModel menuModel);
+
+  Future<BaseResponse> deleteImage(String restaurantName, String imageKey);
+
   Future<List<RestaurantModel>> getAllRestaurant();
-  Future<List<MenuModel>> getAllMenu();
 }

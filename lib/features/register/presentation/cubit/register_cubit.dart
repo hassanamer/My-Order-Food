@@ -9,19 +9,16 @@ import 'package:order/features/register/domain/usecase/remote_register_usecase.d
 import 'package:order/features/register/presentation/cubit/register_state.dart';
 import 'package:order/injection_container.dart';
 
-import '../../domain/usecase/register_usecase.dart';
-
 class RegisterCubit extends Cubit<RegisterState> {
-  late RegisterUsecase registerUsecase;
-
   RegisterCubit() : super(RegisterStateInt());
 
   Future<void> registerAccountFromRemote(BuildContext context,
       {required String email,
-        required String password,
-        required RegisterAccountEntity registerAccountEntity}) async {
+      required String password,
+      required RegisterAccountEntity registerAccountEntity}) async {
     emit(RegisterLoadingState());
-    final remoteRegisterUsecase = RemoteRegisterUsecase(sl());
+    final RemoteRegisterUsecase remoteRegisterUsecase =
+        RemoteRegisterUsecase(sl());
 
     try {
       handlerRequestApi(
@@ -40,26 +37,11 @@ class RegisterCubit extends Cubit<RegisterState> {
     }
   }
 
-  Future<void> registerAccount(RegisterAccountEntity registerAccount) async {
-    try {
-      emit(RegisterLoadingState());
-
-      final registered = await registerUsecase.call(registerAccount);
-      if (registered.status) {
-        emit(RegisteredState(registered));
-      } else {
-        emit(RegisterErrorState(errorMessage: registered.message));
-      }
-    } catch (e) {
-      emit(RegisterErrorState(errorMessage: e.toString()));
-    }
-  }
-
   Future<void> getUserInfo(RegisterAccountModel registerAccountModel) async {
     try {
       emit(ProfileLoadingState());
-      final getUserInfoUsecase = GetUserInfoUsecase(sl());
-      final userInfo = await getUserInfoUsecase.call();
+      final GetUserInfoUsecase getUserInfoUsecase = GetUserInfoUsecase(sl());
+      final RegisterAccountModel userInfo = await getUserInfoUsecase.call();
       if (userInfo.replyCode == 200) {
         emit(ProfileSuccessState(registerAccountModel: registerAccountModel));
       } else {

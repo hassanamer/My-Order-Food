@@ -3,25 +3,25 @@ import 'package:order/core/theming/styles.dart';
 
 class LoginHeaderWidget extends StatelessWidget {
   const LoginHeaderWidget({
-    Key? key,
-  }) : super(key: key);
+    super.key,
+  });
 
   @override
   Widget build(BuildContext context) {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
+      children: <Widget>[
         const Text(
           'Login',
-          style: TextStyles.font18DarkBlueBold,),
+          style: TextStyles.font34WhiteBold,
+        ),
         const SizedBox(height: 8),
         Center(
           child: Column(
-            children: [
+            children: <Widget>[
               _smallParagraph(context,
-                  "Chat with your friends and save your details for a faster"),
+                  'Chat with your friends and save your details for a faster checkout experince.'),
               const SizedBox(height: 4),
-              _smallParagraph(context, "checkout experince."),
             ],
           ),
         ),
@@ -32,7 +32,7 @@ class LoginHeaderWidget extends StatelessWidget {
   Text _smallParagraph(BuildContext context, String text) {
     return Text(
       text,
-      style: TextStyle(color: Theme.of(context).textTheme.displayLarge!.color!),
+      style: TextStyles.font20WhiteBold,
     );
   }
 }

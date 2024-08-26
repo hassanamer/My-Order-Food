@@ -1,0 +1,41 @@
+{
+  "flutter": {
+    "platforms": {
+      "android": {
+        "default": {
+          "projectId": "food-order-a2d6c",
+          "appId": "1:500192069011:android:a531cb6029ade634289466",
+          "fileOutput": "android/app/google-services.json"
+        }
+      },
+      "dart": {
+        "lib/firebase_options.dart": {
+          "projectId": "food-order-a2d6c",
+          "configurations": {
+            "android": "1:500192069011:android:a531cb6029ade634289466",
+            "ios": "1:500192069011:ios:b43b8487181cc367289466",
+            "macos": "1:500192069011:ios:b43b8487181cc367289466",
+            "web": "1:500192069011:web:a27989be6b19457e289466",
+            "windows": "1:500192069011:web:be5d9f7ab5b59a3f289466"
+          }
+        }
+      }
+    }
+  },
+  "functions": [
+    {
+      "source": "functions",
+      "codebase": "default",
+      "ignore": [
+        "node_modules",
+        ".git",
+        "firebase-debug.log",
+        "firebase-debug.*.log",
+        "*.local"
+      ],
+      "predeploy": [
+        "npm --prefix \"$RESOURCE_DIR\" run lint"
+      ]
+    }
+  ]
+}

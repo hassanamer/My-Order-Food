@@ -1,12 +1,11 @@
 import 'package:flutter/material.dart';
-
-import '../../../../../core/theme_app.dart';
+import 'package:order/core/theming/styles.dart';
 
 class MobileTextFieldWidget extends StatelessWidget {
   const MobileTextFieldWidget({
-    Key? key,
     required this.controllerPhone,
-  }) : super(key: key);
+    super.key,
+  });
 
   final TextEditingController controllerPhone;
 
@@ -15,20 +14,27 @@ class MobileTextFieldWidget extends StatelessWidget {
     return TextFormField(
       controller: controllerPhone,
       keyboardType: TextInputType.number,
-      style: const TextStyle(fontSize: 20),
+      style: TextStyles.font20BlueGradienteBoldForItemsList,
       decoration: InputDecoration(
-        fillColor: authTextFromFieldFillColor.withOpacity(.3),
+        fillColor: Colors.white.withOpacity(.9),
         hintText: 'Phone Number',
-        hintStyle: const TextStyle(
-          color: authTextFromFieldHintTextColor,
-          fontSize: 17,
-          fontWeight: FontWeight.w500,
+        hintStyle: TextStyles.font20BlueGradienteBoldForItemsList.copyWith(
+          color: Colors.blue.shade900.withOpacity(.3),
         ),
-        prefixIcon: const Icon(Icons.phone_outlined),
-        suffixIcon: const Text(""),
+        label: Text(
+          'Phone Number',
+          style: TextStyles.font20BlueGradienteBoldForItemsList.copyWith(
+            color: Colors.blue.shade900.withOpacity(.3),
+          ),
+        ),
+        prefixIcon: Icon(
+          Icons.phone_outlined,
+          color: Colors.blue.shade900,
+        ),
+        suffixIcon: const Text(''),
         filled: true,
       ),
-      validator: (value, {int i = 1}) {
+      validator: (String? value, {int i = 1}) {
         if (value == null || value.isEmpty) {
           return 'Please enter your Phone number.';
         }
