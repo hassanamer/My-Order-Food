@@ -2,8 +2,8 @@
 
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:order/features/orders/data/models/order_item_model.dart';
-import 'package:order/features/orders/presentation/pages/widgets/order_status/order_status_enum_model.dart';
 import 'package:order/features/orders/domain/entities/order_entities.dart';
+import 'package:order/features/orders/presentation/pages/widgets/order_status/order_status_enum_model.dart';
 
 class OrderModel extends OrderEntity {
   OrderModel({
@@ -27,7 +27,7 @@ class OrderModel extends OrderEntity {
       'userId': userId,
       'id': id,
       'title': title,
-      'items': items?.map((OrderItem item) => item.toMap()),
+      'items': items?.map((OrderItemModel item) => item.toMap()),
       'createdAt': createdAt,
       'vat': vat,
       'placerUid': placerUid,
@@ -51,8 +51,8 @@ class OrderModel extends OrderEntity {
       deliveryFees: map['deliveryFees'],
       status: OrderStatusEnum.values[map['status']],
       items: map['items']
-          ?.map((OrderItem item) =>
-              OrderItem.fromMap(item as Map<String, dynamic>))
+          ?.map((OrderItemModel item) =>
+              OrderItemModel.fromMap(item as Map<String, dynamic>))
           .toList(),
       itemsTotalPricePerUser:
           (map['itemsTotalPricePerUser'] as Map<String, dynamic>)
@@ -75,7 +75,7 @@ class OrderModel extends OrderEntity {
       status: OrderStatusEnum.values[documentSnapshot.data()!['status']],
       items: documentSnapshot
           .data()!['items']
-          ?.map<OrderItem>((item) => OrderItem.fromMap(item))
+          ?.map<OrderItemModel>((item) => OrderItemModel.fromMap(item))
           .toList(),
       itemsTotalPricePerUser: (documentSnapshot
               .data()!['itemsTotalPricePerUser'] as Map<String, dynamic>)

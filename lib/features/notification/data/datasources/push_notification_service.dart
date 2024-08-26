@@ -89,7 +89,6 @@ class PushNotificationService {
     }
   }
 
-//request notification permission
   static Future<void> init() async {
     await _fcm.requestPermission(
       alert: true,

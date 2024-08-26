@@ -1,11 +1,11 @@
-class OrderItem {
+class OrderItemModel {
   String userId;
   String itemName;
   int quantity;
   double? price;
   double? itemTotalPrice;
 
-  OrderItem({
+  OrderItemModel({
     required this.userId,
     required this.itemName,
     this.quantity = 0,
@@ -24,8 +24,8 @@ class OrderItem {
     };
   }
 
-  factory OrderItem.fromMap(Map<String, dynamic> map) {
-    return OrderItem(
+  factory OrderItemModel.fromMap(Map<String, dynamic> map) {
+    return OrderItemModel(
       itemName: map['itemName'] ?? '',
       quantity: map['quantity']?.toInt() ?? 0,
       userId: map['userId'] ?? '',

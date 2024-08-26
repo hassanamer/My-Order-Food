@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:order/features/orders/presentation/pages/widgets/order_status/utilities__order_status.dart';
+import 'package:order/core/widgets/dashed_line_painter.dart';
 
 class OrderStatusItemView extends StatelessWidget {
   const OrderStatusItemView(

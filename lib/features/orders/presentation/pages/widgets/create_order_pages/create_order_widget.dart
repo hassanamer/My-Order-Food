@@ -40,7 +40,7 @@ class _CreateOrderWidgetState extends State<CreateOrderWidget> {
   double keyboardHeight = 0;
 
   late String userId = FirebaseAuth.instance.currentUser?.uid ?? '';
-  List<OrderItem> itemList = <OrderItem>[];
+  List<OrderItemModel> itemList = <OrderItemModel>[];
   Random random = Random();
 
   @override
@@ -49,15 +49,15 @@ class _CreateOrderWidgetState extends State<CreateOrderWidget> {
     addOrderUsecase = sl();
     if (widget.isUpdateEvent) {
       titleController.text = widget.eventEntity!.title!;
-      widget.eventEntity!.items?.forEach((OrderItem item) {
-        itemList.add(OrderItem(
+      widget.eventEntity!.items?.forEach((OrderItemModel item) {
+        itemList.add(OrderItemModel(
           itemName: item.itemName,
           quantity: item.quantity,
           userId: item.userId,
         ));
       });
     }
-    // _startCancellationTimer(); // Start timer only when creating a new order
+    // _startCancellationTimer();
   }
 
   @override
@@ -252,7 +252,7 @@ class _CreateOrderWidgetState extends State<CreateOrderWidget> {
                   onPressed: () {
                     if (itemController.text.isNotEmpty) {
                       setState(() {
-                        itemList.add(OrderItem(
+                        itemList.add(OrderItemModel(
                           itemName: itemController.text,
                           quantity: itemCount,
                           userId: userId,
@@ -300,7 +300,7 @@ class _CreateOrderWidgetState extends State<CreateOrderWidget> {
     }
 
     bool allItemsHaveQuantity =
-        itemList.every((OrderItem item) => item.quantity > 0);
+        itemList.every((OrderItemModel item) => item.quantity > 0);
 
     if (isValid && allItemsHaveQuantity) {
       final OrderEntity createOrderEntity = OrderEntity(

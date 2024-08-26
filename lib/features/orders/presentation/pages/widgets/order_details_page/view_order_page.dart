@@ -58,8 +58,8 @@ class _ViewOrderPageState extends State<ViewOrderPage> {
           final List<OrderEntity> filteredOrders =
               orders.where((OrderEntity orderEntity) {
             isCreator = orderEntity.userId == currentUserId;
-            bool isParticipant = orderEntity.items
-                    ?.any((OrderItem item) => item.userId == currentUserId) ??
+            bool isParticipant = orderEntity.items?.any(
+                    (OrderItemModel item) => item.userId == currentUserId) ??
                 false;
             return isCreator || isParticipant;
           }).toList();

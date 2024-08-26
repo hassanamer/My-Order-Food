@@ -14,7 +14,7 @@ import 'package:order/features/register/user/pages/user_profile_screen.dart';
 // ignore: must_be_immutable
 class UserItemsTile extends StatefulWidget {
   final RegisterAccountModel user;
-  final List<OrderItem> items;
+  final List<OrderItemModel> items;
   final OrderEntity orderEntity;
   final DateTime createdAt;
   final double userDeliveryFee;
@@ -39,17 +39,18 @@ class UserItemsTile extends StatefulWidget {
 }
 
 class _UserItemsTileState extends State<UserItemsTile> {
-  late GetUserUsecase getUserOrderUsecase;
-  Map<String, List<OrderItem>> itemsGroupedByUser = <String, List<OrderItem>>{};
+  late GetUsersUsecase getUserOrderUsecase;
+  Map<String, List<OrderItemModel>> itemsGroupedByUser =
+      <String, List<OrderItemModel>>{};
   Map<String, RegisterAccountModel> userMap = <String, RegisterAccountModel>{};
-  List<OrderItem> itemsList = <OrderItem>[];
+  List<OrderItemModel> itemsList = <OrderItemModel>[];
   bool isLoading = true;
   double totalPrice = 0;
 
   @override
   initState() {
     super.initState();
-    itemsList = widget.orderEntity.items ?? <OrderItem>[];
+    itemsList = widget.orderEntity.items ?? <OrderItemModel>[];
   }
 
   Widget getDivider() {
@@ -63,7 +64,7 @@ class _UserItemsTileState extends State<UserItemsTile> {
 
   void updateItemsTotalPrice() {
     double total = 0.0;
-    for (OrderItem item in widget.items) {
+    for (OrderItemModel item in widget.items) {
       total += item.itemTotalPrice ?? 0;
     }
     widget.orderEntity.itemsTotalPricePerUser[widget.user.userId!] = total;
@@ -156,7 +157,7 @@ class _UserItemsTileState extends State<UserItemsTile> {
                     ),
                     getDivider(),
                     ...widget.items.map(
-                      (OrderItem item) => Padding(
+                      (OrderItemModel item) => Padding(
                         padding: const EdgeInsets.symmetric(
                             horizontal: 10.0, vertical: 5.0),
                         child: Column(

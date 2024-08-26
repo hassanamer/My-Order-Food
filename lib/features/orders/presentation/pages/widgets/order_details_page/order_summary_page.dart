@@ -40,9 +40,10 @@ class _OrderSummaryPageState extends State<OrderSummaryPage> {
   bool isLoading = true;
   Map<String, RegisterAccountModel> userMap = <String, RegisterAccountModel>{};
   Map<String, double> itemsTotalPricePerUser = <String, double>{};
-  Map<String, List<OrderItem>> itemsGroupedByUser = <String, List<OrderItem>>{};
+  Map<String, List<OrderItemModel>> itemsGroupedByUser =
+      <String, List<OrderItemModel>>{};
   late AddOrderUsecase addOrderUsecase;
-  late GetUserUsecase getUserUsecase;
+  late GetUsersUsecase getUserUsecase;
   double userDeliveryFee = 0.0;
   double vat = 0;
   double? deliveryFee;
@@ -79,12 +80,12 @@ class _OrderSummaryPageState extends State<OrderSummaryPage> {
   }
 
   void _intializeItemsGroupedByUser() {
-    List<OrderItem> items = widget.orderEntity.items ?? <OrderItem>[];
+    List<OrderItemModel> items = widget.orderEntity.items ?? <OrderItemModel>[];
 
-    for (OrderItem item in items) {
+    for (OrderItemModel item in items) {
       String userId = item.userId;
       if (!itemsGroupedByUser.containsKey(userId)) {
-        itemsGroupedByUser[userId] = <OrderItem>[];
+        itemsGroupedByUser[userId] = <OrderItemModel>[];
       }
       itemsGroupedByUser[userId]!.add(item);
     }
@@ -170,7 +171,8 @@ class _OrderSummaryPageState extends State<OrderSummaryPage> {
                       itemBuilder: (BuildContext context, int index) {
                         String userId =
                             itemsGroupedByUser.keys.elementAt(index);
-                        List<OrderItem> userItems = itemsGroupedByUser[userId]!;
+                        List<OrderItemModel> userItems =
+                            itemsGroupedByUser[userId]!;
                         return UserItemsTile(
                           isCurrentUserPlacerOrReceiver:
                               isCurrentUserPlacerOrReceiver,

@@ -15,7 +15,7 @@ class OrderCubit extends Cubit<OrderState> {
   late DeleteOrderUsecase deleteOrderUsecase;
   late UpdateOrderUsecase updateOrderUsecase;
   late GetAllOrderUsecase getAllOrderUsecase;
-  late GetUserUsecase getUserOrderUsecase;
+  late GetUsersUsecase getUserOrderUsecase;
 
   OrderCubit() : super(OrderStateInt());
 
@@ -68,15 +68,15 @@ class OrderCubit extends Cubit<OrderState> {
   Future<void> addOrUpdateItem(OrderEntity createOrderEntity, String itemName,
       int quantity, String userId) async {
     try {
-      createOrderEntity.items ??= <OrderItem>[];
+      createOrderEntity.items ??= <OrderItemModel>[];
 
       int index = createOrderEntity.items!
-          .indexWhere((OrderItem item) => item.itemName == itemName);
+          .indexWhere((OrderItemModel item) => item.itemName == itemName);
       if (index != -1) {
         createOrderEntity.items![index].quantity += quantity;
       } else {
-        createOrderEntity.items!.add(
-            OrderItem(userId: userId, itemName: itemName, quantity: quantity));
+        createOrderEntity.items!.add(OrderItemModel(
+            userId: userId, itemName: itemName, quantity: quantity));
       }
 
       await updateOrder(createOrderEntity);
@@ -88,9 +88,9 @@ class OrderCubit extends Cubit<OrderState> {
   Future<void> removeItem(
       OrderEntity createOrderEntity, String itemName) async {
     try {
-      createOrderEntity.items ??= <OrderItem>[];
+      createOrderEntity.items ??= <OrderItemModel>[];
       createOrderEntity.items!
-          .removeWhere((OrderItem item) => item.itemName == itemName);
+          .removeWhere((OrderItemModel item) => item.itemName == itemName);
 
       await updateOrder(createOrderEntity);
     } catch (e) {

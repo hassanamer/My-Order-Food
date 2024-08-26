@@ -22,7 +22,7 @@ import 'package:order/injection_container.dart';
 // ignore: must_be_immutable
 class OrderDetailsBody extends StatefulWidget {
   final OrderEntity orderEntity;
-  Map<String, List<OrderItem>> itemsGroupedByUser;
+  Map<String, List<OrderItemModel>> itemsGroupedByUser;
   late Future<Map<String, RegisterAccountModel>> userMapFuture;
   final Future<void>? addItem;
   bool isCreator = false;
@@ -32,7 +32,7 @@ class OrderDetailsBody extends StatefulWidget {
   final int itemCount;
   final Function(int) setItemCount;
   final TextEditingController itemController;
-  List<OrderItem> itemsList;
+  List<OrderItemModel> itemsList;
 
   OrderDetailsBody(
       {required this.orderEntity,
@@ -55,7 +55,7 @@ class OrderDetailsBody extends StatefulWidget {
 
 class _OrderDetailsBodyState extends State<OrderDetailsBody>
     with WidgetsBindingObserver {
-  late GetUserUsecase getUserOrderUsecase;
+  late GetUsersUsecase getUserOrderUsecase;
   late AddOrderUsecase addOrderUsecase;
   late String createdAt;
   User? currentUser = FirebaseAuth.instance.currentUser;
@@ -63,7 +63,7 @@ class _OrderDetailsBodyState extends State<OrderDetailsBody>
   RegisterAccountModel? receiver;
   final FirebaseFirestore _firestore = FirebaseFirestore.instance;
   double keyboardHeight = 0;
-  bool isKeyboardOpen = false; // New variable
+  bool isKeyboardOpen = false;
 
   updateOrderStatus() {
     addOrderUsecase.updateOrderStatus(
@@ -72,7 +72,7 @@ class _OrderDetailsBodyState extends State<OrderDetailsBody>
 
   Future<void> addItem(String itemName, int itemCount) async {
     if (itemName.isNotEmpty && itemCount > 0) {
-      OrderItem orderItem = OrderItem(
+      OrderItemModel orderItem = OrderItemModel(
         itemName: itemName,
         quantity: itemCount,
         userId: currentUser!.uid,
@@ -208,7 +208,7 @@ class _OrderDetailsBodyState extends State<OrderDetailsBody>
     setState(() {});
   }
 
-  Future<void> _deleteItem(OrderItem item) async {
+  Future<void> _deleteItem(OrderItemModel item) async {
     if (item.userId == currentUser!.uid) {
       try {
         final DocumentReference<Map<String, dynamic>> orderDoc =
@@ -329,7 +329,7 @@ class _OrderDetailsBodyState extends State<OrderDetailsBody>
                     itemBuilder: (BuildContext context, int index) {
                       String userId =
                           widget.itemsGroupedByUser.keys.elementAt(index);
-                      List<OrderItem> userItems =
+                      List<OrderItemModel> userItems =
                           widget.itemsGroupedByUser[userId]!;
                       return EventDetailPageItemTile(
                         userId: userId,
@@ -337,7 +337,8 @@ class _OrderDetailsBodyState extends State<OrderDetailsBody>
                         items: userItems,
                         user: userMap[userId],
                         status: widget.orderEntity.status,
-                        onDeleteItem: (OrderItem item) => _deleteItem(item),
+                        onDeleteItem: (OrderItemModel item) =>
+                            _deleteItem(item),
                       );
                     },
                     separatorBuilder: (BuildContext context, int index) =>

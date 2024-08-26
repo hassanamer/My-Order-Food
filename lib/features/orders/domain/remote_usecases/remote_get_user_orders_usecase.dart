@@ -1,10 +1,10 @@
 import 'package:order/features/orders/domain/reporisatory/order_repository.dart';
 import 'package:order/features/register/data/models/register_account_model.dart';
 
-class GetUserUsecase {
+class GetUsersUsecase {
   final OrderRepository orderRepository;
 
-  GetUserUsecase(this.orderRepository);
+  GetUsersUsecase(this.orderRepository);
 
   Future<RegisterAccountModel> call(String userId) async {
     return await orderRepository.remoteGetUser(userId);

@@ -1,5 +1,4 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:flutter/material.dart';
 import 'package:order/features/orders/data/models/order_item_model.dart';
 import 'package:order/features/orders/data/models/order_model.dart';
 import 'package:order/features/orders/presentation/pages/widgets/order_status/order_status_enum_model.dart';
@@ -12,7 +11,7 @@ class OrderEntity {
   double? deliveryFees;
   OrderStatusEnum status;
   double vat = 0;
-  late final List<OrderItem>? items;
+  late final List<OrderItemModel>? items;
   Map<String, double> itemsTotalPricePerUser = <String, double>{};
   String? placerUid;
   String? receiverUid;
@@ -48,7 +47,7 @@ class OrderEntity {
       status: OrderStatusEnum.values[map['status'] ?? 0],
       items: (map['items'] as List<dynamic>?)
           // ignore: always_specify_types
-          ?.map((item) => OrderItem.fromMap(item))
+          ?.map((item) => OrderItemModel.fromMap(item))
           .toList(),
     );
   }
@@ -64,7 +63,7 @@ class OrderEntity {
       'createdAt': Timestamp.fromDate(createdAt),
       'status': status.index,
       'vat': vat,
-      'items': items?.map((OrderItem item) => item.toMap()).toList(),
+      'items': items?.map((OrderItemModel item) => item.toMap()).toList(),
       'itemsTotalPricePerUser': itemsTotalPricePerUser,
       'deliveryFees': deliveryFees,
     };
@@ -87,30 +86,9 @@ class OrderEntity {
   }
 }
 
-class CommentEntity {
-  int? id;
-  String comment;
-
-  CommentEntity({required this.comment, this.id});
-}
-
 class BaseResponse {
   bool status;
   String message;
 
   BaseResponse({required this.status, required this.message});
-}
-
-class MessageEntity {
-  final String userId;
-  final String message;
-  final String senderName;
-  final String receiverName;
-
-  MessageEntity(
-    this.userId,
-    this.message,
-    this.senderName,
-    this.receiverName,
-  );
 }

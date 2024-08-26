@@ -28,7 +28,7 @@ class OrderDetailsPage extends StatefulWidget {
 }
 
 class _OrderDetailsPageState extends State<OrderDetailsPage> {
-  late GetUserUsecase getUserOrderUsecase;
+  late GetUsersUsecase getUserOrderUsecase;
   late AddOrderUsecase addOrderUsecase;
   late String createdAt;
   User? currentUser = FirebaseAuth.instance.currentUser;
@@ -61,13 +61,13 @@ class _OrderDetailsPageState extends State<OrderDetailsPage> {
     return await getUserOrderUsecase.getUsers(userIds);
   }
 
-  Map<String, List<OrderItem>> getItemsGroupedByUsers(
-      List<OrderItem> itemsList) {
-    Map<String, List<OrderItem>> itemsGroupedByUser =
-        <String, List<OrderItem>>{};
-    for (OrderItem item in itemsList) {
+  Map<String, List<OrderItemModel>> getItemsGroupedByUsers(
+      List<OrderItemModel> itemsList) {
+    Map<String, List<OrderItemModel>> itemsGroupedByUser =
+        <String, List<OrderItemModel>>{};
+    for (OrderItemModel item in itemsList) {
       itemsGroupedByUser
-          .putIfAbsent(item.userId, () => <OrderItem>[])
+          .putIfAbsent(item.userId, () => <OrderItemModel>[])
           .add(item);
     }
     return itemsGroupedByUser;
@@ -114,8 +114,9 @@ class _OrderDetailsPageState extends State<OrderDetailsPage> {
             return const Center(child: Text('Order not found.'));
           }
 
-          List<OrderItem> itemsList = snapshot.data!.items ?? <OrderItem>[];
-          Map<String, List<OrderItem>> itemsGroupedByUser =
+          List<OrderItemModel> itemsList =
+              snapshot.data!.items ?? <OrderItemModel>[];
+          Map<String, List<OrderItemModel>> itemsGroupedByUser =
               getItemsGroupedByUsers(itemsList);
           userMapFuture = loadUsers(itemsGroupedByUser.keys.toList());
 
