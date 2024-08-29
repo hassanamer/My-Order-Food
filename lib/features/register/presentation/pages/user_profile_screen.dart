@@ -11,7 +11,7 @@ import 'package:order/core/theming/styles.dart';
 import 'package:order/core/widgets/app_bar_widget.dart';
 import 'package:order/core/widgets/common_elevated_button_widget.dart';
 import 'package:order/core/widgets/loading_widget.dart';
-import 'package:order/features/register/user/profile_cubit.dart';
+import 'package:order/features/register/presentation/cubit/profile_cubit.dart';
 
 class UserProfileScreen extends StatefulWidget {
   const UserProfileScreen({super.key});

@@ -26,24 +26,28 @@ class HomePageAppBarTitleWidget extends StatelessWidget {
   Widget build(BuildContext context) {
     return Padding(
       padding: const EdgeInsets.all(12.0),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
+      child: Row(
         children: [
-          Row(
-            children: <Widget>[
+          Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Row(
+                children: <Widget>[
+                  Text(
+                    'Welcome, ${_greetings()}',
+                    style: TextStyles.font18WhiteBold,
+                  ),
+                ],
+              ),
+              SizedBox(
+                height: 5,
+              ),
               Text(
-                'Welcome, ${_greetings()}',
-                style: TextStyles.font18WhiteBold,
+                _currentDate(),
+                style: TextStyles
+                    .font16WhiteSemiBold, // You can customize this text style
               ),
             ],
-          ),
-          SizedBox(
-            height: 5,
-          ),
-          Text(
-            _currentDate(),
-            style: TextStyles
-                .font16WhiteSemiBold, // You can customize this text style
           ),
         ],
       ),

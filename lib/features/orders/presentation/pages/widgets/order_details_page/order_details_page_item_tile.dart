@@ -40,12 +40,12 @@ class _EventDetailPageItemTileState extends State<EventDetailPageItemTile> {
     try {
       String orderId = widget.orderEntity?.id ?? '';
       DocumentSnapshot<Map<String, dynamic>> orderDoc =
-      await _firestore.collection('Order').doc(orderId).get();
+          await _firestore.collection('Order').doc(orderId).get();
       List<dynamic> items = orderDoc.get('items');
       List<Map<String, dynamic>> mappedItems =
-      items.cast<Map<String, dynamic>>();
+          items.cast<Map<String, dynamic>>();
       int itemIndex = mappedItems.indexWhere((Map<String, dynamic> i) =>
-      i['itemName'] == item.itemName && i['userId'] == item.userId);
+          i['itemName'] == item.itemName && i['userId'] == item.userId);
       if (itemIndex != -1) {
         mappedItems[itemIndex]['quantity'] = item.quantity;
 
@@ -104,16 +104,16 @@ class _EventDetailPageItemTileState extends State<EventDetailPageItemTile> {
                           padding: const EdgeInsets.all(8.0),
                           child: CircleAvatar(
                             backgroundColor:
-                            const Color.fromRGBO(72, 129, 255, 0.06),
+                                const Color.fromRGBO(72, 129, 255, 0.06),
                             radius: 50,
                             backgroundImage:
-                            '${widget.user?.profileImageUrl}'.isNotEmpty
-                                ? NetworkImage(
-                                '${widget.user?.profileImageUrl}')
-                                : null,
+                                '${widget.user?.profileImageUrl}'.isNotEmpty
+                                    ? NetworkImage(
+                                        '${widget.user?.profileImageUrl}')
+                                    : null,
                             child: '${widget.user?.profileImageUrl}'.isEmpty
                                 ? const Icon(Icons.add_a_photo,
-                                size: 50, color: Colors.white)
+                                    size: 50, color: Colors.white)
                                 : null,
                           ),
                         ),
@@ -127,79 +127,83 @@ class _EventDetailPageItemTileState extends State<EventDetailPageItemTile> {
                       ],
                     ),
                     ...widget.items.map(
-                          (OrderItemModel item) =>
-                          Padding(
-                            padding: const EdgeInsets.symmetric(
-                                horizontal: 10.0, vertical: 5.0),
-                            child: Row(
-                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                              children: <Widget>[
-                                Expanded(
-                                  flex: 4,
-                                  child: Text(item.itemName,
-                                      style: TextStyles
-                                          .font20BlueGradienteBoldForItemsList),
-                                ),
-                                Expanded(
-                                  flex: 1,
-                                  child: Visibility(
-                                    visible: item.userId ==
-                                        widget.currentUser!.uid,
-                                    child: IconButton(
-                                      icon: Icon(Icons.remove,
-                                          color: Colors.blue.shade900),
-                                      onPressed: () async {
-                                        setState(() {
-                                          if (item.quantity > 1) {
-                                            item.quantity--;
-                                          }
-                                        });
-                                        await _updateItemQuantity(item);
-                                      },
-                                    ),
-                                  ),
-                                ),
-                                Expanded(
-                                  flex: 1,
-                                  child: Center(
-                                    child: Text('x ${item.quantity}',
-                                        style: TextStyles
-                                            .font20BlueGradienteBoldForItemsList),
-                                  ),
-                                ),
-                                Expanded(
-                                  flex: 1,
-                                  child: Visibility(
-                                    visible: item.userId ==
-                                        widget.currentUser!.uid,
-                                    child: IconButton(
-                                      icon: Icon(Icons.add,
-                                          color: Colors.blue.shade900),
-                                      onPressed: () async {
-                                        setState(() {
-                                          item.quantity++;
-                                        });
-                                        await _updateItemQuantity(item);
-                                      },
-                                    ),
-                                  ),
-                                ),
-                                Expanded(
-                                  flex: 1,
-                                  child: Visibility(
-                                    visible: item.userId ==
-                                        widget.currentUser!.uid,
-                                    child: IconButton(
-                                      icon: const Icon(Icons.delete,
-                                          color: Colors.red),
-                                      onPressed: () =>
-                                          widget.onDeleteItem(item),
-                                    ),
-                                  ),
-                                ),
-                              ],
+                      (OrderItemModel item) => Padding(
+                        padding: const EdgeInsets.symmetric(
+                            horizontal: 10.0, vertical: 5.0),
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: <Widget>[
+                            Expanded(
+                              flex: 4,
+                              child: Text(item.itemName,
+                                  style: TextStyles
+                                      .font20BlueGradienteBoldForItemsList),
                             ),
-                          ),
+                            Expanded(
+                              flex: 1,
+                              child: Visibility(
+                                visible:
+                                    item.userId == widget.currentUser!.uid &&
+                                        widget.orderEntity!.status ==
+                                            OrderStatusEnum.active,
+                                child: IconButton(
+                                  icon: Icon(Icons.remove,
+                                      color: Colors.blue.shade900),
+                                  onPressed: () async {
+                                    setState(() {
+                                      if (item.quantity > 1) {
+                                        item.quantity--;
+                                      }
+                                    });
+                                    await _updateItemQuantity(item);
+                                  },
+                                ),
+                              ),
+                            ),
+                            Expanded(
+                              flex: 1,
+                              child: Center(
+                                child: Text('x ${item.quantity}',
+                                    style: TextStyles
+                                        .font20BlueGradienteBoldForItemsList),
+                              ),
+                            ),
+                            Expanded(
+                              flex: 1,
+                              child: Visibility(
+                                visible:
+                                    item.userId == widget.currentUser!.uid &&
+                                        widget.orderEntity!.status ==
+                                            OrderStatusEnum.active,
+                                child: IconButton(
+                                  icon: Icon(Icons.add,
+                                      color: Colors.blue.shade900),
+                                  onPressed: () async {
+                                    setState(() {
+                                      item.quantity++;
+                                    });
+                                    await _updateItemQuantity(item);
+                                  },
+                                ),
+                              ),
+                            ),
+                            Expanded(
+                              flex: 1,
+                              child: Visibility(
+                                visible:
+                                    item.userId == widget.currentUser!.uid &&
+                                        widget.orderEntity!.status ==
+                                            OrderStatusEnum.active,
+                                child: IconButton(
+                                  icon: const Icon(Icons.delete,
+                                      color: Colors.red),
+                                  onPressed: () => widget.onDeleteItem(item),
+                                ),
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
                     ),
                   ],
                 ),

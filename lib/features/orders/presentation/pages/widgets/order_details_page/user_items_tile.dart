@@ -9,7 +9,7 @@ import 'package:order/features/orders/data/models/order_item_model.dart';
 import 'package:order/features/orders/domain/entities/order_entities.dart';
 import 'package:order/features/orders/domain/remote_usecases/remote_get_user_orders_usecase.dart';
 import 'package:order/features/register/data/models/register_account_model.dart';
-import 'package:order/features/register/user/pages/user_profile_screen.dart';
+import 'package:order/features/register/presentation/pages/user_profile_screen.dart';
 
 // ignore: must_be_immutable
 class UserItemsTile extends StatefulWidget {
@@ -41,7 +41,7 @@ class UserItemsTile extends StatefulWidget {
 class _UserItemsTileState extends State<UserItemsTile> {
   late GetUsersUsecase getUserOrderUsecase;
   Map<String, List<OrderItemModel>> itemsGroupedByUser =
-      <String, List<OrderItemModel>>{};
+  <String, List<OrderItemModel>>{};
   Map<String, RegisterAccountModel> userMap = <String, RegisterAccountModel>{};
   List<OrderItemModel> itemsList = <OrderItemModel>[];
   bool isLoading = true;
@@ -72,7 +72,7 @@ class _UserItemsTileState extends State<UserItemsTile> {
 
   void updateTotalPrice() {
     if (widget.orderEntity.itemsTotalPricePerUser
-            .containsKey(widget.user.userId!) ==
+        .containsKey(widget.user.userId!) ==
         false) {
       return;
     }
@@ -157,120 +157,126 @@ class _UserItemsTileState extends State<UserItemsTile> {
                     ),
                     getDivider(),
                     ...widget.items.map(
-                      (OrderItemModel item) => Padding(
-                        padding: const EdgeInsets.symmetric(
-                            horizontal: 10.0, vertical: 5.0),
-                        child: Column(
-                          children: <Widget>[
-                            Row(
-                              // mainAxisAlignment:
-                              // MainAxisAlignment.spaceEvenly,
+                          (OrderItemModel item) =>
+                          Padding(
+                            padding: const EdgeInsets.symmetric(
+                                horizontal: 10.0, vertical: 5.0),
+                            child: Column(
                               children: <Widget>[
-                                Expanded(
-                                  flex: 1,
-                                  child: Text('Item :',
-                                      style: TextStyles
-                                          .font20BlueGradienteBoldForItemsList),
+                                Row(
+                                  // mainAxisAlignment:
+                                  // MainAxisAlignment.spaceEvenly,
+                                  children: <Widget>[
+                                    Expanded(
+                                      flex: 1,
+                                      child: Text('Item :',
+                                          style: TextStyles
+                                              .font20BlueGradienteBoldForItemsList),
+                                    ),
+                                    // const Spacer(),
+                                    Expanded(
+                                      flex: 3,
+                                      child: Text(item.itemName,
+                                          maxLines: 5,
+                                          overflow: TextOverflow.ellipsis,
+                                          style: TextStyles
+                                              .font20BlueGradienteBoldForItemsList),
+                                    ),
+                                  ],
                                 ),
-                                // const Spacer(),
-                                Expanded(
-                                  flex: 3,
-                                  child: Text(item.itemName,
-                                      maxLines: 5,
-                                      overflow: TextOverflow.ellipsis,
-                                      style: TextStyles
-                                          .font20BlueGradienteBoldForItemsList),
+                                SizedBox(
+                                  height: 15.h,
                                 ),
-                              ],
-                            ),
-                            SizedBox(
-                              height: 15.h,
-                            ),
-                            Row(
-                              // mainAxisAlignment:
-                              //     MainAxisAlignment.spaceBetween,
-                              children: <Widget>[
-                                Expanded(
-                                  flex: 1,
-                                  child: Text('Qty :',
-                                      style: TextStyles
-                                          .font20BlueGradienteBoldForItemsList),
+                                Row(
+                                  // mainAxisAlignment:
+                                  //     MainAxisAlignment.spaceBetween,
+                                  children: <Widget>[
+                                    Expanded(
+                                      flex: 1,
+                                      child: Text('Qty :',
+                                          style: TextStyles
+                                              .font20BlueGradienteBoldForItemsList),
+                                    ),
+                                    // const Spacer(),
+                                    Expanded(
+                                      flex: 3,
+                                      child: Text('${item.quantity}',
+                                          overflow: TextOverflow.ellipsis,
+                                          style: TextStyles
+                                              .font20BlueGradienteBoldForItemsList),
+                                    ),
+                                  ],
                                 ),
-                                // const Spacer(),
-                                Expanded(
-                                  flex: 3,
-                                  child: Text('${item.quantity}',
-                                      overflow: TextOverflow.ellipsis,
-                                      style: TextStyles
-                                          .font20BlueGradienteBoldForItemsList),
+                                SizedBox(
+                                  height: 15.h,
                                 ),
-                              ],
-                            ),
-                            SizedBox(
-                              height: 15.h,
-                            ),
-                            Row(
-                              mainAxisAlignment: MainAxisAlignment.spaceAround,
-                              children: <Widget>[
-                                Expanded(
-                                  child: Visibility(
-                                    visible:
+                                Row(
+                                  mainAxisAlignment: MainAxisAlignment
+                                      .spaceAround,
+                                  children: <Widget>[
+                                    Expanded(
+                                      child: Visibility(
+                                        visible:
                                         (widget.isCurrentUserPlacerOrReceiver),
-                                    child: GestureDetector(
-                                      onTap: () {
-                                        FocusScope.of(context).unfocus();
-                                      },
-                                      child: SizedBox(
-                                        height: 40.0.h,
-                                        width: 50.0.w,
-                                        child: TextField(
-                                          onChanged: (String price) {
-                                            setState(() {
-                                              item.price =
-                                                  double.tryParse(price);
-                                              item.itemTotalPrice =
-                                                  (item.price ?? 0.0) *
-                                                      item.quantity;
-                                              updateItemsTotalPrice();
-                                              updateTotalPrice();
-                                            });
+                                        child: GestureDetector(
+                                          onTap: () {
+                                            FocusScope.of(context).unfocus();
                                           },
-                                          inputFormatters: <TextInputFormatter>[
-                                            LengthLimitingTextInputFormatter(4),
-                                          ],
-                                          keyboardType: TextInputType.number,
-                                          decoration: InputDecoration(
-                                            label: Text('Price',
-                                                style: TextStyles
-                                                    .font16BlueGradienteBoldForItemsList),
-                                            hintText:
+                                          child: SizedBox(
+                                            height: 40.0.h,
+                                            width: 50.0.w,
+                                            child: TextField(
+                                              onChanged: (String price) {
+                                                setState(() {
+                                                  item.price =
+                                                      double.tryParse(price);
+                                                  item.itemTotalPrice =
+                                                      (item.price ?? 0.0) *
+                                                          item.quantity;
+                                                  updateItemsTotalPrice();
+                                                  updateTotalPrice();
+                                                });
+                                              },
+                                              inputFormatters: <
+                                                  TextInputFormatter>[
+                                                LengthLimitingTextInputFormatter(
+                                                    4),
+                                              ],
+                                              keyboardType: TextInputType
+                                                  .number,
+                                              decoration: InputDecoration(
+                                                label: Text('Price',
+                                                    style: TextStyles
+                                                        .font16BlueGradienteBoldForItemsList),
+                                                hintText:
                                                 '${item.price ?? 'Price'}',
-                                            border: const OutlineInputBorder(),
-                                            // filled: true,
-                                            fillColor: Colors.white,
+                                                border: const OutlineInputBorder(),
+                                                // filled: true,
+                                                fillColor: Colors.white,
+                                              ),
+                                            ),
                                           ),
                                         ),
                                       ),
                                     ),
-                                  ),
-                                ),
-                                const Spacer(),
-                                Expanded(
-                                  child: ConstrainedBox(
-                                    constraints:
+                                    const Spacer(),
+                                    Expanded(
+                                      child: ConstrainedBox(
+                                        constraints:
                                         const BoxConstraints(minWidth: 60),
-                                    child: Text('${item.itemTotalPrice ?? ""}',
-                                        style: TextStyles
-                                            .font20BlueGradienteBoldForItemsList),
-                                  ),
+                                        child: Text(
+                                            '${item.itemTotalPrice ?? ""}',
+                                            style: TextStyles
+                                                .font20BlueGradienteBoldForItemsList),
+                                      ),
+                                    ),
+                                  ],
                                 ),
+                                const SizedBox(height: 5),
+                                getDivider(),
                               ],
                             ),
-                            const SizedBox(height: 5),
-                            getDivider(),
-                          ],
-                        ),
-                      ),
+                          ),
                     ),
                     const SizedBox(height: 5),
                     Column(
@@ -279,9 +285,10 @@ class _UserItemsTileState extends State<UserItemsTile> {
                           child: Text(
                             maxLines: 1,
                             overflow: TextOverflow.ellipsis,
-                            "${widget.user.name}'s total price is: ${totalPrice.toStringAsFixed(2)} L.E",
+                            "${widget.user.name}'s total price is: ${totalPrice
+                                .toStringAsFixed(2)} L.E",
                             style:
-                                TextStyles.font20BlueGradienteBoldForItemsList,
+                            TextStyles.font20BlueGradienteBoldForItemsList,
                           ),
                         ),
                         const SizedBox(
@@ -294,15 +301,19 @@ class _UserItemsTileState extends State<UserItemsTile> {
                       visible: (widget.isCurrentUserPlacerOrReceiver),
                       child: Center(
                         child: CommonElevatedButtonWidget(
-                          width: MediaQuery.of(context).size.width * 0.7,
+                          width: MediaQuery
+                              .of(context)
+                              .size
+                              .width * 0.7,
                           text: 'Update Prices & Notify',
                           onPressed: () {
                             setState(
-                              () {
+                                  () {
                                 widget.updateOrder();
                                 PushNotificationService.sendNotificationToUser(
                                     widget.user.userId,
-                                    'Your Total Price Is ${totalPrice.toStringAsFixed(2)}');
+                                    'Your Total Price Is ${totalPrice
+                                        .toStringAsFixed(2)}');
                                 PushNotificationService.saveNotification(
                                     'Your Total Price Is',
                                     totalPrice.toStringAsFixed(2),

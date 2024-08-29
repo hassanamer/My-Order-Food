@@ -21,8 +21,8 @@ import 'package:order/features/register/data/reporisatory/register_repo_impl.dar
 import 'package:order/features/register/domain/reposisatory/register_reprisatory.dart';
 import 'package:order/features/register/domain/usecase/get_user_info_usecase.dart';
 import 'package:order/features/register/domain/usecase/remote_register_usecase.dart';
+import 'package:order/features/register/presentation/cubit/profile_cubit.dart';
 import 'package:order/features/register/presentation/cubit/register_cubit.dart';
-import 'package:order/features/register/user/profile_cubit.dart';
 import 'package:order/features/restaurant/data/datasource/restaurant_datasource.dart';
 import 'package:order/features/restaurant/data/reporisatory/firebase_storage_repo.dart';
 import 'package:order/features/restaurant/data/reporisatory/restaurant_reporisatory_impl.dart';

@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:order/core/theming/styles.dart';
 import 'package:order/core/widgets/app_bar_widget.dart';
+import 'package:order/core/widgets/loading_widget.dart';
 import 'package:order/features/notification/data/datasources/push_notification_service.dart';
 import 'package:order/features/notification/data/model/notification_model.dart';
 import 'package:order/features/notification/presentation/cubit/notification_cubit.dart';
@@ -37,19 +38,30 @@ class _NotificationPageState extends State<NotificationPage> {
         builder: (BuildContext context,
             AsyncSnapshot<List<NotificationModel>> snapshot) {
           if (snapshot.connectionState == ConnectionState.waiting) {
-            return const Center(child: CircularProgressIndicator());
+            return const Center(child: LoadingWidget());
           } else if (snapshot.hasError) {
             return Center(child: Text('Error: ${snapshot.error}'));
           } else if (!snapshot.hasData || snapshot.data!.isEmpty) {
             return const Center(child: Text('No notifications'));
           }
 
-          final List<NotificationModel> notifications = snapshot.data!;
+          final DateTime now = DateTime.now();
+          final DateTime fiveDaysAgo = now.subtract(const Duration(days: 5));
+
+          final List<NotificationModel> recentNotifications = snapshot.data!
+              .where(
+                  (notification) => notification.timestamp.isAfter(fiveDaysAgo))
+              .toList();
+
+          if (recentNotifications.isEmpty) {
+            return const Center(
+                child: Text('No notifications from the past 5 days'));
+          }
 
           return ListView.builder(
-            itemCount: notifications.length,
+            itemCount: recentNotifications.length,
             itemBuilder: (BuildContext context, int index) {
-              final NotificationModel notification = notifications[index];
+              final NotificationModel notification = recentNotifications[index];
               return Padding(
                 padding:
                     const EdgeInsets.symmetric(horizontal: 10.0, vertical: 5.0),

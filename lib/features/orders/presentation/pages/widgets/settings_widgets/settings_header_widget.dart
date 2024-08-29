@@ -2,8 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:order/core/theming/styles.dart';
-import 'package:order/features/register/user/pages/user_profile_screen.dart';
-import 'package:order/features/register/user/profile_cubit.dart';
+import 'package:order/features/register/presentation/cubit/profile_cubit.dart';
+import 'package:order/features/register/presentation/pages/user_profile_screen.dart';
 
 class SettingsHeaderWidget extends StatefulWidget {
   const SettingsHeaderWidget({super.key});
